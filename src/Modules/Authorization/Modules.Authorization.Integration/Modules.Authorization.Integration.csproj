@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Modules.Shared.Integration\Modules.Shared.Integration.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="User\" />
+	</ItemGroup>
+
+</Project>

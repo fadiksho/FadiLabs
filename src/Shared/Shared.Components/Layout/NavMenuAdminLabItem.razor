@@ -1,0 +1,27 @@
+<LabAuthorizeView Permissions="Permissions.ConfigureAccessControl">
+	<Authorized>
+		<li>
+			<details class="space-y-1" open>
+				<summary>
+					<span>
+						<span class="font-bold">Admin Lab</span>
+					</span>
+				</summary>
+				<ul class="space-y-1">
+					<li>
+						<NavLink Href="admin-lab/users" Match="NavLinkMatch.Prefix">Users</NavLink>
+					</li>
+					<li>
+						<NavLink Href="admin-lab/roles" Match="NavLinkMatch.Prefix">Roles</NavLink>
+					</li>
+					<li>
+						<NavLink Href="admin-lab/permissions" Match="NavLinkMatch.Prefix">Permissions</NavLink>
+					</li>
+					<li>
+						<NavLink Href="admin-lab/roles-permissions" Match="NavLinkMatch.Prefix">Role Permissions</NavLink>
+					</li>
+				</ul>
+			</details>
+		</li>
+	</Authorized>
+</LabAuthorizeView>

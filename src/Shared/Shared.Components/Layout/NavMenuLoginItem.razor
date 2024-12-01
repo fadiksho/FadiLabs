@@ -1,0 +1,46 @@
+@inject IAuthService AuthService
+
+<AuthorizeView>
+	<Authorized>
+		<li>
+			<details class="space-y-1">
+				<summary>
+					<span class="flex items-center gap-2">
+						<div class="avatar">
+							<div class="w-12 rounded-full">
+								<img src="@context.User.GetProfilePicture()" alt />
+							</div>
+						</div>
+						<span class="flex-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text font-bold text-transparent break-all">
+							@context.User.GetUserName()
+						</span>
+					</span>
+				</summary>
+				<ul class="space-y-1">
+					<li>
+						@if (RendererInfo.Name == "WebView")
+						{
+							<button class="btn btn-ghost btn-block justify-start min-h-2 h-auto py-2 leading-5" @onclick="Logout">
+								Logout
+							</button>
+						}
+						else
+						{
+							<a href="account/logout" class="btn btn-ghost btn-block justify-start min-h-2 h-auto py-2 leading-5">
+								Logout
+							</a>
+						}
+					</li>
+				</ul>
+			</details>
+		</li>
+	</Authorized>
+</AuthorizeView>
+
+@code
+{
+	public async void Logout()
+	{
+		await AuthService.DeAuthenticateAsync();
+	}
+}

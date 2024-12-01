@@ -1,0 +1,29 @@
+@using Markdig;
+
+@code {
+  [Parameter]
+  [EditorRequired]
+  public required string Markdown { get; set; }
+
+  [Parameter(CaptureUnmatchedValues = true)]
+  public Dictionary<string, object>? Attributes { get; set; }
+
+  private MarkupString Html;
+
+  protected override void OnParametersSet()
+  {
+    if (string.IsNullOrWhiteSpace(Markdown))
+      return;
+
+    var pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
+
+    Html = new MarkupString(Markdig.Markdown.ToHtml(Markdown, pipeline));
+  }
+}
+
+<div @attributes="Attributes">
+  @Html
+</div>
+

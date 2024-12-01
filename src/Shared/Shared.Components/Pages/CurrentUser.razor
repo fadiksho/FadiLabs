@@ -1,0 +1,198 @@
+@page "/current-user"
+@code {
+
+}
+
+<Papper>
+	<LoadingTitle Title="User Principal" />
+	<AuthorizeView>
+		<Authorized>
+			<!-- User Identities -->
+			@{
+				int index = 0;
+				foreach (var identity in context.User.Identities)
+				{
+					index++;
+
+					<div class="divider divider-start divider-primary">@index</div>
+					if (identity != null)
+					{
+						<div class="collapse bg-base-200">
+							<input type="checkbox" />
+							<div class="collapse-title text-xl font-medium">
+								@identity.AuthenticationType
+							</div>
+							<div class="collapse-content overflow-x-auto">
+								<table class="table">
+									<!-- head -->
+									<tbody>
+										<!-- rows -->
+										<tr>
+											<td>@nameof(identity.IsAuthenticated)</td>
+											<td>
+												<span class="text-success">@identity?.IsAuthenticated</span>
+											</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.AuthenticationType)</td>
+											<td>@identity?.AuthenticationType</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.Name)</td>
+											<td>@(identity?.Name ?? "Name claim not found!")</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<div class="collapse bg-base-200">
+							<input type="checkbox" />
+							<div class="collapse-title text-xl font-medium">
+								@identity.AuthenticationType Claims
+							</div>
+							<div class="collapse-content overflow-x-auto">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Claim Type</th>
+											<th>Claim Value</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var claim in identity.Claims)
+										{
+											<tr>
+												<td>@claim.Type</td>
+												<td>@claim.Value</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					}
+				}
+			}
+		</Authorized>
+		<NotAuthorized>
+			<!-- Authentication Status -->
+			<div class="flex gap-2 align-middle">
+				<div>
+					Authentication Status:
+					<span class="text-error">Not Authenticated</span>
+				</div>
+			</div>
+		</NotAuthorized>
+	</AuthorizeView>
+</Papper>
+
+<Papper>
+	<LoadingTitle Title="Lab Authorize View Checks" />
+
+	<LabAuthorizeView>
+		<Authorized>
+			<div class="flex flex-wrap gap-1">
+				<span class="badge badge-neutral">@context.User.GetPermissions()</span>
+			</div>
+
+		</Authorized>
+	</LabAuthorizeView>
+
+
+	<LabAuthorizeView Roles="Lab User, Admin" Context="context1">
+		<Authorized>
+			<LabAuthorizeView Roles="Admin">
+				<Authorized>
+					<p class="text-success">
+						Is in Role 'Admin'
+					</p>
+				</Authorized>
+				<NotAuthorized>
+					<p class="text-error">
+						Is in Role 'Admin'
+					</p>
+				</NotAuthorized>
+			</LabAuthorizeView>
+			<LabAuthorizeView Roles="Lab User">
+				<Authorized>
+					<p class="text-success">
+						Is in Role 'Lab User'
+					</p>
+				</Authorized>
+				<NotAuthorized>
+					<p class="text-error">
+						Is in Role 'Lab User'
+					</p>
+				</NotAuthorized>
+			</LabAuthorizeView>
+		</Authorized>
+		<NotAuthorized>
+			<p class="text-error">
+				Is in Role 'Admin' or 'Lab User'
+			</p>
+		</NotAuthorized>
+	</LabAuthorizeView>
+
+	<LabAuthorizeView>
+		@foreach (var permission in PermissionPolicyManager.GetAllPermissions())
+		{
+			if (context.User.HasPermission(permission))
+			{
+				<p class="text-success">
+					Has permission '@permission'
+				</p>
+			}
+			else
+			{
+				<p class="text-error">
+					Has permission '@permission'
+				</p>
+			}
+		}
+	</LabAuthorizeView>
+
+	<LabAuthorizeView>
+		@if (context.User.HasPermission(Permissions.BlogOwner | Permissions.ConfigureAccessControl))
+		{
+			<p class="text-success">
+				Has permission to '@Permissions.BlogOwner' | '@Permissions.ConfigureAccessControl'
+			</p>
+		}
+		else
+		{
+			<p class="text-error">
+				Has permission to '@Permissions.BlogOwner' | '@Permissions.ConfigureAccessControl'
+			</p>
+		}
+	</LabAuthorizeView>
+
+	<LabAuthorizeView>
+		@if (context.User.HasPermission(Permissions.BlogOwner) && context.User.HasPermission(Permissions.ConfigureAccessControl))
+		{
+			<div>
+				<div>Uesr Permission: @context.User.GetPermissions()</div>
+				@{
+					var requiredPermission = Permissions.ConfigureAccessControl & Permissions.BlogOwner;
+				}
+				<div>Required Permission: @(requiredPermission)</div>
+			</div>
+			<p class="text-success">
+				Has permission to '@Permissions.BlogOwner' & '@Permissions.ConfigureAccessControl'
+			</p>
+		}
+		else
+		{
+			<div>
+				<div>Uesr Permission: @context.User.GetPermissions()</div>
+				@{
+					var requiredPermission = Permissions.ConfigureAccessControl & Permissions.BlogOwner;
+				}
+				<div>Required Permission: @(requiredPermission)</div>
+			</div>
+			<p class="text-error">
+				Has permission to '@Permissions.BlogOwner' & '@Permissions.ConfigureAccessControl'
+			</p>
+		}
+	</LabAuthorizeView>
+</Papper>

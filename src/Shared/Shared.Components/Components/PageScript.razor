@@ -1,0 +1,15 @@
+@if (RendererInfo.Name == "WebView")
+{
+	<maui-page-script src="@Src"></maui-page-script>
+}
+else
+{
+	<page-script src="@Src"></page-script>
+}
+
+
+@code {
+	[Parameter]
+	[EditorRequired]
+	public string Src { get; set; } = default!;
+}

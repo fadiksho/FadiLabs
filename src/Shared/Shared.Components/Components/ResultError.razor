@@ -1,0 +1,30 @@
+@typeparam TErrorResult where TErrorResult : IResultError
+
+@code {
+	[Parameter]
+	public TErrorResult? Error { get; set; }
+}
+
+@if (Error != null)
+{
+	if (Error is ValidationErrorResult validationErrorResult)
+	{
+		<AlertMessage Type="AlertMessageType.Error">
+			<Body>
+				<div class="flex flex-col gap-2">
+					<h1 class="font-bold">@Error.Message</h1>
+					<ul class="list-disc">
+						@foreach (var validationError in validationErrorResult.ValidationErrors)
+						{
+							<li>@validationError.Message</li>
+						}
+					</ul>
+				</div>
+			</Body>
+		</AlertMessage>
+	}
+	else
+	{
+		<AlertMessage Type="AlertMessageType.Error" MessageText="@Error.Message" />
+	}
+}

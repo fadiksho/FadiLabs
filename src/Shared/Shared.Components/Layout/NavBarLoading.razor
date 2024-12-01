@@ -1,0 +1,12 @@
+@code {
+  [Parameter]
+  [EditorRequired]
+  public bool Show { get; set; } = false;
+}
+
+<SectionContent SectionName="nav-loading">
+  @if (Show)
+  {
+    <div class="absolute -left-full top-0 h-1 w-full bg-base-100 animate-[leftToRightLoading_1.3s_0s_ease-in-out_infinite]"></div>
+  }
+</SectionContent>

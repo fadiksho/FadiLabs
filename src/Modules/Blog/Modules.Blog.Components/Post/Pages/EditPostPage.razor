@@ -1,0 +1,21 @@
+﻿@page "/blog/edit/{id:guid}"
+@rendermode InteractiveAuto
+@attribute [LabAuthorize(Permissions.BlogOwner)]
+
+<PageTitle>Edit @getToUpdatePostResult.Entity?.Title</PageTitle>
+
+<Papper>
+	<LoadingTitle Title="@($"Edit: {getToUpdatePostResult.Entity?.Title}")"
+								IsLoading="serviceExecutor.IsRequestLoading(nameof(GetToUpdatePost))" />
+	@if (getToUpdatePostResult.IsFailed)
+	{
+		<ResultError Error="getToUpdatePostResult.Error" />
+	}
+
+	@if (getToUpdatePostResult.IsSuccess)
+	{
+		<PostEditForm UpdatePost="getToUpdatePostResult.Entity" />
+	}
+
+	<PostDeleteForm PostId="Id" />
+</Papper>

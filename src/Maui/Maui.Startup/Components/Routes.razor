@@ -1,0 +1,25 @@
+﻿<Router AppAssembly="@typeof(Shared.Components.Program).Assembly" AdditionalAssemblies="assemblies">
+  <Found Context="routeData">
+    <AuthorizeRouteView RouteData="routeData" Resource="routeData" DefaultLayout="typeof(Shared.Components.Layout.MainLayout)">
+      <Authorizing>
+        <p>Authorizing...</p>
+      </Authorizing>
+      <NotAuthorized>
+        <p>Not Authorized Component!</p>
+      </NotAuthorized>
+    </AuthorizeRouteView>
+    <FocusOnNavigate RouteData="routeData" Selector="h1" />
+  </Found>
+  <NotFound>
+    <LayoutView Layout="typeof(Shared.Components.Layout.MainLayout)">
+      <h1>not found component</h1>
+    </LayoutView>
+  </NotFound>
+</Router>
+
+@code {
+  System.Reflection.Assembly[] assemblies = [
+    typeof(Shared.Components.Program).Assembly,
+    typeof(Modules.Blog.Components.Program).Assembly,
+  ];
+}

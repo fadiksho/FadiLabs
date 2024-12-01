@@ -1,0 +1,89 @@
+@page "/admin-lab/roles-permissions"
+@using Modules.Shared.Integration.Authorization
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+@code
+{
+	[Inject]
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	private Result<List<GetRolesWithPermissionsResponse>> getRolesWithPermissionsResult;
+	private Dictionary<string, bool> showRoleDetails = [];
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		getRolesWithPermissionsResult = await ServiceExecutor.ExecuteAsync(nameof(GetRolesWithPermissions), x =>
+		{
+			return x.Send(new GetRolesWithPermissions());
+		}, true);
+	}
+
+	private async Task UpdateRolePermission(GetRolesWithPermissionsResponse role, Permissions permission, bool granted)
+	{
+		if (granted)
+		{
+			role.Permissions |= permission;
+		}
+		else
+		{
+			role.Permissions ^= permission;
+		}
+
+		var setRolePermissionRequet = new SetRolePermissions
+		{
+			RoleId = role.Id,
+			OriginalPermissions = role.OriginalPermissions,
+			UpdatedPermissions = role.Permissions
+		};
+		await ServiceExecutor.ExecuteAsync(nameof(SetRolePermissions), x => x.Send(setRolePermissionRequet));
+	}
+}
+
+<Papper>
+	<LoadingTitle Title="@($"Labs Roles Permissions")"
+								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(GetRolesWithPermissions)))" />
+
+	@if (getRolesWithPermissionsResult.IsFailed)
+	{
+		<ResultError Error="@getRolesWithPermissionsResult.Error" />
+	}
+
+	@if (getRolesWithPermissionsResult.IsSuccess)
+	{
+		<div class="overflow-x-auto scroller">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Permissions</th>
+						@foreach (var role in getRolesWithPermissionsResult.Entity)
+						{
+							<th>@role.Name</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+
+					@foreach (var permission in PermissionPolicyManager.GetAllPermissions())
+					{
+						if (permission == Permissions.None) continue;
+						<tr>
+							<td>@permission</td>
+							@foreach (var role in getRolesWithPermissionsResult.Entity)
+							{
+								<td>
+									<input type="checkbox"
+												 class="checkbox"
+												 disabled="@ServiceExecutor.IsRequestLoading(nameof(SetRolePermissions))"
+												 @onchange="(args) => UpdateRolePermission(role, permission, (bool)args.Value!)"
+												 checked="@role.Permissions.HasFlag(permission)" />
+								</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</Papper>

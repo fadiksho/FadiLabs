@@ -1,0 +1,49 @@
+﻿@code {
+	[Parameter]
+	[EditorRequired]
+	public required GetPostsResponse Post { get; set; }
+
+	[Inject]
+	private NavigationManager Navigation { get; set; } = default!;
+}
+
+<article class="p-2 flex flex-col shadow">
+	<h2 class="text-3xl font-bold leading-8 tracking-tight mb-2">
+		<a class="inline-block text-primary"
+			 href="/blog/@Post.Slug">
+			@Post.Title
+		</a>
+	</h2>
+	<dl class="p-2">
+		<dt class="sr-only">Published on</dt>
+		<dd class="text-base font-medium italic leading-6">
+			<time datetime="@Post.PublishedDate.ToLongDateString()">
+				@Post.PublishedDate.ToString("MMMM dd, yyyy")
+			</time>
+		</dd>
+	</dl>
+
+	<PostListItemTagsView Tags="Post.Tags" Path="blog" />
+
+	<div class="ml-2">
+		@Post.Description
+		<a class="btn btn-ghost text-primary btn-sm mt-2 ms-2 float-right"
+			 href="/blog/@Post.Slug">
+			Read more
+			<svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+				<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+			</svg>
+		</a>
+		<span class="clear-right table"></span>
+	</div>
+	<AuthorizeView>
+		<Authorized>
+			<div class="flex justify-end my-2">
+				<a class="btn btn-primary btn-sm"
+					 href="/blog/edit/@Post.Id">
+					Edit
+				</a>
+			</div>
+		</Authorized>
+	</AuthorizeView>
+</article>

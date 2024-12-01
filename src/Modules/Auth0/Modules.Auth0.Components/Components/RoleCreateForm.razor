@@ -1,0 +1,76 @@
+@code {
+	[Parameter]
+	public EventCallback<CreateRoleResponse> OnRoleCreated { get; set; }
+
+	[Inject]
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	private EditContext? editContext;
+	private CreateRole createRoleRequest = new();
+	private Result<CreateRoleResponse> createRoleResult;
+
+	protected override void OnInitialized()
+	{
+		editContext = new(createRoleRequest);
+	}
+
+	private async Task createRoleHandler()
+	{
+		createRoleResult = await ServiceExecutor.ExecuteAsync(nameof(CreateRole), x =>
+		{
+			return x.Send(createRoleRequest);
+		});
+
+		if (createRoleResult.IsSuccess)
+		{
+			createRoleRequest.ResetToDefault();
+
+			await OnRoleCreated.InvokeAsync(createRoleResult.Entity);
+		}
+	}
+}
+
+<Papper>
+	<LoadingTitle Title="@($"Create new role")"
+								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(CreateRole)))" />
+
+	<EditForm EditContext="editContext"
+						class="flex flex-col gap-2">
+		<FluentValidationValidator ValidatorType=typeof(CreateRoleValidator) />
+
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Name</span>
+			</div>
+
+			<InputTextOnInput @bind-Value="createRoleRequest.Name"
+												placeholder="Type here"
+												class="input input-bordered" />
+
+			<ValidationMessage For="() => createRoleRequest.Name" class="text-red-500 text-sm italic" />
+		</label>
+
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Description</span>
+			</div>
+			<InputTextOnInput @bind-Value="createRoleRequest.Description"
+												placeholder="Type here"
+												class="input input-bordered" />
+
+			<ValidationMessage For="() => createRoleRequest.Description" class="text-red-500 text-sm italic" />
+		</label>
+
+		<div class="flex gap-2 items-center">
+			<SubmitButton OnValidSubmit="createRoleHandler"
+										class="btn btn-primary"
+										disabled="@(ServiceExecutor.IsRequestLoading(nameof(CreateRole)))">
+				Add
+				@if (ServiceExecutor.IsRequestLoading(nameof(CreateRole)))
+				{
+					<span class="ml-2 loading loading-spinner loading-md"></span>
+				}
+			</SubmitButton>
+		</div>
+	</EditForm>
+</Papper>
