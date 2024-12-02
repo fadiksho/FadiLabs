@@ -11,10 +11,8 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - uses: actions/checkout@v4
-  
       - name: Build Web Application
-        uses: ./.github/workflows/build-web.yml
+        uses: fadiksho/FadiLabs/.github/workflows/build-web.yml@main
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
