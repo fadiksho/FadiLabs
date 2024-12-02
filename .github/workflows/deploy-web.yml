@@ -2,17 +2,14 @@ name: Deploy Fadilabs Server
 
 on:
   workflow_dispatch:
-    inputs:
-      build-run-id:
-        description: 'Run ID of the build job'
-        required: true
 
 jobs:
-  call-build-workflow:
-    uses: fadiksho/FadiLabs/.github/workflows/build-web.yml@main
+  build-web:
+    uses: ./.github/workflows/build-web.yml@main
 
-  deploy:
+  deploy-web:
     runs-on: ubuntu-latest
+    needs: build-web
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -23,7 +20,7 @@ jobs:
         with:
           name: fadilabs-web-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ inputs.build-run-id }}
+          run-id: ${{ needs.build-web.outputs.run-id }}
           path: ./artifact/fadilabs-web-artifact
 
       - name: Login to Azure
@@ -38,5 +35,3 @@ jobs:
           app-name: 'fadilabs'
           slot-name: 'Production'
           package: ./artifact/fadilabs-web-artifact
-
-    

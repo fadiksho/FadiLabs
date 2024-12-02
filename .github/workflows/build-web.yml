@@ -2,6 +2,9 @@ name: Build FadiLabs Workflow
 
 on:
   workflow_call:
+    outputs:
+      run-id: ${{ jobs.build.outputs.run-id }}
+        
   workflow_dispatch:
   
 jobs:
