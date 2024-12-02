@@ -1,4 +1,5 @@
 # Fadi Labs
+![Build Status](https://github.com/fadiksho/FadiLabs/actions/workflows/build-web.yml/badge.svg) ![Deploy Status](https://github.com/fadiksho/FadiLabs/actions/workflows/deploy-web.yml/badge.svg)
 
 - Fadi Labs is a software project inspired by the principles of modular architecture but built with an opinionated design tailored to my vision.
 - It serves as both a platform for improving my programming skills and a personal portfolio.

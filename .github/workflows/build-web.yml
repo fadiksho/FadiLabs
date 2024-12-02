@@ -1,0 +1,36 @@
+name: Build FadiLabs Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env: 
+      WEB_PROJECT_PATH: src/Web/Web.Server/Web.Server.csproj
+      WEB_PUBLISH_OUTPUT: ./publish
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.WEB_PROJECT_PATH }}
+
+      - name: Build with dotnet
+        run: dotnet build ${{ env.WEB_PROJECT_PATH }} --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish ${{ env.WEB_PROJECT_PATH }} -c Release -o ${{env.WEB_PUBLISH_OUTPUT}}
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{env.WEB_PUBLISH_OUTPUT}}
+          
