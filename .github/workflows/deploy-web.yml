@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-web:
-    uses: ./.github/workflows/build-web.yml@main
+    uses: ./.github/workflows/build-web.yml
 
   deploy-web:
     runs-on: ubuntu-latest
