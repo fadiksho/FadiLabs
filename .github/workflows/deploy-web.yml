@@ -2,6 +2,10 @@ name: Deploy Fadilabs Server
 
 on:
   workflow_dispatch:
+    inputs:
+      build-run-id:
+        description: 'Run ID of the build job'
+        required: true
 
 jobs:
   call-build-workflow:
@@ -19,6 +23,7 @@ jobs:
         with:
           name: fadilabs-web-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.build-run-id }}
           path: ./artifact/fadilabs-web-artifact
 
       - name: Login to Azure
@@ -33,3 +38,5 @@ jobs:
           app-name: 'fadilabs'
           slot-name: 'Production'
           package: ./artifact/fadilabs-web-artifact
+
+    

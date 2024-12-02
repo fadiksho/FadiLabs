@@ -34,3 +34,6 @@ jobs:
         with:
           name: fadilabs-web-artifact
           path: ${{ env.WEB_PUBLISH_OUTPUT }}
+
+    outputs:
+      run-id: ${{ github.run_id }}
