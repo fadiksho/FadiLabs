@@ -1,7 +1,8 @@
 name: Deploy Fadilabs Server
 
 on:
-  workflow_dispatch:
+  repository_dispatch: 
+    types: [deploy]
 
 jobs:
   deploy:
@@ -16,6 +17,7 @@ jobs:
         with:
           name: .net-app
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.client_payload.run_id }}
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -29,4 +31,5 @@ jobs:
           app-name: 'fadilabs'
           slot-name: 'Production'
           package: ${{ github.workspace }}/.net-app
+
           
