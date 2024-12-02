@@ -1,4 +1,4 @@
-name: Reusable Build Workflow
+name: Build FadiLabs Workflow
 
 on:
   workflow_call:

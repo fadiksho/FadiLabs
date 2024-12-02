@@ -11,6 +11,8 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - uses: actions/checkout@v4
+  
       - name: Build Web Application
         uses: ./.github/workflows/build-web.yml
 
