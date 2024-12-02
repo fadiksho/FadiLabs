@@ -7,6 +7,7 @@ using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
 using Shared.Features.Services;
 using Shared.Features.Services.Implementaions;
+using Shared.Integration.Configuration;
 using Shared.Integration.Services;
 using Web.Server.Services;
 
@@ -68,6 +69,7 @@ public static class ServiceCollectionExtensions
 	{
 		services.Configure<PersistenceConfiguration>(config.GetSection(PersistenceConfiguration.SectionName));
 		services.Configure<DevTunnelConfiguration>(config.GetSection(DevTunnelConfiguration.SectionName));
+		services.Configure<TestConfiguration>(config.GetSection(TestConfiguration.SectionName));
 		return services;
 	}
 }
