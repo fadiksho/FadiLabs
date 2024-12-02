@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env: 
+      WEB_PROJECT_PATH: src/Web/Web.Server/Web.Server.csproj
+      WEB_PUBLISH_OUTPUT: ./publish
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,17 +25,20 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.WEB_PROJECT_PATH }}
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ${{ env.WEB_PROJECT_PATH }} --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ${{ env.WEB_PROJECT_PATH }} -c Release -o ${{env.WEB_PUBLISH_OUTPUT}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.WEB_PUBLISH_OUTPUT}}
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,8 +46,6 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -51,9 +56,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C89938CEF4994A6B95EC94707500A03F }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BE206207744A4EDBA2C68CB082AB627D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1DFAD29EF60F4196A454004766206870 }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -61,5 +64,5 @@ jobs:
         with:
           app-name: 'fadilabs'
           slot-name: 'Production'
-          package: .
+          package: ${{ github.workspace }}/publish
           
