@@ -16,6 +16,7 @@ jobs:
         with:
           name: .net-app
           path: ${{ github.workspace }}/publish
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Azure
         uses: azure/login@v2
