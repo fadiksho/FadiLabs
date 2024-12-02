@@ -1,8 +1,7 @@
 name: Deploy Fadilabs Server
 
 on:
-  repository_dispatch: 
-    types: [deploy]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,9 +14,9 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
+          name: fadilabs-web-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.client_payload.run_id }}
+          run-id: 12126493109
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -30,6 +29,4 @@ jobs:
         with:
           app-name: 'fadilabs'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/.net-app
-
-          
+          package: ${{ github.workspace }}/fadilabs-web-artifact
