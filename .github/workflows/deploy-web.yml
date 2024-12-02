@@ -16,6 +16,7 @@ jobs:
         with:
           name: fadilabs-web-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./artifact/fadilabs-web-artifact
           run-id: 12126493109
 
       - name: Login to Azure
@@ -29,4 +30,4 @@ jobs:
         with:
           app-name: 'fadilabs'
           slot-name: 'Production'
-          package: ${{ github.workspace }}/fadilabs-web-artifact
+          package: ./artifact/fadilabs-web-artifact
