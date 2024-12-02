@@ -11,9 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
-	.AddServerServices(builder.Configuration)
-	.AddAuth0ModuleServices(builder.Configuration)
-	.AddBlogModuleServices(builder.Configuration);
+	.AddServerServices(builder.Configuration, builder.Environment)
+	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
+	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

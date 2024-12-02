@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ namespace Modules.Blog.Features;
 
 public static class Program
 {
-	public static IServiceCollection AddBlogModuleServices(this IServiceCollection services, IConfiguration config)
+	public static IServiceCollection AddBlogModuleServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
 	{
 		services.AddBlogModuleComponentsServices(config);
 

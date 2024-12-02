@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +29,7 @@ namespace Modules.Auth0.Features;
 
 public static class Program
 {
-	public static IServiceCollection AddAuth0ModuleServices(this IServiceCollection services, IConfiguration config)
+	public static IServiceCollection AddAuth0ModuleServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
 	{
 		services.AddAuth0ModuleComponentsServices(config);
 

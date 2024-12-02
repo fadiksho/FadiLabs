@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure.Identity;
+using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Components;
 using Shared.Components.Services;
@@ -14,8 +15,15 @@ namespace Web.Server.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-	public static IServiceCollection AddServerServices(this IServiceCollection services, IConfiguration config)
+	public static IServiceCollection AddServerServices(this IServiceCollection services, IConfigurationManager config, IWebHostEnvironment env)
 	{
+		if (env.IsProduction())
+		{
+			config.AddAzureKeyVault(
+					new Uri($"https://{config["KeyVaultName"]}.vault.azure.net/"),
+					new DefaultAzureCredential());
+		}
+
 		services.AddRazorComponents()
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
