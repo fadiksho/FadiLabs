@@ -41,7 +41,7 @@ jobs:
           dotnet ef migrations script -i -c BlogContext -p ${{ env.WEB_PROJECT_PATH }} -o ./MigrationsScripts/BlogContext.sql
 
       - name: Upload migration scripts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: fadilabs-web-migration-artifact
           path: ./MigrationsScripts

@@ -29,7 +29,7 @@ jobs:
           name: fadilabs-web-migration-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ needs.build-web.outputs.run-id }}
-          path: './artifact/fadilabs-web-migration-artifact'
+          path: ./artifact/fadilabs-web-migration-artifact
 
       - name: Login to Azure
         uses: azure/login@v2
