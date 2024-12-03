@@ -1,5 +1,6 @@
 ﻿using Modules.Auth0.Features;
 using Modules.Auth0.Features.Server;
+using Modules.Authorization.Features;
 using Modules.Blog.Features;
 using Shared.Features;
 using Web.Server.Endpoints;
@@ -13,6 +14,7 @@ builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
+	.AddAuthorizationModuleServices(builder.Configuration, builder.Environment)
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
@@ -44,6 +46,7 @@ app.MapBlazorApp()
 	 .MapSharedModulePages()
 	 .MapAuth0ModulePages()
 	 .MapOAuthModuleServerPages()
+	 .MapAuthorizationModulePages()
 	 .MapBlogModulePages();
 
 app

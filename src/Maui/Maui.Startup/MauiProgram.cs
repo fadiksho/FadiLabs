@@ -1,5 +1,7 @@
 ﻿using Maui.Startup.Extensions;
 using Microsoft.Extensions.Logging;
+using Modules.Auth0.Components;
+using Modules.Authorization.Components;
 using Modules.Blog.Components;
 using Shared.Components;
 using Shared.Components.Services;
@@ -26,6 +28,8 @@ public static class MauiProgram
 #endif
 
 		builder.Services.AddSharedComponentsServices(builder.Configuration)
+			.AddAuth0ModuleComponentsServices(builder.Configuration)
+			.AddAuthorizationModuleComponentsServices(builder.Configuration)
 			.AddBlogModuleComponentsServices(builder.Configuration);
 
 		builder.Services.AddMauiConfiguration(builder.Configuration);

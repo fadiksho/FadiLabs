@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Authorization.Integ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Authorization.Features", "src\Modules\Authorization\Modules.Authorization.Features\Modules.Authorization.Features.csproj", "{0A9D4FA7-C9F2-4641-9FEE-FD6F954C5273}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Authorization.Components", "src\Modules\Authorization\Modules.Authorization.Components\Modules.Authorization.Components.csproj", "{3649342D-084B-4A55-8E78-8DAEFB3E785D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{0A9D4FA7-C9F2-4641-9FEE-FD6F954C5273}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A9D4FA7-C9F2-4641-9FEE-FD6F954C5273}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A9D4FA7-C9F2-4641-9FEE-FD6F954C5273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3649342D-084B-4A55-8E78-8DAEFB3E785D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3649342D-084B-4A55-8E78-8DAEFB3E785D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3649342D-084B-4A55-8E78-8DAEFB3E785D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3649342D-084B-4A55-8E78-8DAEFB3E785D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +192,7 @@ Global
 		{FD4E9260-D821-4A5C-9F1F-18E87986A293} = {8E30ADAB-3048-4C5B-BD48-BE2386644331}
 		{613CB18A-53AA-4C0E-AD38-F0417CDD6AC8} = {FD4E9260-D821-4A5C-9F1F-18E87986A293}
 		{0A9D4FA7-C9F2-4641-9FEE-FD6F954C5273} = {FD4E9260-D821-4A5C-9F1F-18E87986A293}
+		{3649342D-084B-4A55-8E78-8DAEFB3E785D} = {FD4E9260-D821-4A5C-9F1F-18E87986A293}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3494FA6-8791-4182-A2E5-B3454D9A8ECA}
