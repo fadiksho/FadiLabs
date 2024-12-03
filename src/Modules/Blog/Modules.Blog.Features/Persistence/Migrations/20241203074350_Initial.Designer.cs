@@ -12,7 +12,7 @@ using Modules.Blog.Features.Persistence;
 namespace Modules.Blog.Features.Persistence.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20241201033929_Initial")]
+    [Migration("20241203074350_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
