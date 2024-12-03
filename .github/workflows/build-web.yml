@@ -29,10 +29,10 @@ jobs:
         run: dotnet restore ${{ env.WEB_PROJECT_PATH }}
 
       - name: Build with dotnet
-        run: dotnet build ${{ env.WEB_PROJECT_PATH }} --configuration Release
+        run: dotnet build ${{ env.WEB_PROJECT_PATH }} --no-restore --configuration Release
 
       - name: Publish Artifact
-        run: dotnet publish ${{ env.WEB_PROJECT_PATH }} -c Release -o ${{ env.WEB_PUBLISH_OUTPUT }}
+        run: dotnet publish ${{ env.WEB_PROJECT_PATH }} --no-restore -c Release -o ${{ env.WEB_PUBLISH_OUTPUT }}
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4

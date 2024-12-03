@@ -4,15 +4,9 @@ using Modules.Shared.Integration.Authorization;
 
 namespace Modules.Authorization.Integration.Authorization;
 
-public class LabAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
+public class LabAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) : DefaultAuthorizationPolicyProvider(options)
 {
-	private readonly AuthorizationOptions _options;
-
-	public LabAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
-			: base(options)
-	{
-		_options = options.Value;
-	}
+	private readonly AuthorizationOptions _options = options.Value;
 
 	public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
 	{

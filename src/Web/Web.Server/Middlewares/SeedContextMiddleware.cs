@@ -5,7 +5,6 @@ namespace Web.Server.Middlewares;
 public class SeedContextMiddleware
 {
 	private readonly RequestDelegate _next;
-	private IEnumerable<IContextSeed> _contextsSeed;
 	private bool _alreadyRan = false;
 	public SeedContextMiddleware(
 		RequestDelegate next)
@@ -18,9 +17,8 @@ public class SeedContextMiddleware
 		if (!_alreadyRan)
 		{
 			_alreadyRan = true;
-			_contextsSeed = contextSeeds;
 
-			foreach (var seedContext in _contextsSeed)
+			foreach (var seedContext in contextSeeds)
 			{
 				await seedContext.SeedAsync();
 			}

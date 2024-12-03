@@ -8,10 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
+		<ProjectReference Include="..\Modules.Authorization.Components\Modules.Authorization.Components.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

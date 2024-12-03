@@ -85,6 +85,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Modules\Auth0\Modules.Auth0.Components\Modules.Auth0.Components.csproj" />
+		<ProjectReference Include="..\..\Modules\Authorization\Modules.Authorization.Components\Modules.Authorization.Components.csproj" />
 		<ProjectReference Include="..\..\Modules\Blog\Modules.Blog.Components\Modules.Blog.Components.csproj" />
 		<ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
 	</ItemGroup>

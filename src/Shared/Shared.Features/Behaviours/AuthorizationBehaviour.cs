@@ -1,7 +1,6 @@
 ﻿using Fadi.Result.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using Modules.Authorization.Integration.Authorization;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
@@ -11,7 +10,6 @@ using System.Reflection;
 namespace Shared.Features.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse>(
-	ILogger<AuthorizationBehaviour<TRequest, TResponse>> logger,
 	ICurrentUser currentUser,
 	IAuthorizationService authorizationService) : IPipelineBehavior<TRequest, TResponse>
 		where TRequest : notnull, IRequest<TResponse>
