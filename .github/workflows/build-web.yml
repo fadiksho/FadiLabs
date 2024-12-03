@@ -30,6 +30,11 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build ${{ env.WEB_PROJECT_PATH }} --no-restore --configuration Release
+
+      - name: Install EF Tool
+        run: |
+          dotnet tool install dotnet-ef
+
       - name: Generate migration scripts
         run: |
           dotnet ef migrations script -i -c UserContext -p src/Modules/User/Modules.User.Features -o ./MigrationsScripts/UserContext.sql
