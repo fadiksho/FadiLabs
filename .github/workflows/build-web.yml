@@ -37,8 +37,8 @@ jobs:
 
       - name: Generate migration scripts
         run: |
-          dotnet ef migrations script -i -c UserContext -p src/Modules/User/Modules.User.Features -o ./MigrationsScripts/UserContext.sql
-          dotnet ef migrations script -i -c BlogContext -p src/Modules/Blog/Modules.Blog.Features -o ./MigrationsScripts/BlogContext.sql
+          dotnet ef migrations script -i -c UserContext -p ${{ env.WEB_PROJECT_PATH }} -o ./MigrationsScripts/UserContext.sql
+          dotnet ef migrations script -i -c BlogContext -p ${{ env.WEB_PROJECT_PATH }} -o ./MigrationsScripts/BlogContext.sql
 
       - name: Upload migration scripts
         uses: actions/upload-artifact@v3
