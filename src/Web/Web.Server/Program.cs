@@ -2,6 +2,7 @@
 using Modules.Auth0.Features.Server;
 using Modules.Authorization.Features;
 using Modules.Blog.Features;
+using Modules.User.Features;
 using Shared.Features;
 using Web.Server.Endpoints;
 using Web.Server.Extensions;
@@ -15,6 +16,7 @@ builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
 	.AddAuthorizationModuleServices(builder.Configuration, builder.Environment)
+	.AddUserModuleServices(builder.Configuration, builder.Environment)
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
@@ -47,6 +49,7 @@ app.MapBlazorApp()
 	 .MapAuth0ModulePages()
 	 .MapOAuthModuleServerPages()
 	 .MapAuthorizationModulePages()
+	 .MapUserModulePages()
 	 .MapBlogModulePages();
 
 app

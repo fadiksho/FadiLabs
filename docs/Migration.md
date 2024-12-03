@@ -11,4 +11,5 @@
 Migration can be automatically applied by a middleware at runtime by executing the request at /dev-migration
 
 ### Generating mirgration scripts
-dotnet ef migrations script -i -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o Persistence/MigrationsScripts
+dotnet ef migrations script -i -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o ./Migrations/BlogContext.sql
+dotnet ef migrations script -i -c UserContext -p ../../Modules/User/Modules.User.Features -o ./Migrations/UserContext.sql

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Blog.Components;
@@ -27,10 +26,10 @@ public static class Program
 		services.AddDbContext<BlogContext>(options =>
 		{
 			options.UseSqlServer(_persistenceOptions.ConnectionString);
-			options.ConfigureWarnings(warningsConfig =>
-			{
-				warningsConfig.Ignore(RelationalEventId.PendingModelChangesWarning);
-			});
+			//options.ConfigureWarnings(warningsConfig =>
+			//{
+			//	warningsConfig.Ignore(RelationalEventId.PendingModelChangesWarning);
+			//});
 		});
 
 		services.AddTransient<IBlogContext, BlogContext>();
