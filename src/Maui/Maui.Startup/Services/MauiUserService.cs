@@ -21,18 +21,18 @@ public class MauiUserService
 	}
 
 	public event Action<ClaimsPrincipal>? UserChanged;
-	private ClaimsPrincipal? currentUser;
+	private ClaimsPrincipal? _currentUser;
 
 	public ClaimsPrincipal CurrentUser
 	{
-		get { return currentUser ?? new(); }
+		get { return _currentUser ?? new(); }
 		set
 		{
-			currentUser = value;
+			_currentUser = value;
 
 			if (UserChanged is not null)
 			{
-				UserChanged(currentUser);
+				UserChanged(_currentUser);
 			}
 		}
 	}

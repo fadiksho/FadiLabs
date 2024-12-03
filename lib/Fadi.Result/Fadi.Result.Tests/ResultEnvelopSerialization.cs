@@ -10,7 +10,7 @@ public static class ResultEnvelopSerialization
 	record ModelTestRequest() : IRequest<Result<ModelTestResponse>>;
 	record ModelTestResponse();
 
-	static IEnvelopMessageHandler EnvelopMessageHandler
+	readonly static IEnvelopMessageHandler _envelopMessageHandler
 		= new DefaultEnvelopMessageHandler([new DefaultResultErrorPolymorphicResolver()]);
 	public class TestWrapUnwrap
 	{
@@ -21,9 +21,9 @@ public static class ResultEnvelopSerialization
 			var errorResult = new ValidationErrorResult([validationError]);
 			var unsuccessful = Result<ModelTestResponse>.FromError(errorResult);
 
-			var wrap = EnvelopMessageHandler.Wrap(unsuccessful);
+			var wrap = _envelopMessageHandler.Wrap(unsuccessful);
 
-			var unWrapBody = EnvelopMessageHandler.UnwrapBody<Result<ModelTestResponse>>(wrap);
+			var unWrapBody = _envelopMessageHandler.UnwrapBody<Result<ModelTestResponse>>(wrap);
 
 			Assert.That(wrap, Is.Not.Null);
 			Assert.That(unWrapBody.Error, Is.InstanceOf<ValidationErrorResult>());
@@ -35,9 +35,9 @@ public static class ResultEnvelopSerialization
 			var error = new GenericError("Dummy message");
 			var unsuccessful = Result<ModelTestResponse>.FromError(error);
 
-			var wrap = EnvelopMessageHandler.Wrap(unsuccessful);
+			var wrap = _envelopMessageHandler.Wrap(unsuccessful);
 
-			var unWrapBody = EnvelopMessageHandler.UnwrapBody<Result<ModelTestResponse>>(wrap);
+			var unWrapBody = _envelopMessageHandler.UnwrapBody<Result<ModelTestResponse>>(wrap);
 
 			Assert.That(wrap, Is.Not.Null);
 			Assert.That(unWrapBody.Error, Is.InstanceOf<GenericError>());

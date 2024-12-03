@@ -2,19 +2,19 @@
 @rendermode InteractiveAuto
 @attribute [LabAuthorize(Permissions.BlogOwner)]
 
-<PageTitle>Edit @getToUpdatePostResult.Entity?.Title</PageTitle>
+<PageTitle>Edit @_getToUpdatePostResult.Entity?.Title</PageTitle>
 
 <Papper>
-	<LoadingTitle Title="@($"Edit: {getToUpdatePostResult.Entity?.Title}")"
+	<LoadingTitle Title="@($"Edit: {_getToUpdatePostResult.Entity?.Title}")"
 								IsLoading="serviceExecutor.IsRequestLoading(nameof(GetToUpdatePost))" />
-	@if (getToUpdatePostResult.IsFailed)
+	@if (_getToUpdatePostResult.IsFailed)
 	{
-		<ResultError Error="getToUpdatePostResult.Error" />
+		<ResultError Error="_getToUpdatePostResult.Error" />
 	}
 
-	@if (getToUpdatePostResult.IsSuccess)
+	@if (_getToUpdatePostResult.IsSuccess)
 	{
-		<PostEditForm UpdatePost="getToUpdatePostResult.Entity" />
+		<PostEditForm UpdatePost="_getToUpdatePostResult.Entity" />
 	}
 
 	<PostDeleteForm PostId="Id" />

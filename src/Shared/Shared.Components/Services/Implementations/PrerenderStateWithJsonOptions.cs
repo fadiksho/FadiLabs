@@ -11,7 +11,7 @@ public class PrerenderStateWithJsonOptions : IPrerenderState, IDisposable
 	private readonly PersistingComponentStateSubscription? _subscription;
 	private readonly PersistentComponentState? _persistentComponentState;
 	private readonly JsonSerializerOptions _jsonSerializerOptions;
-	private readonly ConcurrentDictionary<string, object?> values = new();
+	private readonly ConcurrentDictionary<string, object?> _values = new();
 
 	public PrerenderStateWithJsonOptions(IEnvelopMessageHandler envelopMessageHandler, PersistentComponentState? persistentComponentState = null)
 	{
@@ -40,13 +40,13 @@ public class PrerenderStateWithJsonOptions : IPrerenderState, IDisposable
 
 	void Persist<T>(string key, T value)
 	{
-		values.TryRemove(key, out object? _);
-		values.TryAdd(key, value);
+		_values.TryRemove(key, out object? _);
+		_values.TryAdd(key, value);
 	}
 
 	Task PersistAsJson()
 	{
-		foreach (var item in values)
+		foreach (var item in _values)
 		{
 			var valueAsJson = JsonSerializer.Serialize(item.Value, _jsonSerializerOptions);
 			var objectWrapper = new ObjectWrapper

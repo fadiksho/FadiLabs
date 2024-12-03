@@ -9,7 +9,7 @@ internal class SetRolePermisssionsHandler
 	(Auth0Api.IManagementApiClient managementApiClient,
 	IOptions<Auth0Configuration> options) : IRequestHandler<SetRolePermissions, Result>
 {
-	private readonly Auth0Configuration auth0Config = options.Value;
+	private readonly Auth0Configuration _auth0Config = options.Value;
 	public async Task<Result> Handle(SetRolePermissions request, CancellationToken cancellationToken)
 	{
 		var addedPermissions = request.UpdatedPermissions & ~request.OriginalPermissions;
@@ -31,7 +31,7 @@ internal class SetRolePermisssionsHandler
 			{
 				assignPermissionsRequest.Permissions.Add(new Auth0Api.Models.PermissionIdentity
 				{
-					Identifier = auth0Config.Audience,
+					Identifier = _auth0Config.Audience,
 					Name = ((int)permission).ToString()
 				});
 			}
@@ -39,7 +39,7 @@ internal class SetRolePermisssionsHandler
 			{
 				removedPermissionsRequest.Permissions.Add(new Auth0Api.Models.PermissionIdentity
 				{
-					Identifier = auth0Config.Audience,
+					Identifier = _auth0Config.Audience,
 					Name = ((int)permission).ToString()
 				});
 			}

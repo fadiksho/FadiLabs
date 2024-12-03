@@ -1,21 +1,21 @@
 @page "/blog/{slug}"
 @attribute [StreamRendering]
 
-<PageTitle>@result.Entity?.Title</PageTitle>
+<PageTitle>@_result.Entity?.Title</PageTitle>
 
-<NavBarLoading Show="!result.IsDefined" />
+<NavBarLoading Show="!_result.IsDefined" />
 
-@if (!result.IsDefined)
+@if (!_result.IsDefined)
 {
 	<div class="flex flex-col items-end">
 		<div class="skeleton h-8 w-36"></div>
 	</div>
 }
-else if(!result.IsSuccess)
+else if(!_result.IsSuccess)
 {
-	<ResultError Error="result.Error"/>
+	<ResultError Error="_result.Error"/>
 }
 else
 {
-	<PostView Post="result.Entity" />
+	<PostView Post="_result.Entity" />
 }

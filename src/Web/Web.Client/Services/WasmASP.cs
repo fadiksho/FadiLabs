@@ -7,10 +7,10 @@ namespace Web.Client.Services;
 
 public class WasmASP : AuthenticationStateProvider
 {
-	private static readonly Task<AuthenticationState> defaultUnauthenticatedTask =
+	private static readonly Task<AuthenticationState> _defaultUnauthenticatedTask =
 				Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
 
-	private readonly Task<AuthenticationState> _authenticationStateTask = defaultUnauthenticatedTask;
+	private readonly Task<AuthenticationState> _authenticationStateTask = _defaultUnauthenticatedTask;
 
 	public WasmASP(PersistentComponentState state)
 	{
