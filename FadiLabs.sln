@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
@@ -70,11 +71,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Authorization.Featu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Authorization.Components", "src\Modules\Authorization\Modules.Authorization.Components\Modules.Authorization.Components.csproj", "{3649342D-084B-4A55-8E78-8DAEFB3E785D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C13DB4C-4524-42B9-9C90-7F2C68AC174C}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "User", "User", "{0FFCC017-01CE-4045-8D87-C0DBAF6CF3D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.User.Integration", "src\Modules\User\Modules.User.Integration\Modules.User.Integration.csproj", "{47BE656A-41F7-4FEF-9F26-2A3181468D64}"
@@ -82,6 +78,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.User.Features", "src\Modules\User\Modules.User.Features\Modules.User.Features.csproj", "{C11938F5-7D77-42D8-9617-E2E03F0CBDB1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.User.Components", "src\Modules\User\Modules.User.Components\Modules.User.Components.csproj", "{946E3896-FC4C-483B-BEF1-3ECF56CE29FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F9F93D8-A370-4640-B7C4-3F9360301287}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
