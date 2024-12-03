@@ -8,7 +8,7 @@ public class PrerenderState : IPrerenderState, IDisposable
 {
 	private readonly PersistingComponentStateSubscription? _subscription;
 	private readonly PersistentComponentState? _persistentComponentState;
-	private readonly ConcurrentDictionary<string, object?> values = new();
+	private readonly ConcurrentDictionary<string, object?> _values = new();
 
 	public PrerenderState(PersistentComponentState? persistentComponentState = null)
 	{
@@ -31,13 +31,13 @@ public class PrerenderState : IPrerenderState, IDisposable
 
 	void Persist<T>(string key, T value)
 	{
-		values.TryRemove(key, out object? _);
-		values.TryAdd(key, value);
+		_values.TryRemove(key, out object? _);
+		_values.TryAdd(key, value);
 	}
 
 	Task PersistAsJson()
 	{
-		foreach (var item in values)
+		foreach (var item in _values)
 		{
 			_persistentComponentState?.PersistAsJson(item.Key, item.Value);
 		}

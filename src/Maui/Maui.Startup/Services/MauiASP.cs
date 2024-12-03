@@ -4,21 +4,21 @@ namespace Maui.Startup.Services;
 
 public class MauiASP : AuthenticationStateProvider
 {
-	private AuthenticationState currentUser;
+	private AuthenticationState _currentUser;
 
-	private readonly MauiUserService authService;
+	private readonly MauiUserService _authService;
 	public MauiASP(MauiUserService mauiUserService)
 	{
-		authService = mauiUserService;
-		currentUser = new AuthenticationState(authService.CurrentUser);
+		_authService = mauiUserService;
+		_currentUser = new AuthenticationState(_authService.CurrentUser);
 
-		authService.UserChanged += (newUser) =>
+		_authService.UserChanged += (newUser) =>
 		{
-			currentUser = new AuthenticationState(newUser);
-			NotifyAuthenticationStateChanged(Task.FromResult(currentUser));
+			_currentUser = new AuthenticationState(newUser);
+			NotifyAuthenticationStateChanged(Task.FromResult(_currentUser));
 		};
 	}
 
 	public override Task<AuthenticationState> GetAuthenticationStateAsync() =>
-				Task.FromResult(currentUser);
+				Task.FromResult(_currentUser);
 }

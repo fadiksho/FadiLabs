@@ -8,7 +8,7 @@ internal class SyncPermissionsHandler
 	(Auth0Api.IManagementApiClient managementApiClient,
 	IOptions<Auth0Configuration> options) : IRequestHandler<SyncPermissions, Result>
 {
-	private readonly Auth0Configuration auth0Config = options.Value;
+	private readonly Auth0Configuration _auth0Config = options.Value;
 	public async Task<Result> Handle(SyncPermissions request, CancellationToken cancellationToken)
 	{
 		var updatePermissionRequest = new Auth0Api.Models.ResourceServerUpdateRequest
@@ -22,7 +22,7 @@ internal class SyncPermissionsHandler
 		};
 
 		await managementApiClient.ResourceServers
-			.UpdateAsync(auth0Config.Audience, updatePermissionRequest, cancellationToken);
+			.UpdateAsync(_auth0Config.Audience, updatePermissionRequest, cancellationToken);
 
 		return Result.FromSuccess("Permissions Synced.");
 	}

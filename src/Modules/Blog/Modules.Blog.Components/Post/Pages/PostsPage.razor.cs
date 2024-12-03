@@ -20,7 +20,7 @@ public partial class PostsPage(IUIBus bus, NavigationManager navigation)
 	[SupplyParameterFromQuery(Name = "q")]
 	public string SearchQuery { get; set; } = string.Empty;
 
-	private Result<PagedList<GetPostsResponse>> result = new();
+	private Result<PagedList<GetPostsResponse>> _result = new();
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -30,7 +30,7 @@ public partial class PostsPage(IUIBus bus, NavigationManager navigation)
 			Page = 1;
 		}
 
-		result = await bus.Send(new GetPosts
+		_result = await bus.Send(new GetPosts
 		{
 			PageNumber = Page,
 			Tag = Tag,

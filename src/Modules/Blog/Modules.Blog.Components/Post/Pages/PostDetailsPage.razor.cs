@@ -9,7 +9,7 @@ public partial class PostDetailsPage(IUIBus bus)
 	[Parameter]
 	public string? Slug { get; set; }
 
-	private Result<GetPostBySlugResponse> result;
+	private Result<GetPostBySlugResponse> _result;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -18,6 +18,6 @@ public partial class PostDetailsPage(IUIBus bus)
 			throw new ArgumentNullException(nameof(Slug));
 		}
 
-		result = await bus.Send(new GetPostBySlug(Slug));
+		_result = await bus.Send(new GetPostBySlug(Slug));
 	}
 }

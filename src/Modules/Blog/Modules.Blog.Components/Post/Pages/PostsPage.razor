@@ -5,7 +5,7 @@
 
 <PageTitle>Latest Post</PageTitle>
 
-<NavBarLoading Show="!result.IsDefined" />
+<NavBarLoading Show="!_result.IsDefined" />
 
 <div class="flex flex-col">
 	<div class="flex flex-col gap-4">
@@ -52,20 +52,20 @@
 			</div>
 		}
 		
-		@if (!result.IsDefined)
+		@if (!_result.IsDefined)
 		{
 			<div class="flex flex-col items-end">
 				<div class="skeleton h-8 w-36"></div>
 			</div>
 			<PostListItemSkeleton Count="5" />
 		}
-		else if (result.IsSuccess == false)
+		else if (_result.IsSuccess == false)
 		{
-			<ResultError Error="result.Error" />
+			<ResultError Error="_result.Error" />
 		}
 		else
 		{
-			@if (result.Entity.TotalCount == 0)
+			@if (_result.Entity.TotalCount == 0)
 			{
 				<div class="bg-base-200 p-4 flex flex-col shadow">
 					<h1 class="text-xl tracking-tight">
@@ -75,14 +75,14 @@
 			}
 			else
 			{
-				<PagedListResult PagedList="result.Entity" />
+				<PagedListResult PagedList="_result.Entity" />
 
-				@foreach (var post in result.Entity.Items)
+				@foreach (var post in _result.Entity.Items)
 				{
 					<PostListItemView Post="post" />
 				}
 
-				<PagedListResult PagedList="result.Entity" />
+				<PagedListResult PagedList="_result.Entity" />
 			}
 		}
 	</div>

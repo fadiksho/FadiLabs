@@ -7,7 +7,7 @@ internal class SetPermissionsHandler
 	(Auth0Api.IManagementApiClient managementApiClient,
 	IOptions<Auth0Configuration> options) : IRequestHandler<SetPermission, Result>
 {
-	private readonly Auth0Configuration auth0Config = options.Value;
+	private readonly Auth0Configuration _auth0Config = options.Value;
 
 	public async Task<Result> Handle(SetPermission request, CancellationToken cancellationToken)
 	{
@@ -21,7 +21,7 @@ internal class SetPermissionsHandler
 		};
 
 		await managementApiClient.ResourceServers
-			.UpdateAsync(auth0Config.Audience, updatePermissionRequest, cancellationToken);
+			.UpdateAsync(_auth0Config.Audience, updatePermissionRequest, cancellationToken);
 
 		return Result.FromSuccess("Permission Updated");
 	}

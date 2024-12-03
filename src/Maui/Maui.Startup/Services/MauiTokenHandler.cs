@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 
 namespace Maui.Startup.Services;
-public class TokenHandler(
-	MauiUserService userService,
-	ILogger<TokenHandler> logger) : DelegatingHandler
+public class TokenHandler
+	(MauiUserService userService) : DelegatingHandler
 {
 	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{

@@ -8,191 +8,192 @@ namespace Fadi.Result.Tests;
 
 public static class ResultSerializations
 {
-  static JsonSerializerOptions JsonOptions = new()
-  {
-    TypeInfoResolver = new DefaultJsonTypeInfoResolver
-    {
-      Modifiers =
-      {
-        new DefaultResultErrorPolymorphicResolver().ResolveDerivedType,
-      }
-    },
-    IncludeFields = true,
-  };
+	static JsonSerializerOptions _jsonOptions = new()
+	{
+		TypeInfoResolver = new DefaultJsonTypeInfoResolver
+		{
+			Modifiers =
+			{
+				new DefaultResultErrorPolymorphicResolver().ResolveDerivedType,
+			}
+		},
+		IncludeFields = true,
+	};
 
-  record ModelTest(string Message);
+	record ModelTest(string Message);
 
-  public class IsSuccess
-  {
-    [Test]
-    public void ReturnsTrueForSuccessfulResult()
-    {
-      var successful = Result.FromSuccess("Dummy message");
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+	public class IsSuccess
+	{
+		[Test]
+		public void ReturnsTrueForSuccessfulResult()
+		{
+			var successful = Result.FromSuccess("Dummy message");
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result>(serializedData);
+			var response = JsonSerializer.Deserialize<Result>(serializedData);
 
-      Assert.That(response.IsSuccess, Is.True);
-    }
+			Assert.That(response.IsSuccess, Is.True);
+		}
 
-    [Test]
-    public void ReturnsTrueForSuccessfulGenericResult()
-    {
-      var successful = Result<ModelTest>.FromSuccess(new ModelTest("Dummy value"));
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+		[Test]
+		public void ReturnsTrueForSuccessfulGenericResult()
+		{
+			var successful = Result<ModelTest>.FromSuccess(new ModelTest("Dummy value"));
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData);
 
-      Assert.That(response.IsSuccess, Is.True);
-    }
+			Assert.That(response.IsSuccess, Is.True);
+		}
 
-    [Test]
-    public void ReturnsFalseForUnsuccessfulResult()
-    {
-      var unsuccessful = Result.FromError(new NotFoundError("Dummy message"));
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, JsonOptions));
+		[Test]
+		public void ReturnsFalseForUnsuccessfulResult()
+		{
+			var unsuccessful = Result.FromError(new NotFoundError("Dummy message"));
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, _jsonOptions));
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, JsonOptions);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, _jsonOptions);
 
-      Assert.That(response.IsSuccess, Is.False);
-    }
+			Assert.That(response.IsSuccess, Is.False);
+		}
 
-    [Test]
-    public void ReturnsFalseForUnsuccessfulGenericResult()
-    {
-      var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, JsonOptions));
+		[Test]
+		public void ReturnsFalseForUnsuccessfulGenericResult()
+		{
+			var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, _jsonOptions));
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, JsonOptions);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, _jsonOptions);
 
-      Assert.That(response.IsSuccess, Is.False);
-    }
-  }
+			Assert.That(response.IsSuccess, Is.False);
+		}
+	}
 
-  public class SuccessMessage
-  {
-    [Test]
-    public void NotEmptyOnDeserializingResult()
-    {
-      var successful = Result.FromSuccess("Dummy message");
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+	public class SuccessMessage
+	{
+		[Test]
+		public void NotEmptyOnDeserializingResult()
+		{
+			var successful = Result.FromSuccess("Dummy message");
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result>(serializedData);
+			var response = JsonSerializer.Deserialize<Result>(serializedData);
 
-      Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
-    }
+			Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
+		}
 
-    [Test]
-    public void NotEmptyOnDeserializingEntityResult()
-    {
-      var successful = Result.FromSuccess("Dummy message");
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+		[Test]
+		public void NotEmptyOnDeserializingEntityResult()
+		{
+			var successful = Result.FromSuccess("Dummy message");
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
-      Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
-    }
+			var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
+			Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
+		}
 
-    [Test]
-    public void EmptyOnDeserializingEntityResultUsingFromSuccess()
-    {
-      var successful = Result<Guid>.FromSuccess(Guid.NewGuid());
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+		[Test]
+		public void EmptyOnDeserializingEntityResultUsingFromSuccess()
+		{
+			var successful = Result<Guid>.FromSuccess(Guid.NewGuid());
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
-      Assert.That(response.SuccessMessage, Is.Null);
-    }
+			var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
+			Assert.That(response.SuccessMessage, Is.Null);
+		}
 
-    [Test]
-    public void NotEmptyOnDeserializingEntityResultUsingFromSuccessWithMessage()
-    {
-      var successful = Result<Guid>.FromSuccessWithMessage(Guid.NewGuid(), "Dummy message");
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
+		[Test]
+		public void NotEmptyOnDeserializingEntityResultUsingFromSuccessWithMessage()
+		{
+			var successful = Result<Guid>.FromSuccessWithMessage(Guid.NewGuid(), "Dummy message");
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful));
 
-      var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
-      Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
-    }
-  }
+			var response = JsonSerializer.Deserialize<Result<string>>(serializedData);
+			Assert.That(response.SuccessMessage, Is.EqualTo("Dummy message"));
+		}
+	}
 
-  public class Entity
-  {
-    [Test]
-    public void ReturnObjectOnDeserializing()
-    {
-      var successful = Result<ModelTest>.FromSuccess(new ModelTest("Dummy value"));
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful, JsonOptions));
+	public class Entity
+	{
+		[Test]
+		public void ReturnObjectOnDeserializing()
+		{
+			var successful = Result<ModelTest>.FromSuccess(new ModelTest("Dummy value"));
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(successful, _jsonOptions));
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData);
 
-      Assert.That(response.Entity, Is.Not.Null);
-    }
-  }
+			Assert.That(response.Entity, Is.Not.Null);
+		}
+	}
 
-  public class Error
-  {
-    [Test]
-    public void ReturnErrorObjectOnDeserializing()
-    {
-      var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
-      byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, JsonOptions));
+	public class Error
+	{
+		[Test]
+		public void ReturnErrorObjectOnDeserializing()
+		{
+			var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
+			byte[] serializedData = Encoding.Default.GetBytes(JsonSerializer.Serialize(unsuccessful, _jsonOptions));
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, JsonOptions);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedData, _jsonOptions);
 
-      Assert.That(response.Error, Is.Not.Null);
-    }
+			Assert.That(response.Error, Is.Not.Null);
+		}
 
-    [Test]
-    public void ReturnComplexErrorObjectOnDeserializing()
-    {
-      var validationError = new ValidationError { Message = "Dummy message", Identifier = "Test", Severity = ValidationSeverity.Error };
-      var errorResult = new ValidationErrorResult([validationError]);
-      var unsuccessful = Result<ModelTest>.FromError(errorResult);
-      var serializedResult = JsonSerializer.Serialize(unsuccessful, JsonOptions);
+		[Test]
+		public void ReturnComplexErrorObjectOnDeserializing()
+		{
+			var validationError = new ValidationError { Message = "Dummy message", Identifier = "Test", Severity = ValidationSeverity.Error };
+			var errorResult = new ValidationErrorResult([validationError]);
+			var unsuccessful = Result<ModelTest>.FromError(errorResult);
+			var serializedResult = JsonSerializer.Serialize(unsuccessful, _jsonOptions);
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedResult, JsonOptions);
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedResult, _jsonOptions);
 
-      Assert.That(response.Error, Is.InstanceOf<ValidationErrorResult>());
+			Assert.That(response.Error, Is.InstanceOf<ValidationErrorResult>());
 
-      var deserializedErrorResult = response.Error as ValidationErrorResult;
-      Assert.That(deserializedErrorResult, Is.InstanceOf<ValidationErrorResult>());
-      Assert.That(deserializedErrorResult.ValidationErrors, Has.Length.EqualTo(1));
-    }
+			var deserializedErrorResult = response.Error as ValidationErrorResult;
 
-    [Test]
-    public void ReturnComplexErrorObjectOnDeserializing3()
-    {
-      var error = new NotFoundError("Dummy message");
-      var unsuccessful = Result<ModelTest>.FromError(error);
+			Assert.That(deserializedErrorResult, Is.InstanceOf<ValidationErrorResult>());
+			Assert.That(deserializedErrorResult?.ValidationErrors, Has.Length.EqualTo(1));
+		}
 
-      var serializedResult = JsonSerializer.Serialize(unsuccessful, JsonOptions);
+		[Test]
+		public void ReturnComplexErrorObjectOnDeserializing3()
+		{
+			var error = new NotFoundError("Dummy message");
+			var unsuccessful = Result<ModelTest>.FromError(error);
 
-      var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedResult, JsonOptions);
+			var serializedResult = JsonSerializer.Serialize(unsuccessful, _jsonOptions);
 
-      Assert.That(response.Error, Is.Not.Null);
-      Assert.That(response.Error, Is.InstanceOf<NotFoundError>());
-    }
+			var response = JsonSerializer.Deserialize<Result<ModelTest>>(serializedResult, _jsonOptions);
 
-    [Test]
-    public void ReturnSpecificErrorObjectOnDeserializing()
-    {
-      var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
-      string error = JsonSerializer.Serialize(unsuccessful, JsonOptions);
+			Assert.That(response.Error, Is.Not.Null);
+			Assert.That(response.Error, Is.InstanceOf<NotFoundError>());
+		}
 
-      Result<ModelTest> response = JsonSerializer.Deserialize<Result<ModelTest>>(error, JsonOptions);
+		[Test]
+		public void ReturnSpecificErrorObjectOnDeserializing()
+		{
+			var unsuccessful = Result<ModelTest>.FromError(new NotFoundError("Dummy message"));
+			string error = JsonSerializer.Serialize(unsuccessful, _jsonOptions);
 
-      Assert.That(response.Error, Is.TypeOf<NotFoundError>());
-    }
+			Result<ModelTest> response = JsonSerializer.Deserialize<Result<ModelTest>>(error, _jsonOptions);
 
-    [Test]
-    public void ReturnExceptionErrorObjectOnDeserializing()
-    {
-      var unsuccessful = Result<ModelTest>.FromError(new ExceptionError("Dummy message"));
-      string error = JsonSerializer.Serialize(unsuccessful, JsonOptions);
+			Assert.That(response.Error, Is.TypeOf<NotFoundError>());
+		}
 
-      Result<ModelTest> response = JsonSerializer.Deserialize<Result<ModelTest>>(error, JsonOptions);
+		[Test]
+		public void ReturnExceptionErrorObjectOnDeserializing()
+		{
+			var unsuccessful = Result<ModelTest>.FromError(new ExceptionError("Dummy message"));
+			string error = JsonSerializer.Serialize(unsuccessful, _jsonOptions);
 
-      Assert.That(response.Error, Is.TypeOf<ExceptionError>());
-    }
-  }
+			Result<ModelTest> response = JsonSerializer.Deserialize<Result<ModelTest>>(error, _jsonOptions);
+
+			Assert.That(response.Error, Is.TypeOf<ExceptionError>());
+		}
+	}
 }
 
 
