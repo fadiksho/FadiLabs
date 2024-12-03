@@ -30,6 +30,17 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build ${{ env.WEB_PROJECT_PATH }} --no-restore --configuration Release
+      - name: Generate migration scripts
+        run: |
+          dotnet ef migrations script -i -c UserContext -p src/Modules/User/Modules.User.Features -o ./MigrationsScripts/UserContext.sql
+          dotnet ef migrations script -i -c BlogContext -p src/Modules/Blog/Modules.Blog.Features -o ./MigrationsScripts/BlogContext.sql
+
+      - name: Upload migration scripts
+        uses: actions/upload-artifact@v3
+        with:
+          name: fadilabs-web-migration-artifact
+          path: ./MigrationsScripts
+          if-no-files-found: error
 
       - name: Publish Artifact
         run: dotnet publish ${{ env.WEB_PROJECT_PATH }} --no-restore -c Release -o ${{ env.WEB_PUBLISH_OUTPUT }}
