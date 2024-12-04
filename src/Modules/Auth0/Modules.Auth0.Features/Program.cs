@@ -168,6 +168,15 @@ public static class Program
 				"JWT_OR_COOKIE")
 			.RequireAuthenticatedUser()
 			.Build();
+
+			var auth0ActionTriggerPolicy = new AuthorizationPolicyBuilder(
+				JwtBearerDefaults.AuthenticationScheme)
+				.RequireAuthenticatedUser()
+				.RequireClaim("scope", "trigger-actions")
+				.Build();
+
+			options.AddPolicy(Auth0LabConstents.Policies.ActionTiggerPolicy, auth0ActionTriggerPolicy);
+
 			options.DefaultPolicy = defaultAuthorizationPolicy;
 		});
 

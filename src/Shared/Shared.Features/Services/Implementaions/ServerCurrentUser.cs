@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Modules.Shared.Integration.Authorization;
 using Shared.Integration.Extensions;
 using System.Diagnostics;
@@ -7,53 +6,34 @@ using System.Security.Claims;
 
 namespace Shared.Features.Services.Implementaions;
 
-public class ServerCurrentUser : ICurrentUser
+public class ServerCurrentUser(
+	IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
-	private readonly IHttpContextAccessor _httpContextAccessor;
-	private readonly ILogger<ServerCurrentUser> _logger;
+	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-	public ServerCurrentUser(
-		IHttpContextAccessor httpContextAccessor,
-		ILogger<ServerCurrentUser> logger)
-	{
-		_httpContextAccessor = httpContextAccessor;
-		_logger = logger;
-	}
+	public bool IsAuthenticated()
+		=> GetHttpContext().User.IsAuthenticated();
 
 	public ClaimsPrincipal GetUser()
-	{
-		if (_httpContextAccessor.HttpContext == null)
-			throw new UnreachableException($"HttpContext is not set in {nameof(ServerCurrentUser)}().");
-
-		return _httpContextAccessor.HttpContext.User;
-	}
+		=> GetHttpContext().User;
 
 	public string? GetUserId()
-	{
-		if (_httpContextAccessor.HttpContext == null)
-			throw new UnreachableException($"HttpContext is not set in {nameof(ServerCurrentUser)}().");
-
-		return _httpContextAccessor.HttpContext.User.GetUserId();
-	}
+		=> GetHttpContext().User.GetUserId();
 
 	public string? GetUserName()
-	{
-		if (_httpContextAccessor.HttpContext == null)
-			throw new UnreachableException($"HttpContext is not set in {nameof(ServerCurrentUser)}().");
-
-		return _httpContextAccessor.HttpContext.User.GetUserName();
-	}
+		=> GetHttpContext().User.GetUserName();
 
 	public Permissions GetUserPermissions()
+		=> GetHttpContext().User.GetPermissions();
+
+	public bool HasPermission(Permissions permission)
+		=> GetUser().HasPermission(permission);
+
+	private HttpContext GetHttpContext()
 	{
 		if (_httpContextAccessor.HttpContext == null)
 			throw new UnreachableException($"HttpContext is not set in {nameof(ServerCurrentUser)}().");
 
-		return _httpContextAccessor.HttpContext.User.GetPermissions();
-	}
-
-	public bool HasPermission(Permissions permission)
-	{
-		return GetUser().HasPermission(permission);
+		return _httpContextAccessor.HttpContext;
 	}
 }

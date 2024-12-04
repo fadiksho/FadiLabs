@@ -5,8 +5,6 @@ namespace Shared.Features.Services;
 
 public interface ICurrentUser
 {
-	string? GetUserId();
-	string? GetUserName();
 	ClaimsPrincipal GetUser();
 	Permissions GetUserPermissions();
 

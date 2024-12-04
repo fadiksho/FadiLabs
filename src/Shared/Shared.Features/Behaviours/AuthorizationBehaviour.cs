@@ -5,6 +5,7 @@ using Modules.Authorization.Integration.Authorization;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
 using Shared.Features.Services;
+using Shared.Integration.Extensions;
 using System.Reflection;
 
 namespace Shared.Features.Behaviours;
@@ -25,6 +26,11 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 		}
 
 		var user = currentUser.GetUser();
+
+		if (user == null || !user.IsAuthenticated())
+		{
+			return next.FromError(request, new UnauthentectedError());
+		}
 
 		foreach (var authorizeAttribute in authorizeAttributes)
 		{

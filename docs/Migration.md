@@ -1,11 +1,13 @@
 ### Add Shared Context Migration
-```dotnet ef migrations add InitialCreate -c ApplicationDbContext -p ../../Shared/Shared.Features -o Persistence/Migrations```
+dotnet ef migrations add InitialCreate -c ApplicationDbContext -p ../../Shared/Shared.Features -o Persistence/Migrations
 
-### Add Module Context Migration (Blog module sample)
-```dotnet ef migrations add InitialCreate -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o Persistence/Migrations```
+### Add Modules Context Migration
+dotnet ef migrations add InitialCreate -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o Persistence/Migrations
+dotnet ef migrations add InitialCreate -c OAuthContext -p ../../Modules/OAuth/Modules.OAuth.Features -o Persistence/Migrations
 
-### Add Module OAuth Migration (OAuth module sample)
-```dotnet ef migrations add InitialCreate -c OAuthContext -p ../../Modules/OAuth/Modules.OAuth.Features -o Persistence/Migrations```
+## Update database
+dotnet ef database update -c BlogContext -p src/Web/Web.Server/Web.Server.csproj
+dotnet ef database update -c UserContext -p src/Web/Web.Server/Web.Server.csproj
 
 ### Running Migrations (In development only)
 Migration can be automatically applied by a middleware at runtime by executing the request at /dev-migration

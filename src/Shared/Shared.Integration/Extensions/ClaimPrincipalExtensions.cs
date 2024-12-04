@@ -5,6 +5,11 @@ using System.Security.Claims;
 namespace Shared.Integration.Extensions;
 public static class ClaimPrincipalExtensions
 {
+	public static bool IsAuthenticated(this ClaimsPrincipal principal)
+	{
+		return principal?.Identity?.IsAuthenticated == true;
+	}
+
 	public static string? GetUserName(this ClaimsPrincipal principal)
 	{
 		return principal.FindFirst("name")?.Value;

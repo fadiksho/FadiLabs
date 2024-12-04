@@ -17,6 +17,7 @@ public class LabAuthorizationPolicyProvider(IOptions<AuthorizationOptions> optio
 			var permissions = PermissionPolicyManager.ExtractPermissions(policyName);
 
 			policy = new AuthorizationPolicyBuilder()
+					.RequireAuthenticatedUser()
 					.AddRequirements(new PermissionAuthorizationRequirement(permissions))
 					.Build();
 
