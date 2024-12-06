@@ -8,5 +8,5 @@ public class LabUser : BaseEntity
 	public required string Email { get; set; }
 	public string? ProfilePictureUrl { get; set; }
 
-	public List<LinkedAccount> LinkedAccounts { get; set; } = [];
+	public List<LabRole> LabRoles { get; set; } = [];
 }

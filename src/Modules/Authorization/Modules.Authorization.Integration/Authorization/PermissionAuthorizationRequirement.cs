@@ -3,12 +3,7 @@ using Modules.Shared.Integration.Authorization;
 
 namespace Modules.Authorization.Integration.Authorization;
 
-public class PermissionAuthorizationRequirement : IAuthorizationRequirement
+public class PermissionAuthorizationRequirement(Permissions permission) : IAuthorizationRequirement
 {
-	public PermissionAuthorizationRequirement(Permissions permission)
-	{
-		Permissions = permission;
-	}
-
-	public Permissions Permissions { get; }
+	public Permissions Permissions { get; } = permission;
 }

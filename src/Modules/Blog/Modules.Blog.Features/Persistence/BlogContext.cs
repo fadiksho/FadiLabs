@@ -31,15 +31,6 @@ public class BlogContext : ModuleDbContext, IBlogContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-
-		modelBuilder.Entity<Post>()
-			.HasMany(x => x.Tags)
-			.WithMany(x => x.Posts);
-
-		modelBuilder.Entity<Post>()
-			.HasMany(x => x.Comments)
-			.WithOne()
-			.HasForeignKey(x => x.PostId)
-			.OnDelete(DeleteBehavior.Cascade);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(Program).Assembly);
 	}
 }

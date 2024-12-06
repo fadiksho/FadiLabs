@@ -18,7 +18,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 {
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		var authorizeAttributes = request.GetType().GetCustomAttributes<LabAuthorizeAttribute>();
+		IEnumerable<AuthorizeAttribute> authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
 		if (!authorizeAttributes.Any())
 		{
@@ -34,9 +34,19 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 
 		foreach (var authorizeAttribute in authorizeAttributes)
 		{
-			var requiredPermission = authorizeAttribute.Permissions;
-			var authorizationResult = await authorizationService.AuthorizeAsync(user, requiredPermission);
-			if (!authorizationResult.Succeeded)
+			var authorizationResult = AuthorizationResult.Success();
+
+			if (authorizeAttribute is LabAuthorizeAttribute labAuthorizeAttribute)
+			{
+				authorizationResult = await authorizationService.AuthorizeAsync(user, labAuthorizeAttribute.Permissions);
+			}
+
+			else if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
+			{
+				authorizationResult = await authorizationService.AuthorizeAsync(user, authorizeAttribute.Policy);
+			}
+
+			if (authorizationResult.Succeeded == false)
 			{
 				return next.FromError(request, new UnauthorizedError());
 			}

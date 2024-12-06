@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿global using Fadi.Result;
+global using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +9,7 @@ using Modules.Blog.Components;
 using Modules.Blog.Features.Persistence;
 using Shared.Features.Configuration;
 using Shared.Features.Persistence;
+
 namespace Modules.Blog.Features;
 
 public static class Program
@@ -26,10 +29,6 @@ public static class Program
 		services.AddDbContext<BlogContext>(options =>
 		{
 			options.UseSqlServer(_persistenceOptions.ConnectionString);
-			//options.ConfigureWarnings(warningsConfig =>
-			//{
-			//	warningsConfig.Ignore(RelationalEventId.PendingModelChangesWarning);
-			//});
 		});
 
 		services.AddTransient<IBlogContext, BlogContext>();

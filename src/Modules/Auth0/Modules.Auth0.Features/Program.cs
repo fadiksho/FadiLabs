@@ -21,6 +21,7 @@ using Modules.Auth0.Components;
 using Modules.Auth0.Features.Configuration;
 using Modules.Auth0.Features.Endpoints;
 using Modules.Auth0.Features.Utils;
+using Modules.Shared.Integration.Authorization;
 using Shared.Features.Configuration;
 using Shared.Integration;
 using System.Security.Claims;
@@ -61,6 +62,11 @@ public static class Program
 			options.ClientId = _auth0Options.ClientId;
 			options.Scope = "openid profile email";
 			options.CallbackPath = new PathString("/callback");
+			options.AccessDeniedPath = new PathString("/account/access-denied");
+			options.LoginParameters = new Dictionary<string, string>()
+			{
+				{ "prompt", "select_account" }
+			};
 			options.OpenIdConnectEvents = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
 			{
 				OnRedirectToIdentityProvider = context =>
@@ -84,7 +90,7 @@ public static class Program
 						.UpdateClaimTypes(SharedConstents.LabsClaimTypes.Name, SharedConstents.LabsClaimTypes.Role);
 
 					return Task.CompletedTask;
-				},
+				}
 			};
 		});
 
@@ -175,7 +181,7 @@ public static class Program
 				.RequireClaim("scope", "trigger-actions")
 				.Build();
 
-			options.AddPolicy(Auth0LabConstents.Policies.ActionTiggerPolicy, auth0ActionTriggerPolicy);
+			options.AddPolicy(LabPolicyNames.ActionTiggerPolicy, auth0ActionTriggerPolicy);
 
 			options.DefaultPolicy = defaultAuthorizationPolicy;
 		});

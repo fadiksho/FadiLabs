@@ -10,6 +10,7 @@ public readonly record struct Result : IResult
 
 	public readonly bool IsFailed => !IsSuccess && IsDefined;
 
+	[JsonIgnore]
 	public readonly bool IsDefined
 	{
 		get
@@ -58,6 +59,7 @@ public readonly record struct Result<TEntity> : IResult<TEntity>
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool IsFailed => !IsSuccess && IsDefined;
 
+	[JsonIgnore]
 	public readonly bool IsDefined
 	{
 		get

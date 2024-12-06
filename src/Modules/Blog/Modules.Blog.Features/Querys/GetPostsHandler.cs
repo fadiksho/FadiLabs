@@ -1,6 +1,4 @@
-﻿using Fadi.Result;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
@@ -14,7 +12,6 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 {
 	public async Task<Result<PagedList<GetPostsResponse>>> Handle(GetPosts request, CancellationToken cancellationToken)
 	{
-		await Task.Delay(2000);
 		var query = context.Posts
 			.Include(x => x.Tags)
 			.Include(x => x.Comments)

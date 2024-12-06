@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Modules.User.Features.Persistence;
 
@@ -11,9 +12,11 @@ using Modules.User.Features.Persistence;
 namespace Modules.User.Features.Persistence.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20241205023232_RoleTable")]
+    partial class RoleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,38 +26,15 @@ namespace Modules.User.Features.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LabRoleLabUser", b =>
-                {
-                    b.Property<Guid>("LabRolesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("LabRolesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("LabRoleLabUser", "User");
-                });
-
             modelBuilder.Entity("Modules.User.Features.Entities.LabRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Permissions")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -69,13 +49,14 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.Property<string>("Auth0UserId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("LabRoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -85,22 +66,21 @@ namespace Modules.User.Features.Persistence.Migrations
                     b.HasIndex("Auth0UserId")
                         .IsUnique();
 
+                    b.HasIndex("LabRoleId");
+
                     b.ToTable("LabUsers", "User");
                 });
 
-            modelBuilder.Entity("LabRoleLabUser", b =>
+            modelBuilder.Entity("Modules.User.Features.Entities.LabUser", b =>
                 {
                     b.HasOne("Modules.User.Features.Entities.LabRole", null)
-                        .WithMany()
-                        .HasForeignKey("LabRolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Users")
+                        .HasForeignKey("LabRoleId");
+                });
 
-                    b.HasOne("Modules.User.Features.Entities.LabUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Modules.User.Features.Entities.LabRole", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
