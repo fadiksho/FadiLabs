@@ -1,8 +1,5 @@
-﻿using Fadi.Result;
-using MediatR;
-using Modules.User.Features.Entities;
+﻿using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
-using Modules.User.Integration;
 
 namespace Modules.User.Features.Commands;
 
@@ -30,6 +27,9 @@ internal class CreateLabRoleHandler
 
 	static CreateLabRoleResponse MapResponse(LabRole labRole)
 	{
-		return new CreateLabRoleResponse { RoleId = labRole.Id };
+		return new CreateLabRoleResponse
+		{
+			LabRoleId = labRole.Id
+		};
 	}
 }

@@ -1,0 +1,131 @@
+@page "/user-lab/manage/roles"
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+@code
+{
+	[Inject]
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	private Result<PagedList<GetLabRolesResponse>> getRolesResult;
+	private Dictionary<Guid, bool> showRoleEdit = [];
+
+	protected override async Task OnInitializedAsync()
+	{
+		getRolesResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabRoles), x =>
+		{
+			return x.Send(new GetLabRoles());
+		}, true);
+	}
+
+	private void toggleRoleEditHandler(Guid roleId)
+	{
+		showRoleEdit.Keys.ToList().ForEach(key =>
+		{
+			if (key != roleId)
+			{
+				showRoleEdit[key] = false;
+			}
+		});
+
+		if (showRoleEdit.ContainsKey(roleId))
+		{
+			showRoleEdit[roleId] = !showRoleEdit[roleId];
+		}
+		else
+		{
+			showRoleEdit[roleId] = true;
+		}
+	}
+
+	private void OnLabRoleCreatedHandler((CreateLabRoleResponse createLabRoleResponse, CreateLabRole createLabRole) roleCreated)
+	{
+		getRolesResult.Entity.Items.Add(new GetLabRolesResponse
+		{
+			Id = roleCreated.createLabRoleResponse.LabRoleId,
+			Name = roleCreated.createLabRole.Name,
+			Description = roleCreated.createLabRole.Description
+		});
+	}
+
+	private void OnLabRoleUpdatedHandler(UpdateLabRole editedRole)
+	{
+		var roleToEdit = getRolesResult.Entity.Items.First(x => x.Id == editedRole.Id);
+		roleToEdit.Name = editedRole.Name;
+		roleToEdit.Description = editedRole.Description;
+
+		toggleRoleEditHandler(roleToEdit.Id);
+	}
+
+	private void OnRoleDeletedHandler(Guid roleId)
+	{
+		var roleToDelete = getRolesResult.Entity.Items.First(x => x.Id == roleId);
+		getRolesResult.Entity.Items.Remove(roleToDelete);
+	}
+}
+
+<Papper>
+	<LoadingTitle Title="@($"Labs Roles")"
+								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(GetLabRoles)))" />
+
+	@if (getRolesResult.IsFailed)
+	{
+		<ResultError Error="@getRolesResult.Error" />
+	}
+
+	@if (getRolesResult.IsSuccess)
+	{
+		<div class="overflow-x-auto scroller">
+			<table class="table table-pin-cols">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th class="p-0 text-end">
+							#
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var role in getRolesResult.Entity.Items)
+					{
+						<tr>
+							<td>@role.Id</td>
+							<td>@role.Name</td>
+							<td>@role.Description</td>
+							<th class="p-0">
+								<div class="flex justify-end">
+									<div class="join">
+										<button class="btn btn-ghost btn-sm join-item" @onclick="() => toggleRoleEditHandler(role.Id)">
+											Edit
+										</button>
+									</div>
+								</div>
+							</th>
+						</tr>
+						@if (showRoleEdit.ContainsKey(role.Id) && showRoleEdit[role.Id])
+						{
+							<tr class="bg-base-200">
+								<td colspan="4" class="p-0">
+									<LabRoleUpdateForm Role="role" OnRoleDeleted="OnRoleDeletedHandler" OnLabRoleUpdated="OnLabRoleUpdatedHandler" />
+								</td>
+							</tr>
+						}
+					}
+					@if (getRolesResult.Entity.Items.Count == 0)
+					{
+						<tr>
+							<td colspan="3">
+								Empty Roles.
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</Papper>
+
+<LabRoleCreateForm OnLabRoleCreated="OnLabRoleCreatedHandler" />

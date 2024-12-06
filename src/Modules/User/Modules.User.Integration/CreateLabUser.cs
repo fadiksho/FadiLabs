@@ -7,7 +7,9 @@ namespace Modules.User.Integration;
 public record CreateLabUser() : IRequest<Result<CreateLabUserResponse>>
 {
 	public required string Auth0UserId { get; set; }
-	public required string Email { get; set; }
+	public string? DisplayName { get; set; }
+	public string? Email { get; set; }
+	public bool EmailVerified { get; set; }
 	public string? ProfilePictureUrl { get; set; }
 }
 
@@ -17,8 +19,6 @@ public class CreateUserValidator : AbstractValidator<CreateLabUser>
 {
 	public CreateUserValidator()
 	{
-		RuleFor(x => x.Email)
-			.NotEmpty();
 		RuleFor(x => x.Auth0UserId)
 			.NotEmpty();
 	}

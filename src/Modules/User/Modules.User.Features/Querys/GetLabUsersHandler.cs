@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Modules.Shared.Integration.Models;
-using Modules.Shared.Integration.Queries;
 using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
 using Shared.Integration.Utilities;
@@ -28,19 +27,13 @@ internal class GetLabUsersHandler
 	{
 		return query.Select(x => new GetLabUsersResponse
 		{
+			LabUserId = x.Id,
 			Email = x.Email,
+			Auth0UserId = x.Auth0UserId,
+			DisplayName = x.DisplayName,
+			EmailVerified = x.EmailVerified,
 			ProfilePictureUrl = x.ProfilePictureUrl,
 			Roles = x.LabRoles.Select(x => x.Name).ToList()
 		});
 	}
-}
-
-public record GetLabUsers : PagedFilterQuery, IRequest<Result<PagedList<GetLabUsersResponse>>>;
-
-public record GetLabUsersResponse
-{
-	public required string Email { get; set; }
-	public string? ProfilePictureUrl { get; set; }
-
-	public List<string> Roles { get; set; } = [];
 }

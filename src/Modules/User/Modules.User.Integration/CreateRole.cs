@@ -14,12 +14,12 @@ public record CreateLabRole : IRequest<Result<CreateLabRoleResponse>>
 
 public record CreateLabRoleResponse
 {
-	public Guid RoleId { get; set; }
+	public Guid LabRoleId { get; set; }
 }
 
-public class CreateRoleValidator : AbstractValidator<CreateLabRole>
+public class CreateLabRoleValidator : AbstractValidator<CreateLabRole>
 {
-	public CreateRoleValidator()
+	public CreateLabRoleValidator()
 	{
 		RuleFor(x => x.Name)
 			.NotEmpty();

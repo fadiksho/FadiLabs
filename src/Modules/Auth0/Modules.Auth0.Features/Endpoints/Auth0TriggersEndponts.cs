@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
+using Modules.Auth0.Integration.Models.Auth0Triggers;
 using Modules.Shared.Integration.Authorization;
 using Modules.User.Integration;
 using Shared.Integration.Services;
@@ -16,31 +16,32 @@ internal static class Auth0TriggersEndponts
 			.RequireAuthorization(LabPolicyNames.ActionTiggerPolicy);
 
 		auth0TriggersEndpoints.MapPost("onExecutePostLogin", async (
-			CreateLabUser newUser,
+			PostLoginActionRequest request,
 			[FromServices] IMediator mediator,
-			[FromServices] IEnvelopMessageHandler envelopMessage,
-			ILoggerFactory loggerFactory) =>
+			[FromServices] IEnvelopMessageHandler envelopMessage) =>
 		{
-			var logger = loggerFactory.CreateLogger(nameof(Auth0TriggersEndponts));
-			var result = await mediator.Send(newUser);
+			var createLabUser = new CreateLabUser
+			{
+				Auth0UserId = request.Auth0UserId,
+				DisplayName = request.DisplayName,
+				Email = request.Email,
+				EmailVerified = request.EmailVerified,
+				ProfilePictureUrl = request.ProfilePictureUrl
+			};
 
-			if (result.IsSuccess)
+			if (!request.IsLabUser)
 			{
-				// User Created!
-				logger.LogInformation("User Created!");
-			}
-			else if (result.Error is EntityAlreadyExistsError)
-			{
-				// User Already has account in labdb
-				logger.LogInformation("User Already has account in labdb");
-			}
-			else
-			{
-				// not implemented yet
-				logger.LogInformation("Not implemented yet!");
+				var createLabUserResult = await mediator.Send(createLabUser);
+				if (createLabUserResult.IsFailed && createLabUserResult.Error is not EntityAlreadyExistsError)
+					return Result<GetLabUserRolesResponse>.FromError(createLabUserResult.Error);
 			}
 
-			return result;
+			var getUserLabRole = new GetLabUserRoles()
+			{
+				Auth0UserId = request.Auth0UserId
+			};
+
+			return await mediator.Send(getUserLabRole);
 		});
 
 		return endpoints;

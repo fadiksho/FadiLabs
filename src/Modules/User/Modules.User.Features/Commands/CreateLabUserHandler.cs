@@ -1,10 +1,7 @@
-﻿using Fadi.Result;
-using Fadi.Result.Errors;
-using MediatR;
+﻿using Fadi.Result.Errors;
 using Microsoft.EntityFrameworkCore;
 using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
-using Modules.User.Integration;
 
 namespace Modules.User.Features.Commands;
 
@@ -33,6 +30,8 @@ internal class CreateLabUserHandler(IUserContext context) : IRequestHandler<Crea
 			Auth0UserId = request.Auth0UserId,
 			Email = request.Email,
 			ProfilePictureUrl = request.ProfilePictureUrl,
+			DisplayName = request.DisplayName,
+			EmailVerified = request.EmailVerified
 		};
 	}
 

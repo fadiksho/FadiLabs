@@ -1,5 +1,7 @@
 ﻿global using Fadi.Result;
+global using Fadi.Result.Errors;
 global using MediatR;
+global using Modules.User.Integration;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
