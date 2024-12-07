@@ -1,7 +1,9 @@
 ﻿global using Fadi.Result;
 global using Fadi.Result.Errors;
 global using MediatR;
-global using Modules.User.Integration;
+global using Modules.User.Integration.User.Commands;
+global using Modules.User.Integration.User.Events;
+global using Modules.User.Integration.User.Queries;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +31,8 @@ public static class Program
 
 		services.AddDbContext<UserContext>(options =>
 		{
-			options.UseSqlServer(_persistenceOptions.ConnectionString);
+			options.UseSqlServer(_persistenceOptions.ConnectionString)
+			.UseSeeding(UserContextSeed.Seed);
 		});
 
 		services.AddTransient<IUserContext, UserContext>();

@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Modules.Auth0.Integration.Models.Auth0Triggers;
 using Modules.Shared.Integration.Authorization;
-using Modules.User.Integration;
+using Modules.User.Integration.User.Commands;
+using Modules.User.Integration.User.Queries;
 using Shared.Integration.Services;
 
 namespace Modules.Auth0.Features.Endpoints;
@@ -13,7 +14,7 @@ internal static class Auth0TriggersEndponts
 	internal static IEndpointRouteBuilder MapAuth0TriggersEndponts(this IEndpointRouteBuilder endpoints)
 	{
 		var auth0TriggersEndpoints = endpoints.MapGroup("/api/triggers")
-			.RequireAuthorization(LabPolicyNames.ActionTiggerPolicy);
+		.RequireAuthorization(LabPolicyNames.ActionTiggerPolicy);
 
 		auth0TriggersEndpoints.MapPost("onExecutePostLogin", async (
 			PostLoginActionRequest request,

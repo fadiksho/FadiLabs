@@ -78,7 +78,11 @@ public static class Program
 
 					return Task.CompletedTask;
 				},
-
+				OnRedirectToIdentityProviderForSignOut = context =>
+				{
+					var testo = context.ProtocolMessage.RedirectUri;
+					return Task.CompletedTask;
+				},
 				OnTokenValidated = context =>
 				{
 					if (context.Principal?.Identity is not ClaimsIdentity identity)

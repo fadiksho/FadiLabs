@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Modules.Authorization.Integration.Authorization;
+using Modules.Shared.Integration.Authorization;
 
 namespace Modules.Authorization.Components;
 public static class Program

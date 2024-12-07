@@ -58,6 +58,9 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("LabRoles", "User");
                 });
 

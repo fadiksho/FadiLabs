@@ -1,7 +1,6 @@
 ﻿using Fadi.Result.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Modules.Authorization.Integration.Authorization;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
 using Shared.Features.Services;

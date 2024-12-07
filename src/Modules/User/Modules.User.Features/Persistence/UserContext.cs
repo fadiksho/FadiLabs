@@ -12,19 +12,15 @@ public interface IUserContext : IModuleDbContext
 	public DbSet<LabRole> LabRoles { get; }
 }
 
-public class UserContext : ModuleDbContext, IUserContext
+public class UserContext
+	(DbContextOptions<UserContext> options,
+	IOptions<PersistenceConfiguration> persistenceOptions)
+		: ModuleDbContext(options, persistenceOptions), IUserContext
 {
 	protected override string Schema => "User";
 
 	public DbSet<LabUser> LabUsers { get; set; } = default!;
 	public DbSet<LabRole> LabRoles { get; set; } = default!;
-
-	public UserContext(
-			 DbContextOptions<UserContext> options,
-					IOptions<PersistenceConfiguration> persistenceOptions)
-		: base(options, persistenceOptions)
-	{
-	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

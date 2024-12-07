@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Modules.Shared.Integration.Models;
+﻿using Modules.Shared.Integration.Models;
 using Modules.Shared.Integration.Queries;
 
 namespace Modules.Blog.Integration.Post;
 
-[Authorize]
 public record GetPosts : PagedFilterQuery, IRequest<Result<PagedList<GetPostsResponse>>>
 {
 	public string? Tag { get; set; }

@@ -1,6 +1,5 @@
 ﻿using Modules.Auth0.Features;
 using Modules.Auth0.Features.Server;
-using Modules.Authorization.Features;
 using Modules.Blog.Features;
 using Modules.User.Features;
 using Shared.Features;
@@ -15,7 +14,6 @@ builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
-	.AddAuthorizationModuleServices(builder.Configuration, builder.Environment)
 	.AddUserModuleServices(builder.Configuration, builder.Environment)
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
@@ -25,7 +23,6 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseWebAssemblyDebugging();
 	//app.UseMiddleware<DevMigrationsMiddleware>();
-	//app.UseMiddleware<SeedContextMiddleware>();
 }
 else
 {
@@ -48,7 +45,6 @@ app.MapBlazorApp()
 	 .MapSharedModulePages()
 	 .MapAuth0ModulePages()
 	 .MapOAuthModuleServerPages()
-	 .MapAuthorizationModulePages()
 	 .MapUserModulePages()
 	 .MapBlogModulePages();
 

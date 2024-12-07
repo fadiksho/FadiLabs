@@ -59,6 +59,11 @@
 	<LoadingTitle Title="@($"Edit role")"
 								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(UpdateLabRole)))" />
 
+	@if (editRoleResult.IsFailed)
+	{
+		<ResultError Error="@editRoleResult.Error" />
+	}
+
 	<EditForm EditContext="editContext"
 						class="flex flex-col gap-2">
 		<FluentValidationValidator ValidatorType=typeof(UpdateLabRoleValidator) />

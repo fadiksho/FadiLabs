@@ -33,6 +33,11 @@
 <Papper>
 	<LoadingTitle Title="@($"Create new role")"
 								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(CreateLabRole)))" />
+	
+	@if (createLabRoleResult.IsFailed)
+	{
+		<ResultError Error="@createLabRoleResult.Error" />
+	}
 
 	<EditForm EditContext="editContext"
 						class="flex flex-col gap-2">

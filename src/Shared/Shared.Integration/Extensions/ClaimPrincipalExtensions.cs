@@ -1,5 +1,4 @@
-﻿using Modules.Authorization.Integration.Authorization;
-using Modules.Shared.Integration.Authorization;
+﻿using Modules.Shared.Integration.Authorization;
 using System.Security.Claims;
 
 namespace Shared.Integration.Extensions;

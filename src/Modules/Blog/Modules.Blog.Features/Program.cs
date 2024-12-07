@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Modules.Blog.Components;
 using Modules.Blog.Features.Persistence;
 using Shared.Features.Configuration;
-using Shared.Features.Persistence;
 
 namespace Modules.Blog.Features;
 
@@ -28,11 +27,11 @@ public static class Program
 
 		services.AddDbContext<BlogContext>(options =>
 		{
-			options.UseSqlServer(_persistenceOptions.ConnectionString);
+			options.UseSqlServer(_persistenceOptions.ConnectionString)
+				.UseSeeding(BlogContextSeed.Seed);
 		});
 
 		services.AddTransient<IBlogContext, BlogContext>();
-		services.AddScoped<IContextSeed, BlogContextSeed>();
 
 		return services;
 	}

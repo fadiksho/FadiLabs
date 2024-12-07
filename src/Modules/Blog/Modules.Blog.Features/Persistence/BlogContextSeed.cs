@@ -1,4 +1,5 @@
-﻿using Modules.Blog.Features.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Modules.Blog.Features.Entities;
 using Shared.Features.Persistence;
 using System.Security.Cryptography;
 
@@ -7,15 +8,9 @@ namespace Modules.Blog.Features.Persistence;
 
 public class BlogContextSeed : IContextSeed
 {
-	private readonly IBlogContext _context;
-
-	public BlogContextSeed(IBlogContext context)
+	public static void Seed(DbContext context, bool _)
 	{
-		_context = context;
-	}
-	public async Task SeedAsync()
-	{
-		if (!ShouldSeedData())
+		if (context.Set<Post>().Any())
 			return;
 
 		var tags = GetTags();
@@ -39,11 +34,11 @@ public class BlogContextSeed : IContextSeed
 			});
 		}
 
-		_context.Posts.AddRange(posts);
-		await _context.SaveChangesAsync();
+		context.Set<Post>().AddRange(posts);
+		context.SaveChanges();
 	}
 
-	List<Tag> GetTags()
+	static List<Tag> GetTags()
 	{
 		var tags = new List<string>()
 		{
@@ -55,7 +50,7 @@ public class BlogContextSeed : IContextSeed
 		return tags;
 	}
 
-	string GetTitle()
+	static string GetTitle()
 	{
 		var blogPostTitles = new List<string>
 		{
@@ -81,7 +76,7 @@ public class BlogContextSeed : IContextSeed
 		return blogPostTitles.First();
 	}
 
-	string GetDescription()
+	static string GetDescription()
 	{
 		var blogDescriptions = new List<string>
 		{
@@ -101,7 +96,7 @@ public class BlogContextSeed : IContextSeed
 		return blogDescriptions.First();
 	}
 
-	List<Comment> GetComments()
+	static List<Comment> GetComments()
 	{
 		var comments = new List<string>
 		{
@@ -136,7 +131,7 @@ public class BlogContextSeed : IContextSeed
 		return comments;
 	}
 
-	string GetBody()
+	static string GetBody()
 	{
 		var postbodies = new List<string>
 		{
@@ -357,10 +352,5 @@ public class BlogContextSeed : IContextSeed
 		.ToList();
 
 		return postbodies.First();
-	}
-
-	bool ShouldSeedData()
-	{
-		return !_context.Posts.Any();
 	}
 }
