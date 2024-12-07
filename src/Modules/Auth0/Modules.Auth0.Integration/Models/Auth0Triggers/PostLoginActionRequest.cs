@@ -1,5 +1,8 @@
-﻿namespace Modules.Auth0.Integration.Models.Auth0Triggers;
+﻿using Modules.Shared.Integration.Authorization;
 
+namespace Modules.Auth0.Integration.Models.Auth0Triggers;
+
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record PostLoginActionRequest
 {
 	public required string Auth0UserId { get; set; }

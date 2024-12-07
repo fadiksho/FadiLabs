@@ -12,7 +12,7 @@ public class LabRole : IEntity<Guid>
 	public required string Name { get; set; }
 	public required string Description { get; set; }
 
-	public Permissions Permissions { get; set; } = Permissions.None;
+	public LabsPermissions LabsPermissions { get; set; } = LabsPermissions.None;
 
 	public List<LabUser> LabUsers { get; set; } = [];
 }

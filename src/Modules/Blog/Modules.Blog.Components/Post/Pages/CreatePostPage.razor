@@ -1,6 +1,7 @@
 @page "/blog/new"
 @rendermode InteractiveServer
-@attribute [LabAuthorize(Permissions.BlogOwner)]
+@attribute [StreamRendering]
+@attribute [LabAuthorize(LabsPermissions.BlogOwner)]
 
 <PageTitle>Create New Post</PageTitle>
 

@@ -1,6 +1,6 @@
 ﻿using Auth0.OidcClient;
 using Microsoft.Extensions.Options;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using Shared.Components.Services;
 using System.Security.Claims;
 

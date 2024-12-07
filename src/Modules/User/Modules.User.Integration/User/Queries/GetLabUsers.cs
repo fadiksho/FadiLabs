@@ -1,8 +1,6 @@
-﻿using Modules.Shared.Integration.Models;
-using Modules.Shared.Integration.Queries;
+﻿namespace Modules.User.Integration.User.Queries;
 
-namespace Modules.User.Integration.User.Queries;
-
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record GetLabUsers : PagedFilterQuery, IRequest<Result<PagedList<GetLabUsersResponse>>>;
 
 public record GetLabUsersResponse

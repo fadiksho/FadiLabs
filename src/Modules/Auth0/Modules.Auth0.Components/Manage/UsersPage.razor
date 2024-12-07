@@ -1,6 +1,7 @@
-@page "/admin-lab/users"
-@using System.Text.Json
+@page "/auth0-lab/manage/users"
+
 @rendermode InteractiveServer
+@attribute [StreamRendering]
 
 @code
 {
@@ -87,7 +88,7 @@
 						{
 							<tr class="bg-base-200">
 								<td colspan="4" class="p-0">
-									<UserPermissionsFetchView User="user" />
+									User Details...
 								</td>
 							</tr>
 						}

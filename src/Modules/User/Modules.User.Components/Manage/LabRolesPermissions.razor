@@ -1,0 +1,86 @@
+@page "/user-lab/manage/roles-permissions"
+
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+@code
+{
+	[Inject]
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	private Result<PagedList<GetLabRolesResponse>> geLabRolesResult;
+	private Dictionary<string, bool> showLabRoleDetails = [];
+
+	protected override async Task OnInitializedAsync()
+	{
+		geLabRolesResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabRoles), x =>
+		{
+			return x.Send(new GetLabRoles());
+		}, true);
+	}
+
+	private async Task UpdateRolePermission(GetLabRolesResponse role, LabsPermissions labsPermissions, bool granted)
+	{
+		if (granted)
+		{
+			role.LabsPermissions |= labsPermissions;
+		}
+		else
+		{
+			role.LabsPermissions ^= labsPermissions;
+		}
+
+		var setRolePermissionRequet = new SetLabRolePermissions
+		{
+			LabRoleId = role.Id,
+			UpdatedPermissions = role.LabsPermissions
+		};
+		await ServiceExecutor.ExecuteAsync(nameof(SetLabRolePermissions), x => x.Send(setRolePermissionRequet));
+	}
+}
+
+<Papper>
+	<LoadingTitle Title="@($"Labs Roles Permissions")"
+								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(GetLabRoles)))" />
+
+	@if (geLabRolesResult.IsFailed)
+	{
+		<ResultError Error="@geLabRolesResult.Error" />
+	}
+
+	@if (geLabRolesResult.IsSuccess)
+	{
+		<div class="overflow-x-auto scroller">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Permissions</th>
+						@foreach (var role in geLabRolesResult.Entity.Items)
+						{
+							<th>@role.Name</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
+					{
+						if (permission == LabsPermissions.None) continue;
+						<tr>
+							<td>@permission</td>
+							@foreach (var role in geLabRolesResult.Entity.Items)
+							{
+								<td>
+									<input type="checkbox"
+												 class="checkbox"
+												 disabled="@ServiceExecutor.IsRequestLoading(nameof(AssignLabRoleToUser))"
+												 @onchange="(args) => UpdateRolePermission(role, permission, (bool)args.Value!)"
+												 checked="@role.LabsPermissions.HasFlag(permission)" />
+								</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+</Papper>

@@ -21,7 +21,7 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 		if (!string.IsNullOrEmpty(request.Tag))
 			query = query.Where(x => x.Tags.Any(t => t.Name == request.Tag));
 
-		if (!currentUser.HasPermission(Permissions.BlogOwner))
+		if (!currentUser.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		if (!string.IsNullOrEmpty(request.Search))

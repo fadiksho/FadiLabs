@@ -28,7 +28,7 @@ internal class GetLabRolesHandler
 			Id = x.Id,
 			Name = x.Name,
 			Description = x.Description,
-			Permissions = x.Permissions,
+			LabsPermissions = x.LabsPermissions,
 		});
 	}
 }

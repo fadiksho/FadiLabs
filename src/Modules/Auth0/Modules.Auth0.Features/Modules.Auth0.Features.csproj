@@ -16,8 +16,4 @@
 		<ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
 		<ProjectReference Include="..\Modules.Auth0.Components\Modules.Auth0.Components.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Persistence\" />
-	</ItemGroup>
 </Project>

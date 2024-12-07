@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Modules.Shared.Integration.Authorization;
 
 namespace Modules.User.Integration.User.Commands;
 

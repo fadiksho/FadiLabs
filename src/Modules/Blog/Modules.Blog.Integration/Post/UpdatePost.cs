@@ -1,6 +1,6 @@
 ﻿namespace Modules.Blog.Integration.Post;
 
-[LabAuthorize(Permissions.BlogOwner)]
+[LabAuthorize(LabsPermissions.BlogOwner)]
 public record UpdatePost : IRequest<Result<UpdatePostResponse>>
 {
 	public required Guid PostId { get; set; }

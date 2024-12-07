@@ -1,11 +1,11 @@
 ﻿namespace Modules.Shared.Integration.Authorization;
 
 [Flags]
-public enum Permissions
+public enum LabsPermissions
 {
 	None = 0,
 
-	ConfigureAccessControl = 1,
+	ConfigureSite = 1,
 
 	BlogOwner = 2,
 

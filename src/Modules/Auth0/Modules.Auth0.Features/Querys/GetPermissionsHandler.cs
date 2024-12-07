@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using Auth0Api = Auth0.ManagementApi;
 
 namespace Modules.Auth0.Features.Querys;

@@ -6,8 +6,8 @@ namespace Shared.Features.Services;
 public interface ICurrentUser
 {
 	ClaimsPrincipal GetUser();
-	Permissions GetUserPermissions();
+	LabsPermissions GetUserPermissions();
 
 
-	bool HasPermission(Permissions permission);
+	bool HasLabPermission(LabsPermissions permission);
 }

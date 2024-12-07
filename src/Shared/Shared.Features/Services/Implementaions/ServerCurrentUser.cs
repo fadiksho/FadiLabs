@@ -23,11 +23,11 @@ public class ServerCurrentUser(
 	public string? GetUserName()
 		=> GetHttpContext().User.GetUserName();
 
-	public Permissions GetUserPermissions()
+	public LabsPermissions GetUserPermissions()
 		=> GetHttpContext().User.GetPermissions();
 
-	public bool HasPermission(Permissions permission)
-		=> GetUser().HasPermission(permission);
+	public bool HasLabPermission(LabsPermissions permission)
+		=> GetUser().HasLabPermission(permission);
 
 	private HttpContext GetHttpContext()
 	{

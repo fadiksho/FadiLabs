@@ -1,6 +1,8 @@
 ﻿@page "/blog/edit/{id:guid}"
+
 @rendermode InteractiveAuto
-@attribute [LabAuthorize(Permissions.BlogOwner)]
+@attribute [StreamRendering]
+@attribute [LabAuthorize(LabsPermissions.BlogOwner)]
 
 <PageTitle>Edit @_getToUpdatePostResult.Entity?.Title</PageTitle>
 

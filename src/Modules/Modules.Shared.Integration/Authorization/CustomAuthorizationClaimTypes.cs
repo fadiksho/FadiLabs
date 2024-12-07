@@ -8,5 +8,5 @@ public static class CustomAuthorizationClaimTypes
 	/// <summary>
 	/// The claim type for user permissions.
 	/// </summary>
-	public const string Permissions = "labs-permissions";
+	public const string LabsPermissions = "labs-permissions";
 }

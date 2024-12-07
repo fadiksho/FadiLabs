@@ -16,6 +16,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Pages\account\" />
+	  <Folder Include="Account\" />
 	</ItemGroup>
 </Project>

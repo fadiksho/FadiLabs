@@ -18,9 +18,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Net.Http.Headers;
 using Modules.Auth0.Components;
-using Modules.Auth0.Features.Configuration;
 using Modules.Auth0.Features.Endpoints;
 using Modules.Auth0.Features.Utils;
+using Modules.Auth0.Integration.Configuration;
 using Modules.Shared.Integration.Authorization;
 using Shared.Features.Configuration;
 using Shared.Integration;
@@ -73,6 +73,7 @@ public static class Program
 				{
 					if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
 					{
+						var testo = context.ProtocolMessage.PostLogoutRedirectUri;
 						context.ProtocolMessage.RedirectUri = $"{_devTunnelOptions.Url}{options.CallbackPath}";
 					}
 
@@ -80,7 +81,7 @@ public static class Program
 				},
 				OnRedirectToIdentityProviderForSignOut = context =>
 				{
-					var testo = context.ProtocolMessage.RedirectUri;
+					var testo = context.ProtocolMessage.PostLogoutRedirectUri;
 					return Task.CompletedTask;
 				},
 				OnTokenValidated = context =>

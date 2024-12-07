@@ -1,4 +1,5 @@
-@page "/admin-lab/permissions"
+@page "/auth0-lab/manage/permissions"
+
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 
@@ -10,8 +11,6 @@
 	private Result<GetPermissionsResponse> getPermissionsResult;
 	private GetPermissions getPermissionRequest = new();
 	private Result setPermissionsResult;
-
-	private Result syncPermissionResult;
 
 	private bool _setPermissionsButtonEnabled;
 	public bool SetPermissionsButtonEnabled
@@ -78,22 +77,6 @@
 		if (setPermissionsResult.IsSuccess)
 		{
 			_setPermissionsButtonEnabled = false;
-		}
-	}
-
-	private async Task SyncPermissionsHandler()
-	{
-		syncPermissionResult = await ServiceExecutor.ExecuteAsync(nameof(SyncPermissions), x =>
-		{
-			return x.Send(new SyncPermissions());
-		});
-
-		if (syncPermissionResult.IsSuccess)
-		{
-			getPermissionsResult = await ServiceExecutor.ExecuteAsync(nameof(GetPermissions), x =>
-			{
-				return x.Send(getPermissionRequest);
-			});
 		}
 	}
 }
@@ -189,24 +172,5 @@
 		</div>
 	}
 
-</Papper>
-
-
-<Papper>
-	<LoadingTitle Title="Sync permissions"
-								IsLoading="ServiceExecutor.IsRequestLoading(nameof(SyncPermissions))" />
-
-	@if (syncPermissionResult.IsFailed)
-	{
-		<ResultError Error="@syncPermissionResult.Error" />
-	}
-
-	<div class="flex">
-		<button class="btn btn-neutral"
-						@onclick="SyncPermissionsHandler"
-						disabled="@(ServiceExecutor.IsLoading)">
-			Sync Permission
-		</button>
-	</div>
 </Papper>
 

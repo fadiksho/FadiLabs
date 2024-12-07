@@ -6,8 +6,8 @@ namespace Modules.Shared.Integration.Authorization;
 
 public static class IAuthorizationServiceExtensions
 {
-	public static Task<AuthorizationResult> AuthorizeAsync(this IAuthorizationService service, ClaimsPrincipal user, Permissions permissions)
+	public static Task<AuthorizationResult> AuthorizeAsync(this IAuthorizationService service, ClaimsPrincipal user, LabsPermissions labsPermissions)
 	{
-		return service.AuthorizeAsync(user, PermissionPolicyManager.GeneratePolicyName(permissions));
+		return service.AuthorizeAsync(user, LabsPermissionsPolicyManager.GeneratePolicyName(labsPermissions));
 	}
 }

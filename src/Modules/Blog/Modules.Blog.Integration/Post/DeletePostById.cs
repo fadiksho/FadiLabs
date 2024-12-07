@@ -1,4 +1,4 @@
 ﻿namespace Modules.Blog.Integration.Post;
 
-[LabAuthorize(Permissions.BlogOwner)]
+[LabAuthorize(LabsPermissions.BlogOwner)]
 public record DeletePostById(Guid Id) : IRequest<Result>;

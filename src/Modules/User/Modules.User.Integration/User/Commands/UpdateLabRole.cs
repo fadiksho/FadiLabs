@@ -1,5 +1,6 @@
 ﻿namespace Modules.User.Integration.User.Commands;
 
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record UpdateLabRole : IRequest<Result>
 {
 	public Guid Id { get; set; }

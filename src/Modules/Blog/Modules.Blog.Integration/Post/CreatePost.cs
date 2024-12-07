@@ -1,6 +1,6 @@
 ﻿namespace Modules.Blog.Integration.Post;
 
-[LabAuthorize(Permissions.BlogOwner)]
+[LabAuthorize(LabsPermissions.BlogOwner)]
 public record CreatePost : IRequest<Result<CreatePostResponse>>
 {
 	public string Title { get; set; } = string.Empty;

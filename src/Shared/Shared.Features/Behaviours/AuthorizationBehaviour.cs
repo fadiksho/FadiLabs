@@ -37,7 +37,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 
 			if (authorizeAttribute is LabAuthorizeAttribute labAuthorizeAttribute)
 			{
-				authorizationResult = await authorizationService.AuthorizeAsync(user, labAuthorizeAttribute.Permissions);
+				authorizationResult = await authorizationService.AuthorizeAsync(user, labAuthorizeAttribute.LabsPermissions);
 			}
 
 			else if (!string.IsNullOrEmpty(authorizeAttribute.Policy))

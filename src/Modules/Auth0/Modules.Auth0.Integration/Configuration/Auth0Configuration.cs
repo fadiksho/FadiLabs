@@ -1,4 +1,5 @@
-﻿namespace Modules.Auth0.Features.Configuration;
+﻿namespace Modules.Auth0.Integration.Configuration;
+
 public class Auth0Configuration
 {
 	public static readonly string SectionName = "Modules:Auth0";

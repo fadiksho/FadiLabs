@@ -11,13 +11,13 @@ public class LabAuthorizationPolicyProvider(IOptions<AuthorizationOptions> optio
 	{
 		var policy = await base.GetPolicyAsync(policyName);
 
-		if (policy == null && PermissionPolicyManager.IsValidPolicyName(policyName))
+		if (policy == null && LabsPermissionsPolicyManager.IsValidPolicyName(policyName))
 		{
-			var permissions = PermissionPolicyManager.ExtractPermissions(policyName);
+			var labsPermissions = LabsPermissionsPolicyManager.ExtractLabsPermissions(policyName);
 
 			policy = new AuthorizationPolicyBuilder()
 					.RequireAuthenticatedUser()
-					.AddRequirements(new PermissionAuthorizationRequirement(permissions))
+					.AddRequirements(new PermissionAuthorizationRequirement(labsPermissions))
 					.Build();
 
 			_options.AddPolicy(policyName!, policy);

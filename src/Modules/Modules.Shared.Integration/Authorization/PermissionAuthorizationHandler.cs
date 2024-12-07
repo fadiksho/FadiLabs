@@ -6,28 +6,28 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionAut
 {
 	protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionAuthorizationRequirement requirement)
 	{
-		if (requirement.Permissions == Permissions.None)
+		if (requirement.LabsPermissions == LabsPermissions.None)
 		{
 			context.Succeed(requirement);
 			return Task.CompletedTask;
 		}
 
-		var permissionClaim = context.User.FindFirst(
-				c => c.Type == CustomAuthorizationClaimTypes.Permissions);
+		var labsPermissionsClaim = context.User.FindFirst(
+				c => c.Type == CustomAuthorizationClaimTypes.LabsPermissions);
 
-		if (permissionClaim == null)
+		if (labsPermissionsClaim == null)
 		{
 			return Task.CompletedTask;
 		}
 
-		if (!int.TryParse(permissionClaim.Value, out int permissionClaimValue))
+		if (!int.TryParse(labsPermissionsClaim.Value, out int labsPermissionsClaimValue))
 		{
 			return Task.CompletedTask;
 		}
 
-		var userPermissions = (Permissions)permissionClaimValue;
+		var userPermissions = (LabsPermissions)labsPermissionsClaimValue;
 
-		if ((userPermissions & requirement.Permissions) != 0)
+		if ((userPermissions & requirement.LabsPermissions) != 0)
 		{
 			context.Succeed(requirement);
 			return Task.CompletedTask;

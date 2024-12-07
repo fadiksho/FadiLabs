@@ -17,13 +17,13 @@ public class UserContextSeed : IContextSeed
 			new() {
 				Name = "admin",
 				Description = "default admin role.",
-				Permissions = Permissions.All
+				LabsPermissions = LabsPermissions.All
 			},
 			new()
 			{
 				Name = "default lab role",
 				Description = "Auto assigned for new account.",
-				Permissions = Permissions.None
+				LabsPermissions = LabsPermissions.None
 			}
 		};
 

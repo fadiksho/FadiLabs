@@ -135,9 +135,9 @@
 	</LabAuthorizeView>
 
 	<LabAuthorizeView>
-		@foreach (var permission in PermissionPolicyManager.GetAllPermissions())
+		@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
 		{
-			if (context.User.HasPermission(permission))
+			if (context.User.HasLabPermission(permission))
 			{
 				<p class="text-success">
 					Has permission '@permission'
@@ -153,45 +153,31 @@
 	</LabAuthorizeView>
 
 	<LabAuthorizeView>
-		@if (context.User.HasPermission(Permissions.BlogOwner | Permissions.ConfigureAccessControl))
+		@if (context.User.HasLabPermission(LabsPermissions.BlogOwner | LabsPermissions.ConfigureSite))
 		{
 			<p class="text-success">
-				Has permission to '@Permissions.BlogOwner' | '@Permissions.ConfigureAccessControl'
+				Has permission to '@LabsPermissions.BlogOwner' | '@LabsPermissions.ConfigureSite'
 			</p>
 		}
 		else
 		{
 			<p class="text-error">
-				Has permission to '@Permissions.BlogOwner' | '@Permissions.ConfigureAccessControl'
+				Has permission to '@LabsPermissions.BlogOwner' | '@LabsPermissions.ConfigureSite'
 			</p>
 		}
 	</LabAuthorizeView>
 
 	<LabAuthorizeView>
-		@if (context.User.HasPermission(Permissions.BlogOwner) && context.User.HasPermission(Permissions.ConfigureAccessControl))
+		@if (context.User.HasLabPermission(LabsPermissions.BlogOwner) && context.User.HasLabPermission(LabsPermissions.ConfigureSite))
 		{
-			<div>
-				<div>Uesr Permission: @context.User.GetPermissions()</div>
-				@{
-					var requiredPermission = Permissions.ConfigureAccessControl & Permissions.BlogOwner;
-				}
-				<div>Required Permission: @(requiredPermission)</div>
-			</div>
 			<p class="text-success">
-				Has permission to '@Permissions.BlogOwner' & '@Permissions.ConfigureAccessControl'
+				Has permission to '@LabsPermissions.BlogOwner' & '@LabsPermissions.ConfigureSite'
 			</p>
 		}
 		else
 		{
-			<div>
-				<div>Uesr Permission: @context.User.GetPermissions()</div>
-				@{
-					var requiredPermission = Permissions.ConfigureAccessControl & Permissions.BlogOwner;
-				}
-				<div>Required Permission: @(requiredPermission)</div>
-			</div>
 			<p class="text-error">
-				Has permission to '@Permissions.BlogOwner' & '@Permissions.ConfigureAccessControl'
+				Has permission to '@LabsPermissions.BlogOwner' & '@LabsPermissions.ConfigureSite'
 			</p>
 		}
 	</LabAuthorizeView>

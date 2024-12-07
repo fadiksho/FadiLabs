@@ -1,5 +1,6 @@
 ﻿namespace Modules.User.Integration.User.Commands;
 
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record CreateLabRole : IRequest<Result<CreateLabRoleResponse>>
 {
 	public string Name { get; set; } = "";

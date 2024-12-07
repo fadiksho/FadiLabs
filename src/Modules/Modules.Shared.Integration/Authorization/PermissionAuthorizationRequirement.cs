@@ -2,7 +2,7 @@
 
 namespace Modules.Shared.Integration.Authorization;
 
-public class PermissionAuthorizationRequirement(Permissions permission) : IAuthorizationRequirement
+public class PermissionAuthorizationRequirement(LabsPermissions labsPermissions) : IAuthorizationRequirement
 {
-	public Permissions Permissions { get; } = permission;
+	public LabsPermissions LabsPermissions { get; } = labsPermissions;
 }

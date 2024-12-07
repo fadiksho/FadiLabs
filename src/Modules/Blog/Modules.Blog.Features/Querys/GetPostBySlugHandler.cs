@@ -19,7 +19,7 @@ internal class GetPostBySlugHandler(IBlogContext context, ICurrentUser currentUs
 			.Include(x => x.Tags)
 			.AsQueryable();
 
-		if (!currentUser.HasPermission(Permissions.BlogOwner))
+		if (!currentUser.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		var post = await query.FirstOrDefaultAsync(cancellationToken);

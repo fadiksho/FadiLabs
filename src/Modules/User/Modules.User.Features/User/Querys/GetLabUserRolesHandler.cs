@@ -17,10 +17,10 @@ internal class GetLabUserRolesHandler
 		if (labUserRoles == null)
 			return new NotFoundError();
 
-		var combindedPermission = Permissions.None;
+		var combindedPermission = LabsPermissions.None;
 
 		foreach (var role in labUserRoles.LabRoles)
-			combindedPermission |= role.Permissions;
+			combindedPermission |= role.LabsPermissions;
 
 		var response = Map(labUserRoles, (int)combindedPermission);
 

@@ -29,21 +29,38 @@ public static class ClaimPrincipalExtensions
 		return principal.FindFirst("sub")?.Value;
 	}
 
-	public static Permissions GetPermissions(this ClaimsPrincipal principal)
+	public static LabsPermissions GetPermissions(this ClaimsPrincipal principal)
 	{
-		var permissionClaim = principal.FindFirst(CustomAuthorizationClaimTypes.Permissions);
+		var permissionClaim = principal.FindFirst(CustomAuthorizationClaimTypes.LabsPermissions);
 		if (!int.TryParse(permissionClaim?.Value, out int permissionClaimValue))
 		{
-			return Permissions.None;
+			return LabsPermissions.None;
 		}
 
-		return (Permissions)permissionClaimValue;
+		return (LabsPermissions)permissionClaimValue;
 	}
 
-	public static bool HasPermission(this ClaimsPrincipal principal, Permissions permission)
+	/// <summary>
+	/// Checks if the specified permission(s) are set in the user's permissions.
+	/// </summary>
+	/// <param name="principal">The user's claims principal.</param>
+	/// <param name="permission">The permission(s) to check.</param>
+	/// <returns>True if the specified permission(s) are set; otherwise, false.</returns>
+	/// <remarks>
+	/// This method checks if the user has the specified permission(s). 
+	/// If the permission to check is 'All', it verifies if the user has 'All' permissions.
+	/// Otherwise, it uses a bitwise AND operation to check if the user has the specified permission(s).
+	/// </remarks>
+	public static bool HasLabPermission(this ClaimsPrincipal principal, LabsPermissions permission)
 	{
+		// Retrieve the current permissions of the user.
 		var currentPermission = principal.GetPermissions();
 
+		if (permission == LabsPermissions.All)
+			return currentPermission == LabsPermissions.All;
+
+		// Use bitwise AND to check if the user has the specified permission(s).
 		return (currentPermission & permission) != 0;
 	}
+
 }

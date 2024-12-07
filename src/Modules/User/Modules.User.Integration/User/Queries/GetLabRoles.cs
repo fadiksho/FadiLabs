@@ -1,9 +1,6 @@
-﻿using Modules.Shared.Integration.Authorization;
-using Modules.Shared.Integration.Models;
-using Modules.Shared.Integration.Queries;
+﻿namespace Modules.User.Integration.User.Queries;
 
-namespace Modules.User.Integration.User.Queries;
-
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record GetLabRoles : PagedFilterQuery, IRequest<Result<PagedList<GetLabRolesResponse>>>;
 
 public record GetLabRolesResponse
@@ -13,7 +10,7 @@ public record GetLabRolesResponse
 	public required string Name { get; set; }
 	public required string Description { get; set; }
 
-	public Permissions Permissions { get; set; } = Permissions.None;
+	public LabsPermissions LabsPermissions { get; set; } = LabsPermissions.None;
 }
 
 public class GetLabRolesValidator : AbstractValidator<GetLabRoles>

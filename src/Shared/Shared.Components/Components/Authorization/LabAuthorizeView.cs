@@ -7,25 +7,25 @@ namespace Shared.Components.Components.Authorization;
 public class LabAuthorizeView : AuthorizeView
 {
 	//[Parameter]
-	//public Permissions Permissions
+	//public Permissions LabsPermissions
 	//{
 	//	get
 	//	{
 	//		return string.IsNullOrEmpty(Policy)
-	//			? Permissions.None
-	//			: PermissionPolicyHelper.GetPermissionsFromPolicyName(Policy);
+	//			? LabsPermissions.None
+	//			: LabsPermissionPolicyHelper.ExtractLabsPermissions(Policy);
 	//	}
 	//	set
 	//	{
-	//		Policy = PermissionPolicyHelper.GeneratePolicyName(value);
+	//		Policy = LabsPermissionsPolicyManager.GeneratePolicyName(value);
 	//	}
 	//}
 
 	[Parameter]
-	public Permissions Permissions { get; set; }
+	public LabsPermissions LabPermissions { get; set; }
 
 	protected override void OnParametersSet()
 	{
-		Policy = PermissionPolicyManager.GeneratePolicyName(Permissions);
+		Policy = LabsPermissionsPolicyManager.GeneratePolicyName(LabPermissions);
 	}
 }

@@ -2,7 +2,7 @@
 using Maui.Startup.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using Shared.Components.Services;
 using System.Reflection;
 

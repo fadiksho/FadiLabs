@@ -1,6 +1,9 @@
-﻿using Modules.Shared.Integration.Queries;
+﻿using Modules.Shared.Integration.Authorization;
+using Modules.Shared.Integration.Queries;
 
 namespace Modules.Auth0.Integration.Models;
+
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record GetPermissions : PagedFilterQuery, IRequest<Result<GetPermissionsResponse>>
 {
 	public override int PageSize { get; set; } = 50;
