@@ -4,10 +4,16 @@ namespace Maui.Startup;
 
 public partial class App : Application
 {
-  public App(MauiUserService userService)
-  {
-    InitializeComponent();
+	private readonly MauiUserService _userService;
+	public App(MauiUserService userService)
+	{
+		InitializeComponent();
 
-    MainPage = new MainPage(userService);
-  }
+		_userService = userService;
+	}
+
+	protected override Window CreateWindow(IActivationState? activationState)
+	{
+		return new Window(new MainPage(_userService)) { Title = "Fadi Labs" };
+	}
 }
