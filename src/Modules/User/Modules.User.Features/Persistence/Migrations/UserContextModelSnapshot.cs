@@ -48,13 +48,13 @@ namespace Modules.User.Features.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LabsPermissions")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Permissions")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

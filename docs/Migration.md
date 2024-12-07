@@ -7,6 +7,9 @@ dotnet ef migrations add InitialCreate -c BlogContext -p ../../Modules/Blog/Modu
 dotnet ef migrations add InitialCreate -c OAuthContext -p ../../Modules/OAuth/Modules.OAuth.Features -o Persistence/Migrations
 dotnet ef migrations add InitialCreate -c UserContext -p ../../Modules/User/Modules.User.Features -o Persistence/Migrations
 
+### Remove Migration from Web.Server
+dotnet ef migrations remove  -c UserContext -p ../../Modules/User/Modules.User.Features
+
 ## Update database
 ### Running from root
 dotnet ef database update -c BlogContext -p src/Web/Web.Server/Web.Server.csproj

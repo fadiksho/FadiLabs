@@ -12,8 +12,8 @@ using Modules.User.Features.Persistence;
 namespace Modules.User.Features.Persistence.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241205023232_RoleTable")]
-    partial class RoleTable
+    [Migration("20241207211046_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,17 +26,43 @@ namespace Modules.User.Features.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LabRoleLabUser", b =>
+                {
+                    b.Property<Guid>("LabRolesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LabUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LabRolesId", "LabUsersId");
+
+                    b.HasIndex("LabUsersId");
+
+                    b.ToTable("LabRoleLabUser", "User");
+                });
+
             modelBuilder.Entity("Modules.User.Features.Entities.LabRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("LabsPermissions")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("LabRoles", "User");
                 });
@@ -49,14 +75,19 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.Property<string>("Auth0UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid?>("LabRoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -66,21 +97,22 @@ namespace Modules.User.Features.Persistence.Migrations
                     b.HasIndex("Auth0UserId")
                         .IsUnique();
 
-                    b.HasIndex("LabRoleId");
-
                     b.ToTable("LabUsers", "User");
                 });
 
-            modelBuilder.Entity("Modules.User.Features.Entities.LabUser", b =>
+            modelBuilder.Entity("LabRoleLabUser", b =>
                 {
                     b.HasOne("Modules.User.Features.Entities.LabRole", null)
-                        .WithMany("Users")
-                        .HasForeignKey("LabRoleId");
-                });
+                        .WithMany()
+                        .HasForeignKey("LabRolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("Modules.User.Features.Entities.LabRole", b =>
-                {
-                    b.Navigation("Users");
+                    b.HasOne("Modules.User.Features.Entities.LabUser", null)
+                        .WithMany()
+                        .HasForeignKey("LabUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
