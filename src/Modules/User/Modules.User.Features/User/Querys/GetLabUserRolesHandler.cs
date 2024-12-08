@@ -14,25 +14,28 @@ internal class GetLabUserRolesHandler
 			.Include(x => x.LabRoles)
 			.FirstOrDefaultAsync(x => x.Auth0UserId == request.Auth0UserId, cancellationToken);
 
-		if (labUserRoles == null)
-			return new NotFoundError();
+		var defaultRoles = await context.LabRoles
+			.Where(x => x.AutoAssign)
+			.ToListAsync(cancellationToken);
 
-		var combindedPermission = LabsPermissions.None;
+		List<LabRole> combinedRoles = [.. (labUserRoles?.LabRoles ?? []), .. defaultRoles];
 
-		foreach (var role in labUserRoles.LabRoles)
-			combindedPermission |= role.LabsPermissions;
+		var combindPermission = LabsPermissions.None;
 
-		var response = Map(labUserRoles, (int)combindedPermission);
+		foreach (var role in combinedRoles)
+			combindPermission |= role.LabsPermissions;
+
+		var response = Map(combinedRoles, (int)combindPermission);
 
 		return response;
 	}
 
-	static GetLabUserRolesResponse Map(LabUser labUser, int combinedPermissions)
+	static GetLabUserRolesResponse Map(List<LabRole> roles, int combinedPermissions)
 	{
 		return new GetLabUserRolesResponse
 		{
 			CombinedRolesPermissions = combinedPermissions,
-			Roles = labUser.LabRoles.Select(x => x.Name).ToList(),
+			Roles = roles.Select(x => x.Name).ToList(),
 		};
 	}
 }

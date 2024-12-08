@@ -22,7 +22,8 @@
 		{
 			Id = Role.Id,
 			Name = Role.Name,
-			Description = Role.Description
+			Description = Role.Description,
+			AutoAssign = Role.AutoAssign
 		};
 
 		editContext = new(editRoleRequest);
@@ -89,6 +90,14 @@
 												class="input input-bordered" />
 
 			<ValidationMessage For="() => editRoleRequest.Description" class="text-red-500 text-sm italic" />
+		</label>
+
+		<label class="form-control w-full cursor-pointer">
+			<span class="label justify-start gap-4">
+				<span class="label-text">Auto Assign</span>
+				<InputCheckbox @bind-Value="editRoleRequest.AutoAssign" class="checkbox" />
+			</span>
+			<ValidationMessage For="() => editRoleRequest.AutoAssign" class="text-red-500 text-sm italic" />
 		</label>
 
 		<div class="flex gap-2 items-center justify-between">

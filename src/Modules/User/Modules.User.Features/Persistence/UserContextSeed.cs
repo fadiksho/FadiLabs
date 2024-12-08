@@ -14,15 +14,11 @@ public class UserContextSeed : IContextSeed
 
 		var roles = new List<LabRole>
 		{
-			new() {
-				Name = "admin",
-				Description = "default admin role.",
-				LabsPermissions = LabsPermissions.All
-			},
 			new()
 			{
 				Name = "default lab role",
 				Description = "Auto assigned for new account.",
+				AutoAssign = true,
 				LabsPermissions = LabsPermissions.None
 			}
 		};

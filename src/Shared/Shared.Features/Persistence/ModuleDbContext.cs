@@ -20,4 +20,12 @@ public abstract class ModuleDbContext(
 
 		base.OnModelCreating(modelBuilder);
 	}
+
+	protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+	{
+		//configurationBuilder.Properties<string>()
+		//	.HaveMaxLength(256);
+
+		base.ConfigureConventions(configurationBuilder);
+	}
 }

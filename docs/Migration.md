@@ -4,13 +4,13 @@ dotnet ef migrations add InitialCreate -c ApplicationDbContext -p ../../Shared/S
 ### Add Modules Context Migration
 ### Running from Web.Server
 dotnet ef migrations add InitialCreate -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o Persistence/Migrations
-dotnet ef migrations add InitialCreate -c OAuthContext -p ../../Modules/OAuth/Modules.OAuth.Features -o Persistence/Migrations
 dotnet ef migrations add InitialCreate -c UserContext -p ../../Modules/User/Modules.User.Features -o Persistence/Migrations
 
 ### Remove Migration from Web.Server
 dotnet ef migrations remove  -c UserContext -p ../../Modules/User/Modules.User.Features
 
 ## Update database
+
 ### Running from root
 dotnet ef database update -c BlogContext -p src/Web/Web.Server/Web.Server.csproj
 ### Running from Web.Server
@@ -22,3 +22,6 @@ Migration can be automatically applied by a middleware at runtime by executing t
 ### Generating mirgration scripts
 dotnet ef migrations script -i -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o ./Migrations/BlogContext.sql
 dotnet ef migrations script -i -c UserContext -p ../../Modules/User/Modules.User.Features -o ./Migrations/UserContext.sql
+
+### Generating bundle
+dotnet ef migrations bundle -c BlogContext -p ../../Modules/Blog/Modules.Blog.Features -o ./Migrations

@@ -9,7 +9,7 @@ public record GetLabRolesResponse
 
 	public required string Name { get; set; }
 	public required string Description { get; set; }
-
+	public bool AutoAssign { get; set; }
 	public LabsPermissions LabsPermissions { get; set; } = LabsPermissions.None;
 }
 

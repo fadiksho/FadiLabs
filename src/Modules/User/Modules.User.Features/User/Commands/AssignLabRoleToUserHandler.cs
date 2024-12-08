@@ -17,6 +17,9 @@ internal class AssignLabRoleToUserHandler
 		if (user == null || role == null)
 			return new NotFoundError();
 
+		if (role.AutoAssign)
+			return new InvalidRoleAssignmentError($"The role '{role.Name}' cannot be manually assigned because it is set to auto assign.");
+
 		user.LabRoles.Add(role);
 		role.LabUsers.Add(user);
 

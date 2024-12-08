@@ -18,6 +18,9 @@ internal class UnassignLabRoleFromUserHandler
 		if (user == null || role == null)
 			return new NotFoundError();
 
+		if (role.AutoAssign)
+			return new InvalidRoleAssignmentError($"The role '{role.Name}' cannot be manually assigned because it is set to auto assign.");
+
 		user.LabRoles.Remove(role);
 		role.LabUsers.Remove(user);
 

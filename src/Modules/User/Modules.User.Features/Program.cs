@@ -4,6 +4,7 @@ global using MediatR;
 global using Modules.User.Integration.User.Commands;
 global using Modules.User.Integration.User.Events;
 global using Modules.User.Integration.User.Queries;
+global using Modules.User.Integration.User.ResultErrors;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

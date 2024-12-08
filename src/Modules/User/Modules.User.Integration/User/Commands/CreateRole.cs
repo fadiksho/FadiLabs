@@ -5,11 +5,13 @@ public record CreateLabRole : IRequest<Result<CreateLabRoleResponse>>
 {
 	public string Name { get; set; } = "";
 	public string Description { get; set; } = "";
+	public bool AutoAssign { get; set; }
 
 	public void ResetToDefault()
 	{
 		Name = string.Empty;
 		Description = string.Empty;
+		AutoAssign = false;
 	}
 }
 

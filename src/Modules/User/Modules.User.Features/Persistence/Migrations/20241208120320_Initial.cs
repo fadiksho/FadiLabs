@@ -19,9 +19,10 @@ namespace Modules.User.Features.Persistence.Migrations
                 schema: "User",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AutoAssign = table.Column<bool>(type: "bit", nullable: false),
                     LabsPermissions = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -72,6 +73,12 @@ namespace Modules.User.Features.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                schema: "User",
+                table: "LabRoles",
+                columns: new[] { "Id", "AutoAssign", "Description", "LabsPermissions", "Name" },
+                values: new object[] { new Guid("889027cf-742e-4ec6-a558-f526571819a7"), false, "default admin role.", -1, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabRoleLabUser_LabUsersId",

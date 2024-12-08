@@ -12,7 +12,7 @@ using Modules.User.Features.Persistence;
 namespace Modules.User.Features.Persistence.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241207211046_Initial")]
+    [Migration("20241208120320_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -45,7 +45,11 @@ namespace Modules.User.Features.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<bool>("AutoAssign")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -65,6 +69,16 @@ namespace Modules.User.Features.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("LabRoles", "User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("889027cf-742e-4ec6-a558-f526571819a7"),
+                            AutoAssign = false,
+                            Description = "default admin role.",
+                            LabsPermissions = -1,
+                            Name = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Modules.User.Features.Entities.LabUser", b =>

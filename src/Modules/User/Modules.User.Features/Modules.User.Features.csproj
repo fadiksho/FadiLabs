@@ -13,8 +13,5 @@
     <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
     <ProjectReference Include="..\Modules.User.Components\Modules.User.Components.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Persistence\Migrations\" />
-  </ItemGroup>
 
 </Project>
