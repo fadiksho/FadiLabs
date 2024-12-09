@@ -21,7 +21,8 @@ internal class CreateLabRoleHandler
 		return new LabRole
 		{
 			Name = labRole.Name,
-			Description = labRole.Description
+			Description = labRole.Description,
+			AutoAssign = labRole.AutoAssign
 		};
 	}
 

@@ -66,6 +66,14 @@
 			<ValidationMessage For="() => createLabRoleRequest.Description" class="text-red-500 text-sm italic" />
 		</label>
 
+		<label class="form-control w-full cursor-pointer">
+			<span class="label justify-start gap-4">
+				<span class="label-text">Auto Assign</span>
+				<InputCheckbox @bind-Value="createLabRoleRequest.AutoAssign" class="checkbox" />
+			</span>
+			<ValidationMessage For="() => createLabRoleRequest.AutoAssign" class="text-red-500 text-sm italic" />
+		</label>
+
 		<div class="flex gap-2 items-center">
 			<SubmitButton OnValidSubmit="createRoleHandler"
 										class="btn btn-primary"

@@ -10,7 +10,6 @@ using System.Security.Claims;
 
 namespace Web.Server.Services;
 
-
 public class ServerASP : RevalidatingServerAuthenticationStateProvider
 {
 	private readonly IServiceScopeFactory _scopeFactory;
@@ -72,14 +71,8 @@ public class ServerASP : RevalidatingServerAuthenticationStateProvider
 
 		if (principal.Identity?.IsAuthenticated == true)
 		{
-			// ToDo: Clean it
-			var userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
-			var name = principal.FindFirst("name")?.Value;
-
-			if (userId != null && name != null)
-			{
-				_state.PersistAsJson(nameof(UserInfo), UserInfo.BuildFromClaimPrincipal(principal));
-			}
+			var userInfo = UserInfo.BuildUserInfo(principal);
+			_state.PersistAsJson(nameof(UserInfo), userInfo);
 		}
 	}
 

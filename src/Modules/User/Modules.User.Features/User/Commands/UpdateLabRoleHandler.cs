@@ -14,7 +14,6 @@ internal class UpdateLabRoleHandler(IUserContext context) : IRequestHandler<Upda
 
 		role.Name = request.Name;
 		role.Description = request.Description;
-		role.AutoAssign = request.AutoAssign;
 
 		context.LabRoles.Update(role);
 		await context.SaveChangesAsync(cancellationToken);

@@ -23,7 +23,6 @@
 			Id = Role.Id,
 			Name = Role.Name,
 			Description = Role.Description,
-			AutoAssign = Role.AutoAssign
 		};
 
 		editContext = new(editRoleRequest);
@@ -95,7 +94,7 @@
 		<label class="form-control w-full cursor-pointer">
 			<span class="label justify-start gap-4">
 				<span class="label-text">Auto Assign</span>
-				<InputCheckbox @bind-Value="editRoleRequest.AutoAssign" class="checkbox" />
+				<InputCheckbox @bind-Value="editRoleRequest.AutoAssign" class="checkbox" disabled />
 			</span>
 			<ValidationMessage For="() => editRoleRequest.AutoAssign" class="text-red-500 text-sm italic" />
 		</label>

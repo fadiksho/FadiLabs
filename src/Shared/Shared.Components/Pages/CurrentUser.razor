@@ -1,9 +1,24 @@
 @page "/current-user"
-@code {
+@using Modules.Shared.Integration.Models
+@using Modules.User.Integration.User.Queries
 
+@attribute [StreamRendering]
+@attribute [LabAuthorize]
+@code {
+	[Inject]
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
+	private Result<PagedList<GetLabRolesResponse>> getLabRolesResult;
+
+	protected override async Task OnInitializedAsync()
+	{
+		getLabRolesResult = await ServiceExecutor
+			.ExecuteAsync(nameof(GetLabRoles), x => x.Send(new GetLabRoles()));
+	}
 }
 
 <Papper>
+	<RenderingContextMessage />
 	<LoadingTitle Title="User Principal" />
 	<AuthorizeView>
 		<Authorized>
@@ -38,8 +53,12 @@
 											<td>@identity?.AuthenticationType</td>
 										</tr>
 										<tr>
-											<td>@nameof(identity.Name)</td>
+											<td>@nameof(identity.NameClaimType)</td>
 											<td>@(identity?.Name ?? "Name claim not found!")</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.RoleClaimType)</td>
+											<td>@(identity?.Claims.FirstOrDefault(x => x.Type == identity.RoleClaimType)?.Value ?? "Role claim not found!")</td>
 										</tr>
 									</tbody>
 								</table>
@@ -92,93 +111,29 @@
 
 	<LabAuthorizeView>
 		<Authorized>
+			<text>Permissions: </text>
 			<div class="flex flex-wrap gap-1">
 				<span class="badge badge-neutral">@context.User.GetPermissions()</span>
 			</div>
-
 		</Authorized>
 	</LabAuthorizeView>
 
-
-	<LabAuthorizeView Roles="Lab User, Admin" Context="context1">
-		<Authorized>
-			<LabAuthorizeView Roles="Admin">
-				<Authorized>
-					<p class="text-success">
-						Is in Role 'Admin'
-					</p>
-				</Authorized>
-				<NotAuthorized>
-					<p class="text-error">
-						Is in Role 'Admin'
-					</p>
-				</NotAuthorized>
-			</LabAuthorizeView>
-			<LabAuthorizeView Roles="Lab User">
-				<Authorized>
-					<p class="text-success">
-						Is in Role 'Lab User'
-					</p>
-				</Authorized>
-				<NotAuthorized>
-					<p class="text-error">
-						Is in Role 'Lab User'
-					</p>
-				</NotAuthorized>
-			</LabAuthorizeView>
-		</Authorized>
-		<NotAuthorized>
-			<p class="text-error">
-				Is in Role 'Admin' or 'Lab User'
-			</p>
-		</NotAuthorized>
-	</LabAuthorizeView>
-
-	<LabAuthorizeView>
-		@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
-		{
-			if (context.User.HasLabPermission(permission))
+	@if (getLabRolesResult.IsSuccess)
+	{
+		<text>Roles: </text>
+		<div class="flex flex-wrap gap-1">
+			@foreach (var labRole in getLabRolesResult.Entity.Items)
 			{
-				<p class="text-success">
-					Has permission '@permission'
-				</p>
-			}
-			else
-			{
-				<p class="text-error">
-					Has permission '@permission'
-				</p>
-			}
-		}
-	</LabAuthorizeView>
+				<AuthorizeView Roles="@labRole.Name">
+					<Authorized>
+						<span class="badge badge-success">@labRole.Name</span>
+					</Authorized>
 
-	<LabAuthorizeView>
-		@if (context.User.HasLabPermission(LabsPermissions.BlogOwner | LabsPermissions.ConfigureSite))
-		{
-			<p class="text-success">
-				Has permission to '@LabsPermissions.BlogOwner' | '@LabsPermissions.ConfigureSite'
-			</p>
-		}
-		else
-		{
-			<p class="text-error">
-				Has permission to '@LabsPermissions.BlogOwner' | '@LabsPermissions.ConfigureSite'
-			</p>
-		}
-	</LabAuthorizeView>
-
-	<LabAuthorizeView>
-		@if (context.User.HasLabPermission(LabsPermissions.BlogOwner) && context.User.HasLabPermission(LabsPermissions.ConfigureSite))
-		{
-			<p class="text-success">
-				Has permission to '@LabsPermissions.BlogOwner' & '@LabsPermissions.ConfigureSite'
-			</p>
-		}
-		else
-		{
-			<p class="text-error">
-				Has permission to '@LabsPermissions.BlogOwner' & '@LabsPermissions.ConfigureSite'
-			</p>
-		}
-	</LabAuthorizeView>
+					<NotAuthorized>
+						<span class="badge badge-error">@labRole.Name</span>
+					</NotAuthorized>
+				</AuthorizeView>
+			}
+		</div>
+	}
 </Papper>

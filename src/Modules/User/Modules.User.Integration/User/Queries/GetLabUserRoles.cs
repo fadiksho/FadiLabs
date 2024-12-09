@@ -1,6 +1,6 @@
 ﻿namespace Modules.User.Integration.User.Queries;
 
-[LabAuthorize(LabsPermissions.ConfigureSite)]
+//[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record GetLabUserRoles : IRequest<Result<GetLabUserRolesResponse>>
 {
 	public required string Auth0UserId { get; set; }

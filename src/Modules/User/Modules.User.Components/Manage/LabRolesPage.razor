@@ -45,7 +45,8 @@
 		{
 			Id = roleCreated.createLabRoleResponse.LabRoleId,
 			Name = roleCreated.createLabRole.Name,
-			Description = roleCreated.createLabRole.Description
+			Description = roleCreated.createLabRole.Description,
+			AutoAssign = roleCreated.createLabRole.AutoAssign
 		});
 	}
 
@@ -83,6 +84,7 @@
 						<th>Id</th>
 						<th>Name</th>
 						<th>Description</th>
+						<th>AutoAssign</th>
 						<th class="p-0 text-end">
 							#
 						</th>
@@ -95,6 +97,7 @@
 							<td>@role.Id</td>
 							<td>@role.Name</td>
 							<td>@role.Description</td>
+							<td>@role.AutoAssign</td>
 							<th class="p-0">
 								<div class="flex justify-end">
 									<div class="join">
