@@ -10,6 +10,7 @@
 	  <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
 	  <PackageReference Include="Auth0Net.DependencyInjection" Version="4.0.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
