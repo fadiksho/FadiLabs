@@ -35,10 +35,10 @@ app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
 app.UseHttpsRedirection();
 
-app.UseAntiforgery();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapBlazorApp()

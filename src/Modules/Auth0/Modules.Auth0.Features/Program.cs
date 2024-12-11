@@ -263,26 +263,12 @@ public static class Program
 
 			// ........................................................................
 			oidcOptions.Authority = $"https://{_auth0Options.Domain}";
-			// ........................................................................
-
-			// ........................................................................
-			// Set the Client ID for the app. Set the {CLIENT ID} placeholder to
-			// the Client ID.
 			oidcOptions.ClientId = _auth0Options.ClientId;
-			// ........................................................................
-
-			// ........................................................................
-			// Setting ResponseType to "code" configures the OIDC handler to use 
-			// authorization code flow. Implicit grants and hybrid flows are unnecessary
-			// in this mode.
 			oidcOptions.ResponseType = OpenIdConnectResponseType.IdToken;
-			// ........................................................................
 
+			//oidcOptions.ClientSecret = _auth0Options.ClientSecret;
+			//oidcOptions.ResponseType = OpenIdConnectResponseType.Code;
 			// ........................................................................
-			// Set MapInboundClaims to "false" to obtain the original claim types from 
-			// the token. Many OIDC servers use "name" and "role"/"roles" rather than 
-			// the SOAP/WS-Fed defaults in ClaimTypes. Adjust these values if your 
-			// identity provider uses different claim types.
 
 			oidcOptions.MapInboundClaims = false;
 			oidcOptions.TokenValidationParameters.NameClaimType = SharedConstents.LabsClaimTypes.Name;
@@ -310,14 +296,52 @@ public static class Program
 			// use the refresh token to obtain a new access token on access token
 			// expiration.
 			// ........................................................................
+
 			oidcOptions.AccessDeniedPath = new PathString("/account/access-denied");
 			oidcOptions.Events.OnRedirectToIdentityProvider = context =>
 			{
+				context.ProtocolMessage.SetParameter("audience", _auth0Options.Audience);
 				if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
 				{
 					context.ProtocolMessage.RedirectUri = $"{_devTunnelOptions.Url}{oidcOptions.CallbackPath}";
 				}
 
+				return Task.CompletedTask;
+			};
+			oidcOptions.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
+			{
+				var logoutUri = $"https://{_auth0Options.Domain}/v2/logout?client_id={_auth0Options.ClientId}";
+
+				var postLogoutUri = context.Properties.RedirectUri;
+				if (!string.IsNullOrEmpty(postLogoutUri))
+				{
+					if (postLogoutUri.StartsWith("/"))
+					{
+						// transform to absolute
+						var request = context.Request;
+						postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
+					}
+
+					//logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
+				}
+
+				context.Response.Redirect(logoutUri);
+				context.HandleResponse();
+
+				return Task.CompletedTask;
+			};
+			oidcOptions.Events.OnAccessDenied = context =>
+			{
+				context.Request.Form.TryGetValue("error_description", out var errorMessage); ;
+
+				return Task.CompletedTask;
+			};
+			oidcOptions.Events.OnRemoteFailure = context =>
+			{
+				return Task.CompletedTask;
+			};
+			oidcOptions.Events.OnAuthenticationFailed = context =>
+			{
 				return Task.CompletedTask;
 			};
 		})
@@ -329,7 +353,11 @@ public static class Program
 			.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
 			.Configure<CookieOidcRefresher>((cookieOptions, refresher) =>
 			{
+				cookieOptions.AccessDeniedPath = "/account/access-denied";
+				cookieOptions.LogoutPath = "/account/logout";
+				cookieOptions.LoginPath = "/account/login";
 				cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
+
 			});
 
 		services.AddOptions<OpenIdConnectOptions>("Auth0").Configure(oidcOptions =>

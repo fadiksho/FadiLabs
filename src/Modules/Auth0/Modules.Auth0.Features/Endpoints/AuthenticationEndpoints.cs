@@ -39,18 +39,19 @@ internal static class AuthenticationEndpoints
 	{
 		var loginLogoutEndpoints = endpoints.MapGroup("/account");
 
-		loginLogoutEndpoints.MapGet("/login", async (HttpContext httpContext, string? returnUrl) =>
+		loginLogoutEndpoints.MapGet("/login", (string? returnUrl) =>
 		{
 			var authenticationProperties = GetAuthProperties(returnUrl);
 
-			await httpContext.ChallengeAsync("Auth0", authenticationProperties);
+			return TypedResults.Challenge(authenticationProperties, ["Auth0"]);
 		});
 
-		// Sign out of the Cookie and OIDC handlers. If you do not sign out with the OIDC handler,
-		// the user will automatically be signed back in the next time they visit a page that requires authentication
-		// without being able to choose another account.
-		loginLogoutEndpoints.MapPost("/logout", ([FromForm] string? returnUrl) => TypedResults.SignOut(GetAuthProperties(returnUrl),
-				[CookieAuthenticationDefaults.AuthenticationScheme, "Auth0"]));
+		loginLogoutEndpoints.MapPost("/logout", ([FromForm] string? returnUrl) =>
+		{
+			var authenticationProperties = GetAuthProperties(returnUrl);
+
+			return TypedResults.SignOut(authenticationProperties, [CookieAuthenticationDefaults.AuthenticationScheme, "Auth0"]);
+		});
 
 		return loginLogoutEndpoints;
 	}
