@@ -9,7 +9,6 @@ using Fadi.Result.Errors;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -246,13 +245,15 @@ public static class Program
 			oidcOptions.Scope.Clear();
 			oidcOptions.Scope.Add(OpenIdConnectScope.OpenIdProfile);
 			oidcOptions.Scope.Add(OpenIdConnectScope.Email);
+			oidcOptions.Scope.Add(OpenIdConnectScope.OfflineAccess);
 			// ........................................................................
 
 			// ........................................................................
 			// The following paths must match the redirect and post logout redirect 
-			// paths configured when registering the application with the OIDC provider. 
-			oidcOptions.CallbackPath = new PathString("/callback"); ;
-			//oidcOptions.SignedOutCallbackPath = new PathString("/signout-callback-oidc");
+			// paths configured when registering the application with the OIDC provider.
+			// The default value is "/signin-oidc".
+			oidcOptions.CallbackPath = new PathString("/signin-oidc");
+			oidcOptions.SignedOutCallbackPath = new PathString("/signout-callback-oidc");
 			// ........................................................................
 
 			// ........................................................................
@@ -264,43 +265,21 @@ public static class Program
 			// ........................................................................
 			oidcOptions.Authority = $"https://{_auth0Options.Domain}";
 			oidcOptions.ClientId = _auth0Options.ClientId;
-			oidcOptions.ResponseType = OpenIdConnectResponseType.IdToken;
+			oidcOptions.ClientSecret = _auth0Options.ClientSecret;
+			oidcOptions.ResponseType = OpenIdConnectResponseType.Code;
 
-			//oidcOptions.ClientSecret = _auth0Options.ClientSecret;
-			//oidcOptions.ResponseType = OpenIdConnectResponseType.Code;
+			oidcOptions.SaveTokens = true;
 			// ........................................................................
 
 			oidcOptions.MapInboundClaims = false;
 			oidcOptions.TokenValidationParameters.NameClaimType = SharedConstents.LabsClaimTypes.Name;
 			oidcOptions.TokenValidationParameters.RoleClaimType = SharedConstents.LabsClaimTypes.Role;
-			// ........................................................................
-
-			// ........................................................................
-			// Many OIDC providers work with the default issuer validator, but the
-			// configuration must account for the issuer parameterized with "{TENANT ID}" 
-			// returned by the "common" endpoint's /.well-known/openid-configuration
-			// For more information, see
-			// https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/1731
-
-			//var microsoftIssuerValidator = AadIssuerValidator.GetAadIssuerValidator(oidcOptions.Authority);
-			//oidcOptions.TokenValidationParameters.IssuerValidator = microsoftIssuerValidator.Validate;
-			// ........................................................................
-
-			// ........................................................................
-			// OIDC connect options set later via ConfigureCookieOidcRefresh
-			//
-			// (1) The "offline_access" scope is required for the refresh token.
-			//
-			// (2) SaveTokens is set to true, which saves the access and refresh tokens
-			// in the cookie, so the app can authenticate requests for weather data and
-			// use the refresh token to obtain a new access token on access token
-			// expiration.
-			// ........................................................................
 
 			oidcOptions.AccessDeniedPath = new PathString("/account/access-denied");
 			oidcOptions.Events.OnRedirectToIdentityProvider = context =>
 			{
 				context.ProtocolMessage.SetParameter("audience", _auth0Options.Audience);
+
 				if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
 				{
 					context.ProtocolMessage.RedirectUri = $"{_devTunnelOptions.Url}{oidcOptions.CallbackPath}";
@@ -308,31 +287,31 @@ public static class Program
 
 				return Task.CompletedTask;
 			};
-			oidcOptions.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
-			{
-				var logoutUri = $"https://{_auth0Options.Domain}/v2/logout?client_id={_auth0Options.ClientId}";
+			//oidcOptions.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
+			//{
+			//	var logoutUri = $"https://{_auth0Options.Domain}/v2/logout?client_id={_auth0Options.ClientId}";
 
-				var postLogoutUri = context.Properties.RedirectUri;
-				if (!string.IsNullOrEmpty(postLogoutUri))
-				{
-					if (postLogoutUri.StartsWith("/"))
-					{
-						// transform to absolute
-						var request = context.Request;
-						postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
-					}
+			//	var postLogoutUri = context.Properties.RedirectUri;
+			//	if (!string.IsNullOrEmpty(postLogoutUri))
+			//	{
+			//		if (postLogoutUri.StartsWith("/"))
+			//		{
+			//			// transform to absolute
+			//			var request = context.Request;
+			//			postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
+			//		}
 
-					//logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
-				}
+			//		//logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
+			//	}
 
-				context.Response.Redirect(logoutUri);
-				context.HandleResponse();
+			//	context.Response.Redirect(logoutUri);
+			//	context.HandleResponse();
 
-				return Task.CompletedTask;
-			};
+			//	return Task.CompletedTask;
+			//};
 			oidcOptions.Events.OnAccessDenied = context =>
 			{
-				context.Request.Form.TryGetValue("error_description", out var errorMessage); ;
+				context.Request.Form.TryGetValue("error_description", out var errorMessage);
 
 				return Task.CompletedTask;
 			};
@@ -341,6 +320,10 @@ public static class Program
 				return Task.CompletedTask;
 			};
 			oidcOptions.Events.OnAuthenticationFailed = context =>
+			{
+				return Task.CompletedTask;
+			};
+			oidcOptions.Events.OnTokenValidated = context =>
 			{
 				return Task.CompletedTask;
 			};
@@ -356,17 +339,9 @@ public static class Program
 				cookieOptions.AccessDeniedPath = "/account/access-denied";
 				cookieOptions.LogoutPath = "/account/logout";
 				cookieOptions.LoginPath = "/account/login";
+				//cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
 				cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
-
 			});
-
-		services.AddOptions<OpenIdConnectOptions>("Auth0").Configure(oidcOptions =>
-		{
-			// Request a refresh_token.
-			oidcOptions.Scope.Add(OpenIdConnectScope.OfflineAccess);
-			// Store the refresh_token.
-			oidcOptions.SaveTokens = true;
-		});
 	}
 
 	private static bool IsAjaxRequest(HttpRequest request)

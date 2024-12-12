@@ -42,7 +42,13 @@ internal static class Auth0TriggersEndponts
 				Auth0UserId = request.Auth0UserId
 			};
 
-			return await mediator.Send(getUserLabRole);
+			var getUserLabRoleResult = await mediator.Send(getUserLabRole);
+			if (getUserLabRoleResult.IsSuccess)
+			{
+				var userPermission = getUserLabRoleResult.Entity.CombinedRolesPermissions;
+			}
+
+			return getUserLabRoleResult;
 		});
 
 		return endpoints;
