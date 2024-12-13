@@ -268,7 +268,7 @@ public static class Program
 			oidcOptions.ClientSecret = _auth0Options.ClientSecret;
 			oidcOptions.ResponseType = OpenIdConnectResponseType.Code;
 
-			oidcOptions.SaveTokens = true;
+			oidcOptions.SaveTokens = false;
 			// ........................................................................
 
 			oidcOptions.MapInboundClaims = false;
@@ -278,7 +278,7 @@ public static class Program
 			oidcOptions.AccessDeniedPath = new PathString("/account/access-denied");
 			oidcOptions.Events.OnRedirectToIdentityProvider = context =>
 			{
-				context.ProtocolMessage.SetParameter("audience", _auth0Options.Audience);
+				//context.ProtocolMessage.SetParameter("audience", _auth0Options.Audience);
 
 				if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
 				{
@@ -287,28 +287,53 @@ public static class Program
 
 				return Task.CompletedTask;
 			};
-			//oidcOptions.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
-			//{
-			//	var logoutUri = $"https://{_auth0Options.Domain}/v2/logout?client_id={_auth0Options.ClientId}";
 
-			//	var postLogoutUri = context.Properties.RedirectUri;
-			//	if (!string.IsNullOrEmpty(postLogoutUri))
-			//	{
-			//		if (postLogoutUri.StartsWith("/"))
-			//		{
-			//			// transform to absolute
-			//			var request = context.Request;
-			//			postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
-			//		}
+			oidcOptions.Events.OnTokenResponseReceived = context =>
+			{
+				var tokens = new List<AuthenticationToken>();
 
-			//		//logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
-			//	}
+				if (!string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken))
+				{
+					tokens.Add(new AuthenticationToken
+					{
+						Name = OpenIdConnectParameterNames.IdToken,
+						Value = context.TokenEndpointResponse.IdToken,
+					});
 
-			//	context.Response.Redirect(logoutUri);
-			//	context.HandleResponse();
+					// Decode the id_token to get the expiration time
+					var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+					var jwtToken = handler.ReadJwtToken(context.TokenEndpointResponse.IdToken);
 
-			//	return Task.CompletedTask;
-			//};
+					// Extract the exp claim (Unix timestamp)
+					var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+
+					if (long.TryParse(expClaim, out var expUnix))
+					{
+						// Convert to DateTimeOffset
+						var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expUnix);
+
+						// Store expiration time in AuthenticationProperties
+						tokens.Add(new AuthenticationToken
+						{
+							Name = "id_token_expiration",
+							Value = expirationTime.ToString("o")
+						});
+					}
+				}
+
+				if (!string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken))
+				{
+					tokens.Add(new AuthenticationToken
+					{
+						Name = OpenIdConnectParameterNames.RefreshToken,
+						Value = context.TokenEndpointResponse.RefreshToken
+					});
+				}
+
+				context.Properties?.StoreTokens(tokens);
+
+				return Task.CompletedTask;
+			};
 			oidcOptions.Events.OnAccessDenied = context =>
 			{
 				context.Request.Form.TryGetValue("error_description", out var errorMessage);
@@ -340,7 +365,7 @@ public static class Program
 				cookieOptions.LogoutPath = "/account/logout";
 				cookieOptions.LoginPath = "/account/login";
 				//cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
-				cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
+				cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateIdTokenOrRefreshCookieAsync(context, "Auth0");
 			});
 	}
 

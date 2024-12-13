@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Models;
 using Shared.Components.Services;
-using System.Diagnostics;
 
 namespace Modules.Blog.Components.Post.Pages;
-public partial class PostsPage(IUIBus bus, NavigationManager navigation)
+public partial class PostsPage(IServiceExecutor<IUIBus> serviceExecutor, NavigationManager navigation)
 {
 	[Parameter]
 	[SupplyParameterFromQuery(Name = "page")]
@@ -20,22 +19,21 @@ public partial class PostsPage(IUIBus bus, NavigationManager navigation)
 	[SupplyParameterFromQuery(Name = "q")]
 	public string SearchQuery { get; set; } = string.Empty;
 
-	private Result<PagedList<GetPostsResponse>> _result = new();
+	private Result<PagedList<GetPostsResponse>> _result;
 
 	protected override async Task OnParametersSetAsync()
 	{
-		Debug.WriteLine($"{nameof(OnParametersSetAsync)}");
 		if (Page <= 0)
 		{
 			Page = 1;
 		}
 
-		_result = await bus.Send(new GetPosts
+		_result = await serviceExecutor.ExecuteAsync(nameof(GetPosts), x => x.Send(new GetPosts
 		{
 			PageNumber = Page,
 			Tag = Tag,
 			Search = SearchQuery
-		});
+		}));
 	}
 
 	private string GetClearFilterLink(string filterKey)

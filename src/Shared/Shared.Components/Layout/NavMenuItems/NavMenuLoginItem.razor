@@ -1,5 +1,4 @@
 @inject IAuthService AuthService
-@inject NavigationManager Navigation
 
 <AuthorizeView>
 	<Authorized>
@@ -29,7 +28,6 @@
 						{
 							<form action="account/logout" method="post" class="p-0 block">
 								<AntiforgeryToken />
-								<input type="hidden" name="ReturnUrl" value="@currentUrl" />
 								<button type="submit" class="btn btn-ghost btn-block justify-start min-h-2 h-auto py-2 leading-5">
 									Logout
 								</button>
@@ -44,13 +42,6 @@
 
 @code
 {
-	private string? currentUrl;
-
-	protected override void OnInitialized()
-	{
-		currentUrl = Navigation.Uri;
-	}
-
 	public async void Logout()
 	{
 		await AuthService.DeAuthenticateAsync();

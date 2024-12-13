@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
 namespace Modules.Auth0.Features.Endpoints;
@@ -46,9 +45,9 @@ internal static class AuthenticationEndpoints
 			return TypedResults.Challenge(authenticationProperties, ["Auth0"]);
 		});
 
-		loginLogoutEndpoints.MapPost("/logout", ([FromForm] string? returnUrl) =>
+		loginLogoutEndpoints.MapPost("/logout", () =>
 		{
-			var authenticationProperties = GetAuthProperties(returnUrl);
+			var authenticationProperties = GetAuthProperties("/");
 
 			return TypedResults.SignOut(authenticationProperties, [CookieAuthenticationDefaults.AuthenticationScheme, "Auth0"]);
 		});

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Modules.Auth0.Integration.Configuration;
 using Shared.Components.Services;
+using Shared.Integration.Services;
 using System.Reflection;
 
 namespace Maui.Startup.Extensions;
@@ -36,6 +37,7 @@ internal static class ServiceCollectionExtensions
 		services.AddScoped<AuthenticationStateProvider, MauiASP>();
 		services.AddScoped<IAuthService, MauiAuthService>();
 		services.AddSingleton<MauiUserService>();
+		services.AddScoped<ITokenService, MauiTokenService>();
 
 #if ANDROID
 

@@ -2,10 +2,11 @@
 @page "/blog/{page:int}"
 
 @attribute [StreamRendering]
+@rendermode InteractiveWebAssembly
 
 <PageTitle>Latest Post</PageTitle>
 
-<NavBarLoading Show="!_result.IsDefined" />
+<NavBarLoading Show="@(!_result.IsDefined || serviceExecutor.IsRequestLoading(nameof(GetPosts)))" />
 
 <div class="flex flex-col">
 	<div class="flex flex-col gap-4">

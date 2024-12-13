@@ -42,7 +42,7 @@ public static class ServiceCollectionExtensions
 
 		services.AddScoped<IMessageSender, ServerMessageSender>();
 		services.AddScoped<ICurrentUser, ServerCurrentUser>();
-
+		services.AddScoped<ITokenService, ServerTokenService>();
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 		services.AddHybridCache();
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.

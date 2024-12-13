@@ -6,8 +6,8 @@ using System.Security.Claims;
 
 namespace Shared.Features.Services.Implementaions;
 
-public class ServerCurrentUser(
-	IHttpContextAccessor httpContextAccessor) : ICurrentUser
+public class ServerCurrentUser
+	(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
 	private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 

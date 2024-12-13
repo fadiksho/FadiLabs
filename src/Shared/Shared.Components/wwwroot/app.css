@@ -3684,6 +3684,10 @@ details.collapse summary::-webkit-details-marker {
   overflow-x: auto;
 }
 
+.whitespace-break-spaces {
+  white-space: break-spaces;
+}
+
 .break-words {
   overflow-wrap: break-word;
 }

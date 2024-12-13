@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -23,6 +24,7 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
 	public async Task ValidateOrRefreshCookieAsync(CookieValidatePrincipalContext validateContext, string oidcScheme)
 	{
 		var accessTokenExpirationText = validateContext.Properties.GetTokenValue("expires_at");
+
 		if (!DateTimeOffset.TryParse(accessTokenExpirationText, out var accessTokenExpiration))
 		{
 			return;
@@ -101,32 +103,37 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
 				]);
 	}
 
-	public async Task ValidatePermissionOrRefreshCookieAsync(CookieValidatePrincipalContext validateContext, string oidcScheme)
+	public async Task ValidateIdTokenOrRefreshCookieAsync(CookieValidatePrincipalContext validateContext, string oidcScheme)
 	{
-		var oidcOptions = oidcOptionsMonitor.Get(oidcScheme);
-		var now = oidcOptions.TimeProvider!.GetUtcNow();
-		var accessTokenExpirationText = validateContext.Properties.GetTokenValue("expires_at");
-		var forceRefresh = false;
+		// Retrieve the stored expiration time for the id_token
+		var idTokenExpirationText = validateContext.Properties.GetTokenValue("id_token_expiration");
 
-		if (true)
-		{
-			forceRefresh = true;
-			validateContext.RejectPrincipal();
-		}
-
-		if (!DateTimeOffset.TryParse(accessTokenExpirationText, out var accessTokenExpiration))
+		if (!DateTimeOffset.TryParse(idTokenExpirationText, out var idTokenExpiration))
 		{
 			return;
 		}
 
-		if (now + TimeSpan.FromMinutes(5) < accessTokenExpiration && !forceRefresh)
+		var oidcOptions = oidcOptionsMonitor.Get(oidcScheme);
+		var now = oidcOptions.TimeProvider!.GetUtcNow();
+
+		Debug.WriteLine((now - idTokenExpiration));
+		// Check if the token is close to expiration (5-minute buffer)
+		if (now + TimeSpan.FromMinutes(5) < idTokenExpiration)
 		{
 			return;
 		}
 
 		var oidcConfiguration = await oidcOptions.ConfigurationManager!.GetConfigurationAsync(validateContext.HttpContext.RequestAborted);
 		var tokenEndpoint = oidcConfiguration.TokenEndpoint
-			?? throw new InvalidOperationException("Cannot refresh cookie. TokenEndpoint missing!");
+				?? throw new InvalidOperationException("Cannot refresh id_token. TokenEndpoint missing!");
+
+		// Use the refresh token to obtain a new id_token
+		var refreshToken = validateContext.Properties.GetTokenValue("refresh_token");
+		if (string.IsNullOrEmpty(refreshToken))
+		{
+			validateContext.RejectPrincipal(); // If no refresh token is present, reject the principal
+			return;
+		}
 
 		using var refreshResponse = await oidcOptions.Backchannel.PostAsync(tokenEndpoint,
 				new FormUrlEncodedContent(new Dictionary<string, string?>()
@@ -135,18 +142,19 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
 					["client_id"] = oidcOptions.ClientId,
 					["client_secret"] = oidcOptions.ClientSecret,
 					["scope"] = string.Join(" ", oidcOptions.Scope),
-					["refresh_token"] = validateContext.Properties.GetTokenValue("refresh_token"),
+					["refresh_token"] = refreshToken,
 				}));
 
 		if (!refreshResponse.IsSuccessStatusCode)
 		{
-			validateContext.RejectPrincipal();
+			validateContext.RejectPrincipal(); // Reject if the refresh request fails
 			return;
 		}
 
 		var refreshJson = await refreshResponse.Content.ReadAsStringAsync();
 		var message = new OpenIdConnectMessage(refreshJson);
 
+		// Validate the new id_token
 		var validationParameters = oidcOptions.TokenValidationParameters.Clone();
 		if (oidcOptions.ConfigurationManager is BaseConfigurationManager baseConfigurationManager)
 		{
@@ -175,17 +183,24 @@ internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> 
 			ValidatedIdToken = validatedIdToken,
 		});
 
+		// Replace the principal and update the tokens
 		validateContext.ShouldRenew = true;
 		validateContext.ReplacePrincipal(new ClaimsPrincipal(validationResult.ClaimsIdentity));
 
-		var expiresIn = int.Parse(message.ExpiresIn, NumberStyles.Integer, CultureInfo.InvariantCulture);
-		var expiresAt = now + TimeSpan.FromSeconds(expiresIn);
-		validateContext.Properties.StoreTokens([
-						new() { Name = "access_token", Value = message.AccessToken },
-						new() { Name = "id_token", Value = message.IdToken },
-						new() { Name = "refresh_token", Value = message.RefreshToken },
-						new() { Name = "token_type", Value = message.TokenType },
-						new() { Name = "expires_at", Value = expiresAt.ToString("o", CultureInfo.InvariantCulture) },
-				]);
+		// Extract the exp claim
+		var expClaim = validationResult.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == "exp")?.Value;
+
+		if (long.TryParse(expClaim, out var expUnix))
+		{
+			// Convert to DateTimeOffset
+			idTokenExpiration = DateTimeOffset.FromUnixTimeSeconds(expUnix);
+		}
+
+		validateContext.Properties.StoreTokens(
+		[
+				new() { Name = "id_token", Value = message.IdToken },
+				new() { Name = "refresh_token", Value = message.RefreshToken },
+				new() { Name = "id_token_expiration", Value = idTokenExpiration.ToString("o", CultureInfo.InvariantCulture) }
+		]);
 	}
 }
