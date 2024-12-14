@@ -40,6 +40,17 @@ public static class ClaimPrincipalExtensions
 		return (LabsPermissions)permissionClaimValue;
 	}
 
+	public static DateTimeOffset? GetIdTokenExpiration(this ClaimsPrincipal principal)
+	{
+		var idTokenExpirationText = principal.FindFirst("exp")?.Value;
+		if (!long.TryParse(idTokenExpirationText, out long expUnixTime))
+		{
+			return null;
+		}
+
+		return DateTimeOffset.FromUnixTimeSeconds(expUnixTime);
+	}
+
 	/// <summary>
 	/// Checks if the specified permission(s) are set in the user's permissions.
 	/// </summary>

@@ -12,7 +12,8 @@ using System.Security.Claims;
 
 namespace Modules.Auth0.Features.Services.Implementaions;
 
-internal sealed class CookieOidcRefresher(IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor)
+internal sealed class CookieOidcRefresher(
+	IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor)
 {
 	private readonly OpenIdConnectProtocolValidator _oidcTokenValidator = new()
 	{

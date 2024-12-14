@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
 using Modules.Auth0.Components;
 using Modules.Auth0.Features.Endpoints;
+using Modules.Auth0.Features.Services;
 using Modules.Auth0.Features.Services.Implementaions;
 using Modules.Auth0.Features.Utils;
 using Modules.Auth0.Integration.Configuration;
@@ -231,43 +232,29 @@ public static class Program
 		var _auth0Options = config.GetSection(Auth0Configuration.SectionName)
 			.Get<Auth0Configuration>() ?? new();
 
-		var _devTunnelOptions = config.GetSection(DevTunnelConfiguration.SectionName)
-			.Get<DevTunnelConfiguration>() ?? new();
-
 		builder.AddOpenIdConnect("Auth0", oidcOptions =>
 		{
 			oidcOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 			// ........................................................................
-
-			// ........................................................................
-			// The "openid" and "profile" scopes are required for the OIDC handler 
-			// and included by default.
 			oidcOptions.Scope.Clear();
 			oidcOptions.Scope.Add(OpenIdConnectScope.OpenIdProfile);
-			oidcOptions.Scope.Add(OpenIdConnectScope.Email);
 			oidcOptions.Scope.Add(OpenIdConnectScope.OfflineAccess);
 			// ........................................................................
-
-			// ........................................................................
-			// The following paths must match the redirect and post logout redirect 
-			// paths configured when registering the application with the OIDC provider.
-			// The default value is "/signin-oidc".
 			oidcOptions.CallbackPath = new PathString("/signin-oidc");
 			oidcOptions.SignedOutCallbackPath = new PathString("/signout-callback-oidc");
-			// ........................................................................
-
-			// ........................................................................
-			// The RemoteSignOutPath is the "Front-channel logout URL" for remote single 
-			// sign-out. The default value is "/signout-oidc".
-			//oidcOptions.RemoteSignOutPath = new PathString("/signout-oidc");
-			// ........................................................................
-
+			oidcOptions.RemoteSignOutPath = new PathString("/signout-oidc");
+			oidcOptions.AccessDeniedPath = new PathString("/account/access-denied");
 			// ........................................................................
 			oidcOptions.Authority = $"https://{_auth0Options.Domain}";
 			oidcOptions.ClientId = _auth0Options.ClientId;
 			oidcOptions.ClientSecret = _auth0Options.ClientSecret;
 			oidcOptions.ResponseType = OpenIdConnectResponseType.Code;
 
+			// Include (exp, iat) claim in user claims!
+			oidcOptions.ClaimActions.Remove("exp");
+			oidcOptions.ClaimActions.Remove("iat");
+
+			oidcOptions.GetClaimsFromUserInfoEndpoint = false;
 			oidcOptions.SaveTokens = false;
 			// ........................................................................
 
@@ -275,98 +262,30 @@ public static class Program
 			oidcOptions.TokenValidationParameters.NameClaimType = SharedConstents.LabsClaimTypes.Name;
 			oidcOptions.TokenValidationParameters.RoleClaimType = SharedConstents.LabsClaimTypes.Role;
 
-			oidcOptions.AccessDeniedPath = new PathString("/account/access-denied");
-			oidcOptions.Events.OnRedirectToIdentityProvider = context =>
-			{
-				//context.ProtocolMessage.SetParameter("audience", _auth0Options.Audience);
-
-				if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
-				{
-					context.ProtocolMessage.RedirectUri = $"{_devTunnelOptions.Url}{oidcOptions.CallbackPath}";
-				}
-
-				return Task.CompletedTask;
-			};
-
-			oidcOptions.Events.OnTokenResponseReceived = context =>
-			{
-				var tokens = new List<AuthenticationToken>();
-
-				if (!string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken))
-				{
-					tokens.Add(new AuthenticationToken
-					{
-						Name = OpenIdConnectParameterNames.IdToken,
-						Value = context.TokenEndpointResponse.IdToken,
-					});
-
-					// Decode the id_token to get the expiration time
-					var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-					var jwtToken = handler.ReadJwtToken(context.TokenEndpointResponse.IdToken);
-
-					// Extract the exp claim (Unix timestamp)
-					var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
-
-					if (long.TryParse(expClaim, out var expUnix))
-					{
-						// Convert to DateTimeOffset
-						var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expUnix);
-
-						// Store expiration time in AuthenticationProperties
-						tokens.Add(new AuthenticationToken
-						{
-							Name = "id_token_expiration",
-							Value = expirationTime.ToString("o")
-						});
-					}
-				}
-
-				if (!string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken))
-				{
-					tokens.Add(new AuthenticationToken
-					{
-						Name = OpenIdConnectParameterNames.RefreshToken,
-						Value = context.TokenEndpointResponse.RefreshToken
-					});
-				}
-
-				context.Properties?.StoreTokens(tokens);
-
-				return Task.CompletedTask;
-			};
-			oidcOptions.Events.OnAccessDenied = context =>
-			{
-				context.Request.Form.TryGetValue("error_description", out var errorMessage);
-
-				return Task.CompletedTask;
-			};
-			oidcOptions.Events.OnRemoteFailure = context =>
-			{
-				return Task.CompletedTask;
-			};
-			oidcOptions.Events.OnAuthenticationFailed = context =>
-			{
-				return Task.CompletedTask;
-			};
-			oidcOptions.Events.OnTokenValidated = context =>
-			{
-				return Task.CompletedTask;
-			};
+			oidcOptions.EventsType = typeof(CustomOpenIdConnectEvents);
 		})
-			.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
-
-		services.AddSingleton<CookieOidcRefresher>();
-
-		services
-			.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-			.Configure<CookieOidcRefresher>((cookieOptions, refresher) =>
+			.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, cookieOptions =>
 			{
 				cookieOptions.AccessDeniedPath = "/account/access-denied";
 				cookieOptions.LogoutPath = "/account/logout";
 				cookieOptions.LoginPath = "/account/login";
-				//cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
-				cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateIdTokenOrRefreshCookieAsync(context, "Auth0");
+				cookieOptions.EventsType = typeof(CustomCookieAuthenticationEvents);
 			});
+
+		services.AddSingleton<CookieOidcRefresher>();
+		services.AddTransient<CustomOpenIdConnectEvents>();
+		services.AddTransient<CustomCookieAuthenticationEvents>();
+
+		//services
+		//	.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
+		//	.Configure<CookieOidcRefresher>((cookieOptions, refresher) =>
+		//	{
+		//		cookieOptions.AccessDeniedPath = "/account/access-denied";
+		//		cookieOptions.LogoutPath = "/account/logout";
+		//		cookieOptions.LoginPath = "/account/login";
+		//		//cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
+		//		cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateIdTokenOrRefreshCookieAsync(context, "Auth0");
+		//	});
 	}
 
 	private static bool IsAjaxRequest(HttpRequest request)

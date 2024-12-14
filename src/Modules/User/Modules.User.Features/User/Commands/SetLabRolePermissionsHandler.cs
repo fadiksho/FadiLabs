@@ -19,6 +19,12 @@ internal class SetLabRolePermissionsHandler
 		context.LabRoles.Update(role);
 		await context.SaveChangesAsync(cancellationToken);
 
+		if (role.LabsPermissions != request.UpdatedPermissions)
+		{
+			// ToDo: Update User Cache.
+
+		}
+
 		return Result.FromSuccess("Operation success.");
 	}
 }

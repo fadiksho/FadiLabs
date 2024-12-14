@@ -7,6 +7,8 @@
 
 @attribute [StreamRendering]
 @attribute [LabAuthorize]
+@rendermode InteractiveServer
+
 @code {
 	[Inject]
 	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
@@ -70,13 +72,13 @@
 		if (payload.ContainsKey("role")) orderedPayload["role"] = payload["role"];
 		if (payload.ContainsKey("labs-permissions")) orderedPayload["labs-permissions"] = payload["labs-permissions"];
 		
-		// foreach (var item in payload)
-		// { 
-		// 	if (!orderedPayload.ContainsKey(item.Key)) 
-		// 	{ 
-		// 		orderedPayload[item.Key] = item.Value; 
-		// 	} 
-		// }
+		foreach (var item in payload)
+		{ 
+			if (!orderedPayload.ContainsKey(item.Key)) 
+			{ 
+				orderedPayload[item.Key] = item.Value; 
+			} 
+		}
 
 		string headerJson = JsonSerializer.Serialize(header, new JsonSerializerOptions { WriteIndented = true });
 		string payloadJson = JsonSerializer.Serialize(orderedPayload, new JsonSerializerOptions { WriteIndented = true });

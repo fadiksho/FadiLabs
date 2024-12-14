@@ -12,13 +12,14 @@ public sealed class UserInfo
 	public required string[] Role { get; init; }
 	public required string LabsPermissions { get; set; }
 	public required string? Email { get; init; }
+	public required string Exp { get; set; }
 
 	public const string UserIdClaimType = "sub";
 	public const string NameClaimType = LabsClaimTypes.Name;
 	public const string EmailClaimType = "email";
 	public const string RoleClaimType = LabsClaimTypes.Role;
 	public const string LabsPermissionsClaimType = CustomAuthorizationClaimTypes.LabsPermissions;
-
+	public const string ExpClaimType = "exp";
 	public static UserInfo BuildUserInfo(ClaimsPrincipal principal)
 	{
 		return new UserInfo
@@ -28,6 +29,7 @@ public sealed class UserInfo
 			Role = principal.FindAll(RoleClaimType).Select(c => c.Value).ToArray(),
 			LabsPermissions = GetRequiredClaim(principal, LabsPermissionsClaimType),
 			Email = principal.FindFirst(EmailClaimType)?.Value,
+			Exp = GetRequiredClaim(principal, ExpClaimType)
 		};
 	}
 
@@ -38,6 +40,7 @@ public sealed class UserInfo
 				new Claim(NameClaimType, userInfo.Name),
 				new Claim(LabsPermissionsClaimType, userInfo.LabsPermissions),
 				new Claim(EmailClaimType, userInfo.Email ?? string.Empty),
+				new Claim(ExpClaimType, userInfo.Exp),
 				.. userInfo.Role.Select(role => new Claim(RoleClaimType, role))
 		];
 

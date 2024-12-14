@@ -3,7 +3,6 @@ using Modules.Shared.Integration.Queries;
 
 namespace Modules.Blog.Integration.Post;
 
-[LabAuthorize]
 public record GetPosts : PagedFilterQuery, IRequest<Result<PagedList<GetPostsResponse>>>
 {
 	public string? Tag { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Fadi.Result.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
 using Shared.Features.Services;
@@ -12,7 +13,8 @@ namespace Shared.Features.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse>(
 	ICurrentUser currentUser,
-	IAuthorizationService authorizationService) : IPipelineBehavior<TRequest, TResponse>
+	IAuthorizationService authorizationService,
+	ILogger<AuthorizationBehaviour<TRequest, TResponse>> logger) : IPipelineBehavior<TRequest, TResponse>
 		where TRequest : notnull, IRequest<TResponse>
 		where TResponse : Fadi.Result.IResult
 {
@@ -33,6 +35,9 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 		var user = currentUser.GetUser();
 		if (user == null || !user.IsAuthenticated())
 			return next.FromError(request, new UnauthentectedError());
+
+		var idTokenExpiration = user.GetIdTokenExpiration() - DateTimeOffset.Now;
+		logger.LogInformation("Expire in: {IdTokenExpiration}.", idTokenExpiration);
 
 		foreach (var authorizeAttribute in authorizeAttributes)
 		{

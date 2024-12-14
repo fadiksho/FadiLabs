@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Shared.Integration.Extensions;
 using Shared.Integration.Models;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -35,7 +36,7 @@ public class ServerASP : RevalidatingServerAuthenticationStateProvider
 		_subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
 	}
 
-	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
+	protected override TimeSpan RevalidationInterval => TimeSpan.FromSeconds(10);
 
 	protected override async Task<bool> ValidateAuthenticationStateAsync(
 			AuthenticationState authenticationState, CancellationToken cancellationToken)
@@ -51,6 +52,12 @@ public class ServerASP : RevalidatingServerAuthenticationStateProvider
 		{
 			return false;
 		}
+
+		//if (DateTimeOffset.Now > principal.GetIdTokenExpiration())
+		//{
+		//	return false;
+		//}
+
 		return true;
 	}
 
@@ -68,6 +75,11 @@ public class ServerASP : RevalidatingServerAuthenticationStateProvider
 
 		var authenticationState = await _authenticationStateTask;
 		var principal = authenticationState.User;
+
+		await using var scope = _scopeFactory.CreateAsyncScope();
+		var logger = scope.ServiceProvider.GetRequiredService<ILogger<ServerASP>>();
+		var idTokenExpiration = authenticationState.User.GetIdTokenExpiration() - DateTimeOffset.Now;
+		logger.LogInformation("OnPersistingAsync Expire in: {IdTokenExpiration}.", idTokenExpiration);
 
 		if (principal.Identity?.IsAuthenticated == true)
 		{
