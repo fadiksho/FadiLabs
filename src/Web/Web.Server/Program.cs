@@ -5,6 +5,7 @@ using Modules.User.Features;
 using Shared.Features;
 using Web.Server.Endpoints;
 using Web.Server.Extensions;
+using Web.Server.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,8 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
+app.UseMiddleware<CurrentUserMiddleware>();
 app.MapBlazorApp()
 	 .MapSharedModulePages()
 	 .MapAuth0ModulePages()

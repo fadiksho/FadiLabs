@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Features.Services;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,7 +15,8 @@ using System.Security.Claims;
 namespace Modules.Auth0.Features.Services;
 
 internal class CustomCookieAuthenticationEvents
-	(IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor) : CookieAuthenticationEvents
+	(IOptionsMonitor<OpenIdConnectOptions> oidcOptionsMonitor,
+	CircuitServicesAccessor circuitServicesAccessor, AuthenticationStateProvider authenticationStateProvider) : CookieAuthenticationEvents
 {
 	private readonly OpenIdConnectOptions _oidcOptions = oidcOptionsMonitor.Get("Auth0");
 	private readonly OpenIdConnectProtocolValidator _oidcTokenValidator = new()
@@ -21,6 +25,9 @@ internal class CustomCookieAuthenticationEvents
 		// Even if we had the nonce, it's likely expired. It's not intended for refresh requests. Otherwise, we'd use oidcOptions.ProtocolValidator.
 		RequireNonce = false,
 	};
+	private readonly CircuitServicesAccessor _circuitServicesAccessor = circuitServicesAccessor;
+	private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
+
 	public override async Task ValidatePrincipal(CookieValidatePrincipalContext validateContext)
 	{
 		// Retrieve the stored expiration time for the id_token
@@ -113,7 +120,19 @@ internal class CustomCookieAuthenticationEvents
 
 		// Replace the principal and update the tokens
 		validateContext.ShouldRenew = true;
-		validateContext.ReplacePrincipal(new ClaimsPrincipal(validationResult.ClaimsIdentity));
+		var updatedUser = new ClaimsPrincipal(validationResult.ClaimsIdentity);
+		validateContext.ReplacePrincipal(updatedUser);
+
+		var authState = _circuitServicesAccessor.Services?.GetService<AuthenticationStateProvider>();
+		if (authState != null && authState is IHostEnvironmentAuthenticationStateProvider authHostState)
+		{
+			authHostState.SetAuthenticationState(Task.FromResult(new AuthenticationState(updatedUser)));
+		}
+
+		if (_authenticationStateProvider is IHostEnvironmentAuthenticationStateProvider authHostState2)
+		{
+			authHostState2.SetAuthenticationState(Task.FromResult(new AuthenticationState(updatedUser)));
+		}
 
 		// Extract the exp claim
 		var expClaim = validationResult.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == "exp")?.Value;

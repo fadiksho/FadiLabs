@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Shared.Integration.Services;
 using System.Diagnostics;
 
-namespace Shared.Features.Services.Implementaions;
+namespace Web.Server.Services.Temp;
 
 public class ServerTokenService
 	(IHttpContextAccessor httpContextAccessor) : ITokenService

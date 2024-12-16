@@ -1,14 +1,16 @@
 ﻿using Azure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shared.Components;
 using Shared.Components.Services;
 using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
 using Shared.Features.Services;
-using Shared.Features.Services.Implementaions;
 using Shared.Integration.Services;
 using Web.Server.Services;
+using Web.Server.Services.Temp;
 
 
 namespace Web.Server.Extensions;
@@ -24,6 +26,9 @@ public static class ServiceCollectionExtensions
 					new DefaultAzureCredential());
 		}
 
+		services.AddSharedComponentsServices(config);
+
+		services.AddHttpContextAccessor();
 		services.AddRazorComponents()
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
@@ -31,21 +36,29 @@ public static class ServiceCollectionExtensions
 		services.AddMediator(config);
 		services.AddConfigurationSettings(config);
 
-		services.AddHttpContextAccessor();
 
-		services.AddSharedComponentsServices(config);
-
-		services.AddScoped<AuthenticationStateProvider, ServerASP>();
-		services.AddScoped<IAuthService, ServerAuthService>();
-
-		services.AddSingleton<LogIndexer>();
-
-		services.AddScoped<IMessageSender, ServerMessageSender>();
+		services.AddCircuitServicesAccessor();
+		services.AddScoped<ActiveCircuitState>();
+		//services.AddScoped<CircuitHandler, ActiveCircuitStateHandler>();
+		//services.AddScoped<CircuitHandler, CurrentUserCircuitHandler>();
+		services.TryAddEnumerable([
+			ServiceDescriptor.Scoped<CircuitHandler, ActiveCircuitStateHandler>(),
+			ServiceDescriptor.Scoped<CircuitHandler, CurrentUserCircuitHandler>()
+		]);
 		services.AddScoped<ICurrentUser, ServerCurrentUser>();
-		services.AddScoped<ITokenService, ServerTokenService>();
+
+		//services.AddScoped<AuthenticationStateProvider, ServerASP>();
+		services.AddScoped<AuthenticationStateProvider, ServerASP2>();
+		services.AddScoped<IAuthService, ServerAuthService>();
+		services.AddScoped<IMessageSender, ServerMessageSender>();
+
+		// ToDo: Testing progress
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 		services.AddHybridCache();
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+		// ToDo: Delete
+		services.AddScoped<ITokenService, ServerTokenService>();
 
 		return services;
 	}
@@ -68,6 +81,16 @@ public static class ServiceCollectionExtensions
 	{
 		services.Configure<PersistenceConfiguration>(config.GetSection(PersistenceConfiguration.SectionName));
 		services.Configure<DevTunnelConfiguration>(config.GetSection(DevTunnelConfiguration.SectionName));
+		return services;
+	}
+
+	private static IServiceCollection AddCircuitServicesAccessor(
+				this IServiceCollection services)
+	{
+
+		services.AddScoped<CircuitServicesAccessor>();
+		services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
+
 		return services;
 	}
 }

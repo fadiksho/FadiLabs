@@ -28,7 +28,7 @@ module.exports = {
         },
         'button-pop-custom':{
           '0%': {
-            transform: 'scale(0.9)',
+            transform: 'scale(0.95)',
           },
           '100%': {
             left: 'scale(1)',

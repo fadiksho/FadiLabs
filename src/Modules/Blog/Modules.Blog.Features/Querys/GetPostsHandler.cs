@@ -5,6 +5,7 @@ using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Models;
 using Shared.Features.Services;
+using Shared.Integration.Extensions;
 using Shared.Integration.Utilities;
 
 namespace Modules.Blog.Features.Querys;
@@ -21,7 +22,9 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 		if (!string.IsNullOrEmpty(request.Tag))
 			query = query.Where(x => x.Tags.Any(t => t.Name == request.Tag));
 
-		if (!currentUser.HasLabPermission(LabsPermissions.BlogOwner))
+		var user = await currentUser.GetUser();
+
+		if (user.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		if (!string.IsNullOrEmpty(request.Search))

@@ -1,10 +1,12 @@
 @page "/test2"
 @using Modules.User.Integration.User.Commands
 @rendermode InteractiveServer
+@attribute [StreamRendering]
 
 @inject IServiceExecutor<IUIBus> ServiceExecutor
 
 <PageTitle>Test 2</PageTitle>
+
 
 <Papper>
 	<RenderingContextMessage />
@@ -64,12 +66,6 @@
 		</pre>
 	</Papper>
 
-	<Papper>
-		<button class="btn btn-primary" @onclick="updateState">
-			Update state
-		</button>
-	</Papper>
-
 </Papper>
 
 @code {
@@ -87,10 +83,5 @@
 	{
 		getTestAuthorizeQueryResult =
 			await ServiceExecutor.ExecuteAsync(nameof(GetTestAuthorizedQuery), x => x.Send(new GetTestAuthorizedQuery()));
-	}
-
-	void updateState()
-	{
-		StateHasChanged();
 	}
 }

@@ -1,13 +1,22 @@
-﻿namespace Modules.User.Features.User.Querys;
-public class GetTestQueryHandler : IRequestHandler<GetTestQuery, Result>, IRequestHandler<GetTestAuthorizedQuery, Result>
+﻿using Shared.Features.Services;
+using Shared.Integration.Extensions;
+
+namespace Modules.User.Features.User.Querys;
+public class GetTestQueryHandler(ICurrentUser currentUser) : IRequestHandler<GetTestQuery, Result>, IRequestHandler<GetTestAuthorizedQuery, Result>
 {
-	public Task<Result> Handle(GetTestQuery request, CancellationToken cancellationToken)
+	private readonly ICurrentUser _currentUser = currentUser;
+
+	public async Task<Result> Handle(GetTestQuery request, CancellationToken cancellationToken)
 	{
-		return Task.FromResult(Result.FromSuccess("Success: GetTestQuery"));
+		var user = await _currentUser.GetUser();
+
+		return Result.FromSuccess($"Success: GetTestQuery {user.GetIdTokenExpiration() - DateTimeOffset.Now}");
 	}
 
-	public Task<Result> Handle(GetTestAuthorizedQuery request, CancellationToken cancellationToken)
+	public async Task<Result> Handle(GetTestAuthorizedQuery request, CancellationToken cancellationToken)
 	{
-		return Task.FromResult(Result.FromSuccess("Success: GetTestAuthorizedQuery"));
+		var user = await _currentUser.GetUser();
+
+		return Result.FromSuccess($"Success: GetTestAuthorizedQuery {user.GetIdTokenExpiration() - DateTimeOffset.Now}");
 	}
 }
