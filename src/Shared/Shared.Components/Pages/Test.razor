@@ -1,7 +1,8 @@
 @page "/test"
 @using Modules.User.Integration.User.Commands
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 @attribute [StreamRendering]
+@attribute [LabAuthorize]
 
 @inject IServiceExecutor<IUIBus> ServiceExecutor
 
@@ -29,8 +30,8 @@
 				<span class="loading loading-spinner loading-md"></span>
 			}
 		</button>
-		<pre>
-		<code>
+		<pre >
+		<code class="whitespace-break-spaces">
 				@if (getTestQueryResult.IsSuccess)
 				{
 					@getTestQueryResult.SuccessMessage
@@ -52,7 +53,7 @@
 			}
 		</button>
 		<pre>
-		<code>
+		<code class="whitespace-break-spaces">
 				@if (getTestAuthorizeQueryResult.IsSuccess)
 				{
 					@getTestAuthorizeQueryResult.SuccessMessage

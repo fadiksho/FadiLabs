@@ -1,12 +1,12 @@
 @page "/test2"
 @using Modules.User.Integration.User.Commands
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 @attribute [StreamRendering]
+@attribute [LabAuthorize]
 
 @inject IServiceExecutor<IUIBus> ServiceExecutor
 
 <PageTitle>Test 2</PageTitle>
-
 
 <Papper>
 	<RenderingContextMessage />
@@ -31,7 +31,7 @@
 			}
 		</button>
 		<pre>
-		<code>
+		<code class="whitespace-break-spaces">
 				@if (getTestQueryResult.IsSuccess)
 				{
 					@getTestQueryResult.SuccessMessage
@@ -53,7 +53,7 @@
 			}
 		</button>
 		<pre>
-		<code>
+		<code class="whitespace-break-spaces">
 				@if (getTestAuthorizeQueryResult.IsSuccess)
 				{
 					@getTestAuthorizeQueryResult.SuccessMessage

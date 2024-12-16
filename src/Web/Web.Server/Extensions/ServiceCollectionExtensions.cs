@@ -2,15 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shared.Components;
 using Shared.Components.Services;
 using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
 using Shared.Features.Services;
-using Shared.Integration.Services;
 using Web.Server.Services;
-using Web.Server.Services.Temp;
 
 
 namespace Web.Server.Extensions;
@@ -28,6 +25,7 @@ public static class ServiceCollectionExtensions
 
 		services.AddSharedComponentsServices(config);
 
+		services.AddHttpClient();
 		services.AddHttpContextAccessor();
 		services.AddRazorComponents()
 		 .AddInteractiveServerComponents()
@@ -38,17 +36,9 @@ public static class ServiceCollectionExtensions
 
 
 		services.AddCircuitServicesAccessor();
-		services.AddScoped<ActiveCircuitState>();
-		//services.AddScoped<CircuitHandler, ActiveCircuitStateHandler>();
-		//services.AddScoped<CircuitHandler, CurrentUserCircuitHandler>();
-		services.TryAddEnumerable([
-			ServiceDescriptor.Scoped<CircuitHandler, ActiveCircuitStateHandler>(),
-			ServiceDescriptor.Scoped<CircuitHandler, CurrentUserCircuitHandler>()
-		]);
 		services.AddScoped<ICurrentUser, ServerCurrentUser>();
 
-		//services.AddScoped<AuthenticationStateProvider, ServerASP>();
-		services.AddScoped<AuthenticationStateProvider, ServerASP2>();
+		services.AddScoped<AuthenticationStateProvider, ServerASP>();
 		services.AddScoped<IAuthService, ServerAuthService>();
 		services.AddScoped<IMessageSender, ServerMessageSender>();
 
@@ -56,9 +46,6 @@ public static class ServiceCollectionExtensions
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 		services.AddHybridCache();
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-
-		// ToDo: Delete
-		services.AddScoped<ITokenService, ServerTokenService>();
 
 		return services;
 	}

@@ -7,24 +7,18 @@
 
 @attribute [StreamRendering]
 @attribute [LabAuthorize]
-@rendermode InteractiveServer
+@rendermode InteractiveWebAssembly
 
 @code {
 	[Inject]
 	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
 
-	[Inject]
-	public required ITokenService TokenService { get; set; }
-
 	private Result<PagedList<GetLabRolesResponse>> getLabRolesResult;
-	private GetTokensResponse? getTokensResponse;
 
 	protected override async Task OnInitializedAsync()
 	{
 		getLabRolesResult = await ServiceExecutor
 				.ExecuteAsync(nameof(GetLabRoles), x => x.Send(new GetLabRoles()));
-
-		getTokensResponse = await TokenService.GetTokens();
 	}
 
 	private string DecodeToken(string? token)
@@ -199,53 +193,6 @@
 				</div>
 			</div>
 		</NotAuthorized>
-	</AuthorizeView>
-</Papper>
-
-<Papper>
-	<LoadingTitle Title="User Tokens" />
-	<AuthorizeView>
-		<Authorized>
-			<div class="collapse bg-base-200">
-				<input type="checkbox" />
-				<div class="collapse-title text-xl font-medium">
-					IdToken
-				</div>
-				<div class="collapse-content">
-					<pre class="break-all whitespace-break-spaces">
-					<code>
-							@DecodeToken(getTokensResponse?.IdToken);
-						</code>
-					</pre>
-				</div>
-			</div>
-			<div class="collapse bg-base-200">
-				<input type="checkbox" />
-				<div class="collapse-title text-xl font-medium">
-					AccessToken
-				</div>
-				<div class="collapse-content">
-					<pre class="break-all whitespace-break-spaces">
-					<code>
-							@DecodeToken(getTokensResponse?.AccessToken)
-						</code>
-					</pre>
-				</div>
-			</div>
-			<div class="collapse bg-base-200">
-				<input type="checkbox" />
-				<div class="collapse-title text-xl font-medium">
-					RefreshToken
-				</div>
-				<div class="collapse-content">
-					<pre class="break-all whitespace-break-spaces">
-					<code>
-							@getTokensResponse?.RefreshToken
-						</code>
-					</pre>
-				</div>
-			</div>
-		</Authorized>
 	</AuthorizeView>
 </Papper>
 

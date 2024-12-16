@@ -8,18 +8,15 @@ public class ServerCurrentUser : ICurrentUser
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly CircuitServicesAccessor _circuitServicesAccessor;
-	private readonly ActiveCircuitState _activeCircuitState;
 	private readonly ILogger<ServerCurrentUser> _logger;
 
 	public ServerCurrentUser(
 		IHttpContextAccessor httpContextAccessor,
 		CircuitServicesAccessor circuitServicesAccessor,
-		ActiveCircuitState activeCircuitState,
 		ILogger<ServerCurrentUser> logger)
 	{
 		_httpContextAccessor = httpContextAccessor;
 		_circuitServicesAccessor = circuitServicesAccessor;
-		_activeCircuitState = activeCircuitState;
 		_logger = logger;
 	}
 
