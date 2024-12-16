@@ -2,7 +2,6 @@
 @page "/blog/{page:int}"
 
 @attribute [StreamRendering]
-@rendermode InteractiveWebAssembly
 
 <PageTitle>Latest Post</PageTitle>
 
@@ -60,7 +59,7 @@
 			</div>
 			<PostListItemSkeleton Count="5" />
 		}
-		else if (_result.IsSuccess == false)
+		else if (_result.IsFailed)
 		{
 			<ResultError Error="_result.Error" />
 		}

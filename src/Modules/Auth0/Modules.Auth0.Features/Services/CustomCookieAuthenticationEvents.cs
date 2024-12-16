@@ -39,17 +39,10 @@ internal class CustomCookieAuthenticationEvents
 			return;
 		}
 
-		//if (!DateTimeOffset.TryParse(idTokenExpirationText, out var idTokenExpiration))
-		//{
-		//	return;
-		//}
-
 		var idTokenExpiration = DateTimeOffset.FromUnixTimeSeconds(expUnixTime);
 		var now = _oidcOptions.TimeProvider!.GetUtcNow();
 
 		var isTokenExpired = now > idTokenExpiration;
-		//var isTokenExpired = now + TimeSpan.FromMinutes(5) > idTokenExpiration;
-		//var isTokenExpired = now + (TimeSpan.FromSeconds(36000 - 60)) > idTokenExpiration;
 		Debug.WriteLine($"Token expires in: {idTokenExpiration - now}");
 		if (!isTokenExpired)
 		{
@@ -134,7 +127,6 @@ internal class CustomCookieAuthenticationEvents
 			authHostState2.SetAuthenticationState(Task.FromResult(new AuthenticationState(updatedUser)));
 		}
 
-		// Extract the exp claim
 		var expClaim = validationResult.ClaimsIdentity.Claims.FirstOrDefault(x => x.Type == "exp")?.Value;
 
 		if (long.TryParse(expClaim, out var expUnix))

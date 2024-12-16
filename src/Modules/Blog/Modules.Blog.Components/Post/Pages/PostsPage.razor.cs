@@ -33,7 +33,7 @@ public partial class PostsPage(IServiceExecutor<IUIBus> serviceExecutor, Navigat
 			PageNumber = Page,
 			Tag = Tag,
 			Search = SearchQuery
-		}));
+		}), true);
 	}
 
 	private string GetClearFilterLink(string filterKey)
