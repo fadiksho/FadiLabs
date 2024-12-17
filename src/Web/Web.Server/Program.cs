@@ -1,6 +1,7 @@
 ﻿using Modules.Auth0.Features;
 using Modules.Auth0.Features.Server;
 using Modules.Blog.Features;
+using Modules.Home.Features;
 using Modules.User.Features;
 using Shared.Features;
 using Web.Server.Endpoints;
@@ -13,6 +14,8 @@ builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
+	.AddSharedModuleServices(builder.Configuration, builder.Environment)
+	.AddHomeModuleServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
 	.AddUserModuleServices(builder.Configuration, builder.Environment)
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
@@ -43,7 +46,7 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 
 app.MapBlazorApp()
-	 .MapSharedModulePages()
+	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
 	 .MapOAuthModuleServerPages()
 	 .MapUserModulePages()

@@ -1,3 +1,6 @@
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
 @if (RendererInfo.Name == "WebView")
 {
 	<maui-page-script src="@Src"></maui-page-script>
@@ -11,4 +14,32 @@ else
 	[Parameter]
 	[EditorRequired]
 	public string Src { get; set; } = default!;
+
+	private IJSObjectReference? module;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender && RendererInfo.Name != "WebView")
+		{
+			module = await JS.InvokeAsync<IJSObjectReference>("import", Src);
+			if (module != null)
+				await module.InvokeVoidAsync("onLoad");
+		}
+	}
+
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		if (module is not null)
+		{
+			try
+			{
+				await module.InvokeVoidAsync("onDispose");
+				await module.DisposeAsync();
+			}
+			catch (JSDisconnectedException)
+			{
+			}
+		}
+	}
+
 }

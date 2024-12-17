@@ -3,7 +3,6 @@ global using MediatR;
 global using Modules.Auth0.Integration.Models;
 global using Modules.Shared.Integration.Models;
 global using System.Text.Json;
-using Auth0.AspNetCore.Authentication;
 using Auth0Net.DependencyInjection;
 using Fadi.Result.Errors;
 using Microsoft.AspNetCore.Authentication;
@@ -28,7 +27,6 @@ using Modules.Auth0.Integration.Configuration;
 using Modules.Shared.Integration.Authorization;
 using Shared.Features.Configuration;
 using Shared.Integration;
-using System.Security.Claims;
 
 namespace Modules.Auth0.Features;
 
@@ -59,7 +57,6 @@ public static class Program
 			options.DefaultSignInScheme = "JWT_OR_COOKIE";
 		});
 
-		//authBuilder.AddOpenIdConnectWithAuth0Sdk(services, config);
 		authBuilder.AddOpenIdConnectWithoutAuth0Sdk(services, config);
 
 		authBuilder.AddJwtBearer(options =>
@@ -143,88 +140,8 @@ public static class Program
 
 	public static void MapAuth0ModleEndPoints(this IEndpointRouteBuilder endpoints)
 	{
-		//endpoints.MapAuth0SdkAuthenticationEndpoints();
 		endpoints.MapOpenIdConnectAuthenticationEndpoints();
 		endpoints.MapAuth0TriggersEndponts();
-	}
-
-	private static void AddOpenIdConnectWithAuth0Sdk(this AuthenticationBuilder builder, IServiceCollection services, IConfiguration config)
-	{
-		var _auth0Options = config.GetSection(Auth0Configuration.SectionName)
-			.Get<Auth0Configuration>() ?? new();
-
-		var _devTunnelOptions = config.GetSection(DevTunnelConfiguration.SectionName)
-			.Get<DevTunnelConfiguration>() ?? new();
-
-		builder.AddAuth0WebAppAuthentication(options =>
-		{
-			options.Domain = _auth0Options.Domain;
-			options.ClientId = _auth0Options.ClientId;
-			options.Scope = "openid profile email";
-			options.CallbackPath = new PathString("/callback");
-			options.AccessDeniedPath = new PathString("/account/access-denied");
-			options.OpenIdConnectEvents = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
-			{
-				OnRedirectToIdentityProvider = context =>
-				{
-					if (_devTunnelOptions.IsEnabled && !string.IsNullOrEmpty(_devTunnelOptions.Url))
-					{
-						var testo = context.ProtocolMessage.PostLogoutRedirectUri;
-						context.ProtocolMessage.RedirectUri = $"{_devTunnelOptions.Url}{options.CallbackPath}";
-					}
-
-					return Task.CompletedTask;
-				},
-				OnRedirectToIdentityProviderForSignOut = context =>
-				{
-					var testo = context.ProtocolMessage.PostLogoutRedirectUri;
-					return Task.CompletedTask;
-				},
-				OnTokenValidated = context =>
-				{
-					if (context.Principal?.Identity is not ClaimsIdentity identity)
-					{
-						return Task.CompletedTask;
-					}
-
-					context.Principal = context.Principal
-						.UpdateClaimTypes(SharedConstents.LabsClaimTypes.Name, SharedConstents.LabsClaimTypes.Role);
-
-					return Task.CompletedTask;
-				}
-			};
-		});
-
-		services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-		{
-			options.AccessDeniedPath = "/account/access-denied";
-			options.LogoutPath = "/account/logout";
-			options.LoginPath = "/account/login";
-			options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
-			options.Events.OnRedirectToLogin = async context =>
-			{
-				if (context.Request.Path.StartsWithSegments("/api")
-								|| IsAjaxRequest(context.Request))
-				{
-					await AuthenticationHelper
-						.WriteJsonResponse(context.HttpContext, StatusCodes.Status401Unauthorized, new UnauthentectedError());
-				}
-				else
-					context.Response.Redirect(context.RedirectUri);
-			};
-
-			options.Events.OnRedirectToAccessDenied = async context =>
-			{
-				if (context.Request.Path.StartsWithSegments("/api")
-								|| IsAjaxRequest(context.Request))
-				{
-					await AuthenticationHelper
-						.WriteJsonResponse(context.HttpContext, StatusCodes.Status403Forbidden, new UnauthorizedError());
-				}
-				else
-					context.Response.Redirect(context.RedirectUri);
-			};
-		});
 	}
 
 	private static void AddOpenIdConnectWithoutAuth0Sdk(this AuthenticationBuilder builder, IServiceCollection services, IConfiguration config)
@@ -238,6 +155,7 @@ public static class Program
 			// ........................................................................
 			oidcOptions.Scope.Clear();
 			oidcOptions.Scope.Add(OpenIdConnectScope.OpenIdProfile);
+			oidcOptions.Scope.Add(OpenIdConnectScope.Email);
 			oidcOptions.Scope.Add(OpenIdConnectScope.OfflineAccess);
 			// ........................................................................
 			oidcOptions.CallbackPath = new PathString("/signin-oidc");
@@ -275,17 +193,6 @@ public static class Program
 		services.AddSingleton<CookieOidcRefresher>();
 		services.AddTransient<CustomOpenIdConnectEvents>();
 		services.AddTransient<CustomCookieAuthenticationEvents>();
-
-		//services
-		//	.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-		//	.Configure<CookieOidcRefresher>((cookieOptions, refresher) =>
-		//	{
-		//		cookieOptions.AccessDeniedPath = "/account/access-denied";
-		//		cookieOptions.LogoutPath = "/account/logout";
-		//		cookieOptions.LoginPath = "/account/login";
-		//		//cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateOrRefreshCookieAsync(context, "Auth0");
-		//		cookieOptions.Events.OnValidatePrincipal = context => refresher.ValidateIdTokenOrRefreshCookieAsync(context, "Auth0");
-		//	});
 	}
 
 	private static bool IsAjaxRequest(HttpRequest request)

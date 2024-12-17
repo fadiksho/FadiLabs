@@ -1,4 +1,5 @@
-﻿namespace Shared.Components.Enums;
+﻿namespace Shared.Components;
+
 public enum AlertMessageType
 {
 	Default,

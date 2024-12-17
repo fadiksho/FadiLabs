@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using Shared.Components;
 using Shared.Components.Services;
 using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
@@ -22,8 +21,6 @@ public static class ServiceCollectionExtensions
 					new Uri($"https://{config["KeyVaultName"]}.vault.azure.net/"),
 					new DefaultAzureCredential());
 		}
-
-		services.AddSharedComponentsServices(config);
 
 		services.AddHttpClient();
 		services.AddHttpContextAccessor();

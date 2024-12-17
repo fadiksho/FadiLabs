@@ -2,13 +2,10 @@
 @using Modules.Shared.Integration.Models
 @using Modules.User.Integration.User.Queries
 @using System.IdentityModel.Tokens.Jwt;
-@using Shared.Integration.Services
 @using System.Text.Json
 
 @attribute [StreamRendering]
 @attribute [LabAuthorize]
-
-@rendermode InteractiveWebAssembly
 
 @code {
 	[Inject]
