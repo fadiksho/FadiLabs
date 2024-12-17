@@ -18,5 +18,5 @@ await builder.Build().RunAsync();
 
 namespace Web.Client
 {
-	internal class Program { }
+	public class Program { }
 }

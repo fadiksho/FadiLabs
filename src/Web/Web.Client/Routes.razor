@@ -1,4 +1,4 @@
-<Router AppAssembly="typeof(Program).Assembly">
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="assemblies">
   <Found Context="routeData">
     <AuthorizeRouteView RouteData="routeData" Resource="routeData" DefaultLayout="typeof(MainLayout)" >
       <Authorizing>
@@ -16,3 +16,13 @@
     </LayoutView>
   </NotFound>
 </Router>
+
+@code {
+  System.Reflection.Assembly[] assemblies =
+  [
+    typeof(Shared.Components.Program).Assembly,
+    typeof(Modules.Blog.Components.Program).Assembly,
+    typeof(Modules.Auth0.Components.Program).Assembly,
+    typeof(Modules.User.Components.Program).Assembly,
+  ];
+}

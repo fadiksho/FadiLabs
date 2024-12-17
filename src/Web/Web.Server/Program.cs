@@ -55,3 +55,8 @@ app
 	.MapAuth0ModleEndPoints();
 
 app.Run();
+
+namespace Web.Server
+{
+	public class Program { }
+}

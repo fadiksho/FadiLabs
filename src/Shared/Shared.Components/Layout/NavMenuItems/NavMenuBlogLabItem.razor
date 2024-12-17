@@ -9,13 +9,9 @@
 			<li>
 				<NavLink Href="blog" Match="NavLinkMatch.All">Blog</NavLink>
 			</li>
-			<LabAuthorizeView LabPermissions="LabsPermissions.BlogOwner">
-				<Authorized>
-					<li>
-						<NavLink Href="blog/new" Match="NavLinkMatch.Prefix">Create New</NavLink>
-					</li>
-				</Authorized>
-			</LabAuthorizeView>
+			<li>
+				<NavLink Href="blog/new" Match="NavLinkMatch.Prefix">Create New</NavLink>
+			</li>
 		</ul>
 	</details>
 </li>

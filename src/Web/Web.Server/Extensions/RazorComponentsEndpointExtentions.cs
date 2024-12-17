@@ -6,7 +6,8 @@ public static class RazorComponentsEndpointExtentions
 	{
 		var componentsEndPointBuilder = app.MapRazorComponents<Components.App>()
 			.AddInteractiveServerRenderMode()
-			.AddInteractiveWebAssemblyRenderMode();
+			.AddInteractiveWebAssemblyRenderMode()
+			.AddAdditionalAssemblies(typeof(Client.Program).Assembly);
 
 		return componentsEndPointBuilder;
 	}

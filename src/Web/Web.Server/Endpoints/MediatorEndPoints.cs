@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Integration.Models;
 using Shared.Integration.Services;
-using System.Text.Json;
 
 namespace Web.Server.Endpoints;
 
@@ -14,6 +13,7 @@ internal static class MediatorEndPoints
 		var mediatorEndPoints = endpoints.MapGroup("/api");
 
 		mediatorEndPoints.MapPost("/send", async (
+			HttpContext context,
 			EnvelopeMessage message,
 			[FromServices] IMediator mediator,
 			[FromServices] IEnvelopMessageHandler envelopMessage,
@@ -23,7 +23,7 @@ internal static class MediatorEndPoints
 			var response = await mediator.Send(unwrappedRequest) ?? throw new InvalidOperationException();
 			var wrappedResponse = envelopMessage.Wrap(response);
 
-			return JsonSerializer.Serialize(wrappedResponse, envelopMessage.JsonOptions);
+			await context.Response.WriteAsJsonAsync(wrappedResponse, envelopMessage.JsonOptions);
 		});
 	}
 }

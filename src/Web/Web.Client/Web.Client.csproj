@@ -18,4 +18,10 @@
     <ProjectReference Include="..\..\Modules\User\Modules.User.Components\Modules.User.Components.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Routes.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
 </Project>
