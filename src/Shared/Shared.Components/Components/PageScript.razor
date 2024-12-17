@@ -3,11 +3,11 @@
 
 @if (RendererInfo.Name == "WebView")
 {
-	<maui-page-script src="@Src"></maui-page-script>
+	<maui-page-script src="@Src" style="display: none;"></maui-page-script>
 }
 else
 {
-	<page-script src="@Src"></page-script>
+	<page-script src="@Src" style="display: none;"></page-script>
 }
 
 @code {

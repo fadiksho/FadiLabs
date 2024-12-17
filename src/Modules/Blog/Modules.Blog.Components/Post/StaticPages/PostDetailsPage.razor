@@ -12,7 +12,7 @@
 		<div class="skeleton h-8 w-36"></div>
 	</div>
 }
-else if(!_result.IsSuccess)
+else if(_result.IsFailed)
 {
 	<ResultError Error="_result.Error"/>
 }

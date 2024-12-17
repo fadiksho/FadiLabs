@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Components;
 using Modules.Blog.Integration.Post;
 using Shared.Components.Services;
 
-namespace Modules.Blog.Components.Post.Pages;
+namespace Modules.Blog.Components.Post.InteractivePages;
+
 public partial class EditPostPage(IServiceExecutor<IUIBus> serviceExecutor)
 {
 	[Parameter]

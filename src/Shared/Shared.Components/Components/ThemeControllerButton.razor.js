@@ -35,6 +35,7 @@ class ThemeController {
 }
 let themeToggle =
 	new ThemeController(document.getElementById('themeCheckBoxId'));
+
 export function onLoad() {
 	themeToggle.startListener();
 	themeToggle.render();
@@ -47,5 +48,3 @@ export function onUpdate() {
 export function onDispose() {
 	themeToggle.stopListener();
 }
-
-onLoad();

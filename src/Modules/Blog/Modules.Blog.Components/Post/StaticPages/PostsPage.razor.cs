@@ -4,7 +4,8 @@ using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Models;
 using Shared.Components.Services;
 
-namespace Modules.Blog.Components.Post.Pages;
+namespace Modules.Blog.Components.Post.StaticPages;
+
 public partial class PostsPage(IServiceExecutor<IUIBus> serviceExecutor, NavigationManager navigation)
 {
 	[Parameter]

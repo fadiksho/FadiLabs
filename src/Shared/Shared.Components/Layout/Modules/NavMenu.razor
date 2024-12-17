@@ -7,15 +7,17 @@
 		<ul class="menu gap-1 bg-base-200">
 			<NavMenuLoginItem />
 			<NavMenuHomeItem />
-			<NavMenuBlogLabItem />
-			<NavMenuUserLabItem />
-			<NavMenuAuth0LabItem />
+		
+			<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
+				<Authorized>
+					<NavMenuBlogLabItem />
+					<NavMenuUserLabItem />
+					<NavMenuAuth0LabItem />
+				</Authorized>
+			</LabAuthorizeView>
 			<NavMenuSettingItem />
 		</ul>
 	</div>
-	@* <ul class="menu gap-2 bg-base-200">
-		<NavMenuSettingItem />
-	</ul> *@
 </div>
 
 <!--Overlay-->

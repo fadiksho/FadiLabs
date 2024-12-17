@@ -1,5 +1,7 @@
 ﻿@page "/about"
-@attribute [StreamRendering]
+@attribute [ExcludeFromInteractiveRouting]
+
+<PageTitle>About</PageTitle>
 
 <div class="bg-gradient-to-tl from-primary via-purple-500 to-pink-500 relative p-1 max-w-xl mx-auto mt-8 animate-fade-up" data-observer-animate data-permanent>
 	<div class="bg-base-100 shadow-lg shadow-primary/20 space-y-6 p-4">
@@ -155,4 +157,4 @@
 	</div>
 </section>
 
-<PageScript Src="@($"./_content/Modules.Home.Components/Pages/About.razor.js")" />
+<PageScript Src="@($"./_content/Modules.Home.Components/Home/About.razor.js")" />

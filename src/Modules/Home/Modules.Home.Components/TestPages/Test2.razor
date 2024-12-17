@@ -1,11 +1,11 @@
-@page "/test"
+@page "/test2"
 @using Modules.User.Integration.User.Commands
-@attribute [StreamRendering]
+
 @attribute [LabAuthorize]
 
 @inject IServiceExecutor<IUIBus> ServiceExecutor
 
-<PageTitle>Test 1</PageTitle>
+<PageTitle>Test 2</PageTitle>
 
 <Papper>
 	<RenderingContextMessage />
@@ -29,7 +29,7 @@
 				<span class="loading loading-spinner loading-md"></span>
 			}
 		</button>
-		<pre >
+		<pre>
 		<code class="whitespace-break-spaces">
 				@if (getTestQueryResult.IsSuccess)
 				{
