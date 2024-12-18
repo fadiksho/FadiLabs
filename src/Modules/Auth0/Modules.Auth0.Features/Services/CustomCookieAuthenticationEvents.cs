@@ -30,9 +30,6 @@ internal class CustomCookieAuthenticationEvents
 
 	public override async Task ValidatePrincipal(CookieValidatePrincipalContext validateContext)
 	{
-		// Retrieve the stored expiration time for the id_token
-		//var idTokenExpirationText = validateContext.Properties.GetTokenValue("id_token_expiration");
-
 		var idTokenExpirationText = validateContext.Principal?.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
 		if (!long.TryParse(idTokenExpirationText, out long expUnixTime))
 		{

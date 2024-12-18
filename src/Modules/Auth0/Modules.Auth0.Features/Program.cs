@@ -21,7 +21,6 @@ using Microsoft.Net.Http.Headers;
 using Modules.Auth0.Components;
 using Modules.Auth0.Features.Endpoints;
 using Modules.Auth0.Features.Services;
-using Modules.Auth0.Features.Services.Implementaions;
 using Modules.Auth0.Features.Utils;
 using Modules.Auth0.Integration.Configuration;
 using Modules.Shared.Integration.Authorization;
@@ -188,9 +187,15 @@ public static class Program
 				cookieOptions.LogoutPath = "/account/logout";
 				cookieOptions.LoginPath = "/account/login";
 				cookieOptions.EventsType = typeof(CustomCookieAuthenticationEvents);
+
+
+				//cookieOptions.SlidingExpiration = false;
+				//cookieOptions.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+				//cookieOptions.Cookie.HttpOnly = true;
+				//cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+				//cookieOptions.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
 			});
 
-		services.AddSingleton<CookieOidcRefresher>();
 		services.AddTransient<CustomOpenIdConnectEvents>();
 		services.AddTransient<CustomCookieAuthenticationEvents>();
 	}

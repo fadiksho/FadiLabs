@@ -170,6 +170,15 @@ class ThemeController {
 
 let navMenu;
 let themeController;
+
+const debounce = (func, wait) => {
+	let timeout;
+	return (...args) => {
+		clearTimeout(timeout);
+		timeout = setTimeout(() => func.apply(this, args), wait);
+	};
+};
+
 export function onLoad() {
 	navMenu = new NavMenu();
 	
@@ -189,7 +198,6 @@ export function onLoad() {
 export function onUpdate() {
 	navMenu.autoCloseOnOverlayMode();
 	navMenu.render();
-
 	themeController.render();
 }
 

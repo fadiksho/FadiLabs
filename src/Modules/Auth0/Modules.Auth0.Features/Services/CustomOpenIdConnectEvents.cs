@@ -37,16 +37,15 @@ internal class CustomOpenIdConnectEvents
 
 	public override Task TokenResponseReceived(TokenResponseReceivedContext context)
 	{
+		return Task.CompletedTask;
+	}
+
+	public override Task TokenValidated(TokenValidatedContext context)
+	{
 		var tokens = new List<AuthenticationToken>();
 
 		//if (!string.IsNullOrEmpty(context.TokenEndpointResponse.IdToken))
 		//{
-		//	tokens.Add(new AuthenticationToken
-		//	{
-		//		Name = OpenIdConnectParameterNames.IdToken,
-		//		Value = context.TokenEndpointResponse.IdToken,
-		//	});
-
 		//	// Decode the id_token to get the expiration time
 		//	var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
 		//	var jwtToken = handler.ReadJwtToken(context.TokenEndpointResponse.IdToken);
@@ -68,7 +67,16 @@ internal class CustomOpenIdConnectEvents
 		//	}
 		//}
 
-		if (!string.IsNullOrEmpty(context.TokenEndpointResponse.RefreshToken))
+		//if (!string.IsNullOrEmpty(context.TokenEndpointResponse?.IdToken))
+		//{
+		//	tokens.Add(new AuthenticationToken
+		//	{
+		//		Name = OpenIdConnectParameterNames.IdToken,
+		//		Value = context.TokenEndpointResponse.IdToken,
+		//	});
+		//}
+
+		if (!string.IsNullOrEmpty(context.TokenEndpointResponse?.RefreshToken))
 		{
 			tokens.Add(new AuthenticationToken
 			{
@@ -79,11 +87,6 @@ internal class CustomOpenIdConnectEvents
 
 		context.Properties?.StoreTokens(tokens);
 
-		return Task.CompletedTask;
-	}
-
-	public override Task TokenValidated(TokenValidatedContext context)
-	{
 		return base.TokenValidated(context);
 	}
 
