@@ -1,4 +1,4 @@
-﻿using Shared.Integration.Domain;
+﻿using Shared.Integration.Domain.Contracts;
 
 namespace Modules.Blog.Features.Entities;
 

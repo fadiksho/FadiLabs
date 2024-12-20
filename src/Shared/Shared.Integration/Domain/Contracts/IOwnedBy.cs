@@ -1,11 +1,11 @@
-﻿namespace Shared.Integration.Domain;
+﻿namespace Shared.Integration.Domain.Contracts;
 
 public interface IOwnedBy
 {
-  Guid OwndedBy { get; set; }
+	Guid OwndedBy { get; set; }
 
-  static void MarkCreatedItemAsOwnedBy<TSelf>(TSelf entity, Guid ownedById) where TSelf : IOwnedBy
-  {
-    entity.OwndedBy = ownedById;
-  }
+	static void MarkCreatedItemAsOwnedBy<TSelf>(TSelf entity, Guid ownedById) where TSelf : IOwnedBy
+	{
+		entity.OwndedBy = ownedById;
+	}
 }

@@ -1,8 +1,8 @@
-﻿namespace Shared.Integration.Domain;
+﻿namespace Shared.Integration.Domain.Contracts;
 
 public interface IEntity<TEntityId> : IEntity
 {
-  public TEntityId Id { get; set; }
+	public TEntityId Id { get; set; }
 }
 
 public interface IEntity

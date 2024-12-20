@@ -1,31 +1,30 @@
-﻿namespace Shared.Integration.Domain;
+﻿using Shared.Integration.Domain.Contracts;
 
-public abstract class BaseEntity : IEntity<Guid>, IBaseEntity
+namespace Shared.Integration.Domain;
+
+public abstract class BaseEntity : IBaseEntity
 {
-  public Guid Id { get; set; }
+	private readonly IList<EntityEvent> _entityEvents;
 
-  private readonly IList<EntityEvent> _entityEvents;
+	public IReadOnlyCollection<EntityEvent> EntityEvents => _entityEvents.AsReadOnly();
 
-  public IReadOnlyCollection<EntityEvent> EntityEvents => _entityEvents.AsReadOnly();
+	protected BaseEntity()
+	{
+		_entityEvents = [];
+	}
 
-  protected BaseEntity()
-  {
-    Id = Guid.NewGuid();
-    _entityEvents = [];
-  }
+	public void AddEntityEvent(EntityEvent @event)
+	{
+		_entityEvents.Add(@event);
+	}
 
-  public void AddEntityEvent(EntityEvent @event)
-  {
-    _entityEvents.Add(@event);
-  }
+	public void RemoveEntityEvent(EntityEvent @event)
+	{
+		_entityEvents.Remove(@event);
+	}
 
-  public void RemoveEntityEvent(EntityEvent @event)
-  {
-    _entityEvents.Remove(@event);
-  }
-
-  public void ClearEntityEvents()
-  {
-    _entityEvents.Clear();
-  }
+	public void ClearEntityEvents()
+	{
+		_entityEvents.Clear();
+	}
 }

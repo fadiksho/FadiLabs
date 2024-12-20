@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modules.Shared.Integration.Authorization;
-using Shared.Integration.Domain;
+using Shared.Integration.Domain.Contracts;
 
 namespace Modules.User.Features.Entities;
 
