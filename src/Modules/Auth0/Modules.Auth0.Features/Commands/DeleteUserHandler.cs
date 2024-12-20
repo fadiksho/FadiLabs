@@ -2,7 +2,6 @@
 
 namespace Modules.Auth0.Features.Commands;
 
-
 internal class DeleteUserHandler
 	(Auth0Api.IManagementApiClient managementApiClient) : IRequestHandler<DeleteUser, Result>
 {

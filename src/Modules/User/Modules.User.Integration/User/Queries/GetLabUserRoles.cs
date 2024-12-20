@@ -1,6 +1,9 @@
-﻿namespace Modules.User.Integration.User.Queries;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace Modules.User.Integration.User.Queries;
 
 //[LabAuthorize(LabsPermissions.ConfigureSite)]
+[Authorize(Policy = LabPolicyNames.ActionTiggerPolicy)]
 public record GetLabUserRoles : IRequest<Result<GetLabUserRolesResponse>>
 {
 	public required string Auth0UserId { get; set; }
