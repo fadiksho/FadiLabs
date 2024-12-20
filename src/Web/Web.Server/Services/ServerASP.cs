@@ -2,57 +2,37 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
 using System.Diagnostics;
 using System.Security.Claims;
 
 namespace Web.Server.Services;
 
-
-public class ServerASP : RevalidatingServerAuthenticationStateProvider
+public sealed class ServerASP : AuthenticationStateProvider, IHostEnvironmentAuthenticationStateProvider, IDisposable
 {
-	private readonly IServiceScopeFactory _scopeFactory;
-	private readonly PersistentComponentState _state;
-	private readonly IdentityOptions _options;
+	private readonly PersistentComponentState _persistentComponentState;
+	private readonly PersistingComponentStateSubscription _persistingComponentStateSubscription;
 
-	private readonly PersistingComponentStateSubscription _subscription;
+	private Task<AuthenticationState> _authenticationStateTask;
 
-	private Task<AuthenticationState>? _authenticationStateTask;
-
-	public ServerASP(
-			ILoggerFactory loggerFactory,
-			IServiceScopeFactory scopeFactory,
-			PersistentComponentState state,
-			IOptions<IdentityOptions> options)
-			: base(loggerFactory)
+	public ServerASP(PersistentComponentState persistentComponentState)
 	{
-		_scopeFactory = scopeFactory;
-		_state = state;
-		_options = options.Value;
+		_persistentComponentState = persistentComponentState;
+		_persistingComponentStateSubscription = _persistentComponentState.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
 
+		_authenticationStateTask = Task.FromResult(new AuthenticationState(new ClaimsPrincipal()));
 		AuthenticationStateChanged += OnAuthenticationStateChanged;
-		_subscription = state.RegisterOnPersisting(OnPersistingAsync, RenderMode.InteractiveWebAssembly);
 	}
 
-	protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(30);
-
-	protected override async Task<bool> ValidateAuthenticationStateAsync(
-			AuthenticationState authenticationState, CancellationToken cancellationToken)
+	public override Task<AuthenticationState> GetAuthenticationStateAsync()
 	{
-		// Get the user manager from a new scope to ensure it fetches fresh data
-		await using var scope = _scopeFactory.CreateAsyncScope();
-		return ValidateSecurityStampAsync(authenticationState.User);
+		return _authenticationStateTask;
 	}
 
-	private bool ValidateSecurityStampAsync(ClaimsPrincipal principal)
+	public void SetAuthenticationState(Task<AuthenticationState> authenticationStateTask)
 	{
-		if (principal.Identity?.IsAuthenticated is false)
-		{
-			return false;
-		}
-		return true;
+		_authenticationStateTask = authenticationStateTask;
+		NotifyAuthenticationStateChanged(authenticationStateTask);
 	}
 
 	private void OnAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask)
@@ -72,21 +52,14 @@ public class ServerASP : RevalidatingServerAuthenticationStateProvider
 
 		if (principal.Identity?.IsAuthenticated == true)
 		{
-			// ToDo: Clean it
-			var userId = principal.FindFirst(_options.ClaimsIdentity.UserIdClaimType)?.Value;
-			var name = principal.FindFirst("name")?.Value;
-
-			if (userId != null && name != null)
-			{
-				_state.PersistAsJson(nameof(UserInfo), UserInfo.BuildFromClaimPrincipal(principal));
-			}
+			var userInfo = UserInfo.BuildUserInfo(principal);
+			_persistentComponentState.PersistAsJson(nameof(UserInfo), userInfo);
 		}
 	}
 
-	protected override void Dispose(bool disposing)
+	public void Dispose()
 	{
-		_subscription.Dispose();
+		_persistingComponentStateSubscription.Dispose();
 		AuthenticationStateChanged -= OnAuthenticationStateChanged;
-		base.Dispose(disposing);
 	}
 }

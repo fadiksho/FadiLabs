@@ -1,0 +1,89 @@
+@code {
+	[Parameter]
+	public EventCallback<(CreateLabRoleResponse, CreateLabRole)> OnLabRoleCreated { get; set; }
+
+	[Inject]
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	private EditContext? editContext;
+	private CreateLabRole createLabRoleRequest = new();
+	private Result<CreateLabRoleResponse> createLabRoleResult;
+
+	protected override void OnInitialized()
+	{
+		editContext = new(createLabRoleRequest);
+	}
+
+	private async Task createRoleHandler()
+	{
+		createLabRoleResult = await ServiceExecutor.ExecuteAsync(nameof(CreateLabRole), x =>
+		{
+			return x.Send(createLabRoleRequest);
+		});
+
+		if (createLabRoleResult.IsSuccess)
+		{
+			await OnLabRoleCreated.InvokeAsync((createLabRoleResult.Entity, createLabRoleRequest));
+
+			createLabRoleRequest.ResetToDefault();
+		}
+	}
+}
+
+<Papper>
+	<LoadingTitle Title="@($"Create new role")"
+								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(CreateLabRole)))" />
+	
+	@if (createLabRoleResult.IsFailed)
+	{
+		<ResultError Error="@createLabRoleResult.Error" />
+	}
+
+	<EditForm EditContext="editContext"
+						class="flex flex-col gap-2">
+		<FluentValidationValidator ValidatorType=typeof(CreateLabRoleValidator) />
+
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Name</span>
+			</div>
+
+			<InputTextOnInput @bind-Value="createLabRoleRequest.Name"
+												placeholder="Type here"
+												class="input input-bordered" />
+
+			<ValidationMessage For="() => createLabRoleRequest.Name" class="text-red-500 text-sm italic" />
+		</label>
+
+		<label class="form-control w-full">
+			<div class="label">
+				<span class="label-text">Description</span>
+			</div>
+			<InputTextOnInput @bind-Value="createLabRoleRequest.Description"
+												placeholder="Type here"
+												class="input input-bordered" />
+
+			<ValidationMessage For="() => createLabRoleRequest.Description" class="text-red-500 text-sm italic" />
+		</label>
+
+		<label class="form-control w-full cursor-pointer">
+			<span class="label justify-start gap-4">
+				<span class="label-text">Auto Assign</span>
+				<InputCheckbox @bind-Value="createLabRoleRequest.AutoAssign" class="checkbox" />
+			</span>
+			<ValidationMessage For="() => createLabRoleRequest.AutoAssign" class="text-red-500 text-sm italic" />
+		</label>
+
+		<div class="flex gap-2 items-center">
+			<SubmitButton OnValidSubmit="createRoleHandler"
+										class="btn btn-primary"
+										disabled="@(ServiceExecutor.IsRequestLoading(nameof(CreateLabRole)))">
+				Add
+				@if (ServiceExecutor.IsRequestLoading(nameof(CreateLabRole)))
+				{
+					<span class="ml-2 loading loading-spinner loading-md"></span>
+				}
+			</SubmitButton>
+		</div>
+	</EditForm>
+</Papper>

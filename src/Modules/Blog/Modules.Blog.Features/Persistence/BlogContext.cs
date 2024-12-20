@@ -13,7 +13,10 @@ public interface IBlogContext : IModuleDbContext
 	DbSet<Comment> Comments { get; }
 }
 
-public class BlogContext : ModuleDbContext, IBlogContext
+public class BlogContext
+	(DbContextOptions<BlogContext> options,
+	IOptions<PersistenceConfiguration> persistenceOptions)
+		: ModuleDbContext(options, persistenceOptions), IBlogContext
 {
 	public DbSet<Post> Posts { get; set; } = default!;
 	public DbSet<Tag> Tags { get; set; } = default!;
@@ -21,25 +24,10 @@ public class BlogContext : ModuleDbContext, IBlogContext
 
 	protected override string Schema => "Blog";
 
-	public BlogContext(
-			 DbContextOptions<BlogContext> options,
-					IOptions<PersistenceConfiguration> persistenceOptions)
-		: base(options, persistenceOptions)
-	{
-	}
-
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
 
-		modelBuilder.Entity<Post>()
-			.HasMany(x => x.Tags)
-			.WithMany(x => x.Posts);
-
-		modelBuilder.Entity<Post>()
-			.HasMany(x => x.Comments)
-			.WithOne()
-			.HasForeignKey(x => x.PostId)
-			.OnDelete(DeleteBehavior.Cascade);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(Program).Assembly);
 	}
 }

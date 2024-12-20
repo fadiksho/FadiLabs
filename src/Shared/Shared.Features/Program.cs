@@ -1,10 +1,21 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Shared.Components;
 
 namespace Shared.Features;
 public static class Program
 {
-	public static RazorComponentsEndpointConventionBuilder MapSharedModulePages(this RazorComponentsEndpointConventionBuilder builder)
+
+	public static IServiceCollection AddSharedModuleServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
 	{
-		return builder.AddAdditionalAssemblies(typeof(Components.Program).Assembly);
+		services.AddSharedComponentsServices(config);
+
+		services.AddMediatR(cfg =>
+		{
+			cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+		});
+
+		return services;
 	}
 }

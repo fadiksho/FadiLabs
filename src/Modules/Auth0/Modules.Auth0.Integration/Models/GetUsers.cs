@@ -1,10 +1,14 @@
-﻿namespace Modules.Auth0.Integration.Models;
+﻿using Modules.Shared.Integration.Authorization;
+
+namespace Modules.Auth0.Integration.Models;
+
+[LabAuthorize(LabsPermissions.ConfigureSite)]
 public record GetUsers : IRequest<Result<PagedList<GetUsersResponse>>>
 {
 
 }
 
-public class GetUsersResponse
+public record GetUsersResponse
 {
 	public required string UserId { get; set; }
 	public required string Name { get; set; }

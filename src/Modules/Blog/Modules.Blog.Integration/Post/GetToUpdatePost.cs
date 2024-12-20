@@ -1,6 +1,6 @@
 ﻿namespace Modules.Blog.Integration.Post;
 
-[LabAuthorize(Permissions.BlogOwner)]
+[LabAuthorize(LabsPermissions.BlogOwner)]
 public record GetToUpdatePost(Guid PostId) : IRequest<Result<UpdatePost>>;
 
 public class GetToUpdatePostValidator : AbstractValidator<GetToUpdatePost>

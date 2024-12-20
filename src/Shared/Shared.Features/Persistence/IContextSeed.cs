@@ -1,5 +1,8 @@
-﻿namespace Shared.Features.Persistence;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Shared.Features.Persistence;
+
 public interface IContextSeed
 {
-	Task SeedAsync();
+	abstract static void Seed(DbContext context, bool _);
 }

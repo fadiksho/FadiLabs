@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Options;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using Modules.Auth0.Integration.Dtos;
 
 namespace Modules.Auth0.Features.Services.Implementaions;

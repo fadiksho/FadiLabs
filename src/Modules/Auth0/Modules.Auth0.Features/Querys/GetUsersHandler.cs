@@ -12,6 +12,7 @@ internal class GetUsersHandler(Auth0Api.IManagementApiClient managementApiClient
 			Fields = $"name,user_id,email,email_verified,picture,blocked",
 			IncludeFields = true
 		};
+
 		var pageInfoRequest = new Auth0Api.Paging.PaginationInfo(0, 50, true);
 
 		var clientResponse = await

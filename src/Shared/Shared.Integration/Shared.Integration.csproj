@@ -8,8 +8,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Modules\Auth0\Modules.Auth0.Integration\Modules.Auth0.Integration.csproj" />
-	  <ProjectReference Include="..\..\Modules\Authorization\Modules.Authorization.Integration\Modules.Authorization.Integration.csproj" />
 	  <ProjectReference Include="..\..\Modules\Blog\Modules.Blog.Integration\Modules.Blog.Integration.csproj" />
+	  <ProjectReference Include="..\..\Modules\Home\Modules.Home.Integration\Modules.Home.Integration.csproj" />
 	  <ProjectReference Include="..\..\Modules\User\Modules.User.Integration\Modules.User.Integration.csproj" />
 	</ItemGroup>
 	

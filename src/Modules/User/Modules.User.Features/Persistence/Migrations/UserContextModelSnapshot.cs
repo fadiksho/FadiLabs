@@ -23,6 +23,78 @@ namespace Modules.User.Features.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LabRoleLabUser", b =>
+                {
+                    b.Property<Guid>("LabRolesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LabUsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LabRolesId", "LabUsersId");
+
+                    b.HasIndex("LabUsersId");
+
+                    b.ToTable("LabRoleLabUser", "User");
+                });
+
+            modelBuilder.Entity("Modules.User.Features.Entities.LabRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("AutoAssign")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LabsPermissions")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("LabRoles", "User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("044e1975-75a6-4d16-b0b8-19c48fbd3377"),
+                            AutoAssign = false,
+                            Created = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6741), new TimeSpan(0, 0, 0, 0, 0)),
+                            Description = "default admin role.",
+                            LabsPermissions = -1,
+                            LastModified = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6931), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("2cc3f5d7-4a52-484e-ae64-8613ef92e946"),
+                            AutoAssign = true,
+                            Created = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7091), new TimeSpan(0, 0, 0, 0, 0)),
+                            Description = "default lab user role.",
+                            LabsPermissions = 0,
+                            LastModified = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7092), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "lab user"
+                        });
+                });
+
             modelBuilder.Entity("Modules.User.Features.Entities.LabUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -31,59 +103,50 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.Property<string>("Auth0UserId")
                         .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Auth0UserId")
+                        .IsUnique();
+
                     b.ToTable("LabUsers", "User");
                 });
 
-            modelBuilder.Entity("Modules.User.Features.Entities.LinkedAccount", b =>
+            modelBuilder.Entity("LabRoleLabUser", b =>
                 {
-                    b.Property<string>("Provider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("Connection")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsSocial")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("LabUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Provider", "ProviderKey");
-
-                    b.HasIndex("LabUserId");
-
-                    b.ToTable("LinkedAccount", "User");
-                });
-
-            modelBuilder.Entity("Modules.User.Features.Entities.LinkedAccount", b =>
-                {
-                    b.HasOne("Modules.User.Features.Entities.LabUser", null)
-                        .WithMany("LinkedAccounts")
-                        .HasForeignKey("LabUserId")
+                    b.HasOne("Modules.User.Features.Entities.LabRole", null)
+                        .WithMany()
+                        .HasForeignKey("LabRolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Modules.User.Features.Entities.LabUser", b =>
-                {
-                    b.Navigation("LinkedAccounts");
+                    b.HasOne("Modules.User.Features.Entities.LabUser", null)
+                        .WithMany()
+                        .HasForeignKey("LabUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

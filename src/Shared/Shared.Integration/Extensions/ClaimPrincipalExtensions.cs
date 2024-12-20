@@ -1,10 +1,14 @@
-﻿using Modules.Authorization.Integration.Authorization;
-using Modules.Shared.Integration.Authorization;
+﻿using Modules.Shared.Integration.Authorization;
 using System.Security.Claims;
 
 namespace Shared.Integration.Extensions;
 public static class ClaimPrincipalExtensions
 {
+	public static bool IsAuthenticated(this ClaimsPrincipal principal)
+	{
+		return principal?.Identity?.IsAuthenticated == true;
+	}
+
 	public static string? GetUserName(this ClaimsPrincipal principal)
 	{
 		return principal.FindFirst("name")?.Value;
@@ -25,21 +29,53 @@ public static class ClaimPrincipalExtensions
 		return principal.FindFirst("sub")?.Value;
 	}
 
-	public static Permissions GetPermissions(this ClaimsPrincipal principal)
+	public static LabsPermissions GetPermissions(this ClaimsPrincipal principal)
 	{
-		var permissionClaim = principal.FindFirst(CustomAuthorizationClaimTypes.Permissions);
+		var permissionClaim = principal.FindFirst(CustomAuthorizationClaimTypes.LabsPermissions);
 		if (!int.TryParse(permissionClaim?.Value, out int permissionClaimValue))
 		{
-			return Permissions.None;
+			return LabsPermissions.None;
 		}
 
-		return (Permissions)permissionClaimValue;
+		return (LabsPermissions)permissionClaimValue;
 	}
 
-	public static bool HasPermission(this ClaimsPrincipal principal, Permissions permission)
+	public static DateTimeOffset? GetIdTokenExpiration(this ClaimsPrincipal principal)
 	{
+		var idTokenExpirationText = principal.FindFirst("exp")?.Value;
+		if (!long.TryParse(idTokenExpirationText, out long expUnixTime))
+		{
+			return null;
+		}
+
+		return DateTimeOffset.FromUnixTimeSeconds(expUnixTime);
+	}
+
+	/// <summary>
+	/// Checks if the specified permission(s) are set in the user's permissions.
+	/// </summary>
+	/// <param name="principal">The user's claims principal.</param>
+	/// <param name="requiredLabPermission">The permission(s) to check.</param>
+	/// <returns>True if the specified permission(s) are set; otherwise, false.</returns>
+	/// <remarks>
+	/// This method checks if the user has the specified permission(s). 
+	/// If the permission to check is 'All', it verifies if the user has 'All' permissions.
+	/// 
+	/// Otherwise, it uses a bitwise AND operation to check if the user has the specified permission(s).
+	/// </remarks>
+	public static bool HasLabPermission(this ClaimsPrincipal principal, LabsPermissions requiredLabPermission)
+	{
+		if (requiredLabPermission == LabsPermissions.None)
+			return true;
+
+		// Retrieve the current permissions of the user.
 		var currentPermission = principal.GetPermissions();
 
-		return (currentPermission & permission) != 0;
+		if (requiredLabPermission == LabsPermissions.All)
+			return currentPermission == LabsPermissions.All;
+
+		// Use bitwise AND to check if the user has the specified permission(s).
+		return (currentPermission & requiredLabPermission) != 0;
 	}
+
 }

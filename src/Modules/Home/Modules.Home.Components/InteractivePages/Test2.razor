@@ -1,0 +1,86 @@
+@page "/test2"
+@using Modules.User.Integration.User.Commands
+
+@attribute [LabAuthorize]
+
+@inject IServiceExecutor<IUIBus> ServiceExecutor
+
+<PageTitle>Test 2</PageTitle>
+
+<Papper>
+	<RenderingContextMessage />
+	<AuthorizeView>
+		<Authorized>
+			<div class="flex flex-col gap-1">
+				<span class="text-success text-xl font-bold">Authorized</span>
+				<span class="font-bold">@($"Expire in: {context.User.GetIdTokenExpiration() - DateTimeOffset.Now}")</span>
+			</div>
+		</Authorized>
+		<NotAuthorized>
+			<span class="text-error text-xl font-bold">NotAuthorized</span>
+		</NotAuthorized>
+	</AuthorizeView>
+
+	<Papper>
+		<button class="btn btn-primary" @onclick="GetQueryTestClickHandler">
+			Send
+			@if (ServiceExecutor.IsRequestLoading(nameof(GetTestQuery)))
+			{
+				<span class="loading loading-spinner loading-md"></span>
+			}
+		</button>
+		<pre>
+		<code class="whitespace-break-spaces">
+				@if (getTestQueryResult.IsSuccess)
+				{
+					@getTestQueryResult.SuccessMessage
+				}
+				else if (getTestQueryResult.IsFailed)
+				{
+					@getTestQueryResult.Error.Message
+				}
+			</code>
+		</pre>
+	</Papper>
+
+	<Papper>
+		<button class="btn btn-primary" @onclick="GetTestAuthorizedQueryClickHandler">
+			Send Authorized
+			@if (ServiceExecutor.IsRequestLoading(nameof(GetTestAuthorizedQuery)))
+			{
+				<span class="loading loading-spinner loading-md"></span>
+			}
+		</button>
+		<pre>
+		<code class="whitespace-break-spaces">
+				@if (getTestAuthorizeQueryResult.IsSuccess)
+				{
+					@getTestAuthorizeQueryResult.SuccessMessage
+				}
+				else if (getTestAuthorizeQueryResult.IsFailed)
+				{
+					@getTestAuthorizeQueryResult.Error.Message
+				}
+			</code>
+		</pre>
+	</Papper>
+
+</Papper>
+
+@code {
+	private Result getTestQueryResult;
+
+	private Result getTestAuthorizeQueryResult;
+
+	async Task GetQueryTestClickHandler()
+	{
+		getTestQueryResult =
+			await ServiceExecutor.ExecuteAsync(nameof(GetTestQuery), x => x.Send(new GetTestQuery()));
+	}
+
+	async Task GetTestAuthorizedQueryClickHandler()
+	{
+		getTestAuthorizeQueryResult =
+			await ServiceExecutor.ExecuteAsync(nameof(GetTestAuthorizedQuery), x => x.Send(new GetTestAuthorizedQuery()));
+	}
+}

@@ -1,0 +1,70 @@
+@inject IAuthService AuthService
+
+<AuthorizeView>
+	<Authorized>
+		<li>
+			<details class="space-y-1">
+				<summary>
+					<span class="flex items-center gap-2">
+						<div class="avatar">
+							<div class="w-12 rounded-full">
+								<img src="@context.User.GetProfilePicture()" alt />
+							</div>
+						</div>
+						<span class="flex-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text font-bold text-transparent break-all">
+							@context.User.GetUserName()
+						</span>
+					</span>
+				</summary>
+				<ul class="space-y-1">
+					<li>
+						@if (RendererInfo.Name == "WebView")
+						{
+							<button class="btn btn-ghost btn-block justify-start min-h-2 h-auto py-2 leading-5" @onclick="Logout">
+								Logout
+							</button>
+						}
+						else
+						{
+							<form action="account/logout" method="post" class="p-0 block">
+								<AntiforgeryToken />
+								<button type="submit" class="btn btn-ghost btn-block justify-start min-h-2 h-auto py-2 leading-5">
+									Logout
+								</button>
+							</form>
+						}
+					</li>
+				</ul>
+			</details>
+		</li>
+	</Authorized>
+	<NotAuthorized>
+		<div class="flex flex-col p-1">
+			@if (RendererInfo.Name == "WebView")
+			{
+				<button class="btn btn-block bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white" @onclick="Login">
+					Login
+				</button>
+			}
+			else
+			{
+				<a href="account/login" class="btn btn-block bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white">
+					<span class="font-bold italic text-xl">Login</span>
+				</a>
+			}
+		</div>
+	</NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+	async Task Login()
+	{
+		await AuthService.AuthenticateAsync();
+	}
+
+	async void Logout()
+	{
+		await AuthService.DeAuthenticateAsync();
+	}
+}

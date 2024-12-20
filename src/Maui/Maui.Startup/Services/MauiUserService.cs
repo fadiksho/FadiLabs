@@ -3,7 +3,7 @@ using IdentityModel.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Results;
 using Microsoft.Extensions.Options;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using System.Security.Claims;
 
 namespace Maui.Startup.Services;
@@ -37,6 +37,7 @@ public class MauiUserService
 		}
 	}
 
+	public string? IdToken { get; set; }
 	public string? AccessToken { get; set; }
 	public string? RefreshToken { get; set; }
 
@@ -56,7 +57,7 @@ public class MauiUserService
 				{
 					IssuerName = doc.Issuer,
 					KeySet = doc.KeySet
-				}
+				},
 			};
 
 			var validationResult = await validator.ValidateAsync(idToken, options);
@@ -64,6 +65,7 @@ public class MauiUserService
 			if (!validationResult.IsError)
 			{
 				CurrentUser = validationResult.User;
+				IdToken = idToken;
 				AccessToken = await SecureStorage.Default.GetAsync("access_token");
 				RefreshToken = await SecureStorage.Default.GetAsync("refresh_token");
 			}
@@ -80,16 +82,13 @@ public class MauiUserService
 
 		if (!refreshResult.IsError)
 		{
+			IdToken = refreshResult.IdentityToken;
 			AccessToken = refreshResult.AccessToken;
 			RefreshToken = refreshResult.RefreshToken;
 
 			await SecureStorage.Default.SetAsync("access_token", AccessToken);
-			await SecureStorage.Default.SetAsync("id_token", refreshResult.IdentityToken);
-
-			if (RefreshToken != null)
-			{
-				await SecureStorage.Default.SetAsync("refresh_token", RefreshToken);
-			}
+			await SecureStorage.Default.SetAsync("id_token", IdToken);
+			await SecureStorage.Default.SetAsync("refresh_token", RefreshToken);
 		}
 
 		return refreshResult;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Modules.Auth0.Components;
-using Modules.Authorization.Components;
 using Modules.Blog.Components;
 using Modules.User.Components;
 using Shared.Components;
@@ -10,7 +9,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddSharedComponentsServices(builder.Configuration)
 	.AddAuth0ModuleComponentsServices(builder.Configuration)
-	.AddAuthorizationModuleComponentsServices(builder.Configuration)
 	.AddUserModuleComponentsServices(builder.Configuration)
 	.AddBlogModuleComponentsServices(builder.Configuration);
 
@@ -20,5 +18,5 @@ await builder.Build().RunAsync();
 
 namespace Web.Client
 {
-	internal class Program { }
+	public class Program { }
 }

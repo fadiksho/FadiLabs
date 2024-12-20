@@ -1,11 +1,13 @@
-﻿using Shared.Integration.Domain;
+﻿using Modules.Shared.Integration.Domain;
+using Modules.Shared.Integration.Domain.Contracts;
 using System.Globalization;
 using System.Text;
 
 namespace Modules.Blog.Features.Entities;
 
-public class Post : BaseEntity, IOwnedBy
+public class Post : AuditableEntity, IEntity<Guid>, IOwnedBy
 {
+	public Guid Id { get; set; }
 	public required string Title { get; set; }
 	public required string Slug { get; set; }
 	public string? Description { get; set; }

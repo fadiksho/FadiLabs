@@ -9,15 +9,13 @@
 	<ItemGroup>
 	  <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
 	  <PackageReference Include="Auth0Net.DependencyInjection" Version="4.0.0" />
+	  <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="3.0.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
 		<ProjectReference Include="..\Modules.Auth0.Components\Modules.Auth0.Components.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Persistence\" />
 	</ItemGroup>
 </Project>

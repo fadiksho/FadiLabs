@@ -1,6 +1,6 @@
 ﻿using Auth0.OidcClient;
 using Microsoft.Extensions.Options;
-using Modules.Auth0.Features.Configuration;
+using Modules.Auth0.Integration.Configuration;
 using Shared.Components.Services;
 using System.Security.Claims;
 
@@ -22,29 +22,27 @@ public class MauiAuthService : IAuthService
 
 	public async Task AuthenticateAsync()
 	{
-		var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity());
-		var accessToken = string.Empty;
-		var refreshToken = string.Empty;
+		//var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity());
+		//string? accessToken = null;
+		//string? refreshToken = null;
 
 		var loginResult = await _auth0Client.LoginAsync(new { audience = _auth0Configuration.Audience });
 
 		if (!loginResult.IsError)
 		{
-			authenticatedUser = loginResult.User;
-			accessToken = loginResult.AccessToken;
-			if (loginResult.RefreshToken != null)
-			{
-				refreshToken = loginResult.RefreshToken;
-				await SecureStorage.Default.SetAsync("refresh_token", refreshToken);
-			}
+			_userService.CurrentUser = loginResult.User;
+			_userService.IdToken = loginResult.IdentityToken;
+			_userService.AccessToken = loginResult.AccessToken;
+			_userService.RefreshToken = loginResult.RefreshToken;
+
+			await SecureStorage.Default.SetAsync("id_token", loginResult.IdentityToken);
+			await SecureStorage.Default.SetAsync("access_token", loginResult.AccessToken);
+			await SecureStorage.Default.SetAsync("refresh_token", loginResult.RefreshToken);
 		}
-
-		_userService.AccessToken = accessToken;
-		_userService.RefreshToken = refreshToken;
-		_userService.CurrentUser = authenticatedUser;
-
-		await SecureStorage.Default.SetAsync("access_token", accessToken);
-		await SecureStorage.Default.SetAsync("id_token", loginResult.IdentityToken);
+		else
+		{
+			SecureStorage.Default.RemoveAll();
+		}
 	}
 
 	public async Task DeAuthenticateAsync()

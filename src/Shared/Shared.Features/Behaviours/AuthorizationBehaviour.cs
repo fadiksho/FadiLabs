@@ -1,10 +1,11 @@
 ﻿using Fadi.Result.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Modules.Authorization.Integration.Authorization;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
 using Shared.Features.Services;
+using Shared.Integration.Extensions;
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Shared.Features.Behaviours;
@@ -15,25 +16,35 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 		where TRequest : notnull, IRequest<TResponse>
 		where TResponse : Fadi.Result.IResult
 {
+	private static readonly ConcurrentDictionary<Type, IEnumerable<AuthorizeAttribute>> _attributeCache = new();
+
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		var authorizeAttributes = request.GetType().GetCustomAttributes<LabAuthorizeAttribute>();
-
-		if (!authorizeAttributes.Any())
+		var requestType = request.GetType();
+		if (!_attributeCache.TryGetValue(requestType, out var authorizeAttributes))
 		{
-			return await next();
+			authorizeAttributes = requestType.GetCustomAttributes<AuthorizeAttribute>();
+			_attributeCache[requestType] = authorizeAttributes;
 		}
 
-		var user = currentUser.GetUser();
+		if (!authorizeAttributes.Any())
+			return await next();
+
+		var user = await currentUser.GetUser();
+		if (user == null || !user.IsAuthenticated())
+			return next.FromError(request, new UnauthentectedError());
 
 		foreach (var authorizeAttribute in authorizeAttributes)
 		{
-			var requiredPermission = authorizeAttribute.Permissions;
-			var authorizationResult = await authorizationService.AuthorizeAsync(user, requiredPermission);
-			if (!authorizationResult.Succeeded)
-			{
+			var authorizationResult = AuthorizationResult.Success();
+
+			if (authorizeAttribute is LabAuthorizeAttribute labAuthorizeAttribute)
+				authorizationResult = await authorizationService.AuthorizeAsync(user, labAuthorizeAttribute.LabsPermissions);
+			else if (!string.IsNullOrEmpty(authorizeAttribute.Policy))
+				authorizationResult = await authorizationService.AuthorizeAsync(user, authorizeAttribute.Policy);
+
+			if (authorizationResult.Succeeded == false)
 				return next.FromError(request, new UnauthorizedError());
-			}
 		}
 
 		return await next();

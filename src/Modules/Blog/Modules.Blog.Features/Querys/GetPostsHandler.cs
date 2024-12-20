@@ -1,12 +1,11 @@
-﻿using Fadi.Result;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Models;
 using Shared.Features.Services;
+using Shared.Integration.Extensions;
 using Shared.Integration.Utilities;
 
 namespace Modules.Blog.Features.Querys;
@@ -14,7 +13,6 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 {
 	public async Task<Result<PagedList<GetPostsResponse>>> Handle(GetPosts request, CancellationToken cancellationToken)
 	{
-		await Task.Delay(2000);
 		var query = context.Posts
 			.Include(x => x.Tags)
 			.Include(x => x.Comments)
@@ -24,7 +22,9 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 		if (!string.IsNullOrEmpty(request.Tag))
 			query = query.Where(x => x.Tags.Any(t => t.Name == request.Tag));
 
-		if (!currentUser.HasPermission(Permissions.BlogOwner))
+		var user = await currentUser.GetUser();
+
+		if (user.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		if (!string.IsNullOrEmpty(request.Search))

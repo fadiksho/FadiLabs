@@ -1,6 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿global using Fadi.Result;
+global using Fadi.Result.Errors;
+global using MediatR;
+global using Modules.User.Integration.User.Commands;
+global using Modules.User.Integration.User.Events;
+global using Modules.User.Integration.User.Queries;
+global using Modules.User.Integration.User.ResultErrors;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.User.Components;
@@ -22,8 +31,10 @@ public static class Program
 			cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 		});
 
-		services.AddDbContext<UserContext>(options =>
+		services.AddDbContext<UserContext>((sp, options) =>
 		{
+			options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+			options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 			options.UseSqlServer(_persistenceOptions.ConnectionString);
 		});
 

@@ -1,7 +1,7 @@
 ﻿using Modules.Auth0.Features;
 using Modules.Auth0.Features.Server;
-using Modules.Authorization.Features;
 using Modules.Blog.Features;
+using Modules.Home.Features;
 using Modules.User.Features;
 using Shared.Features;
 using Web.Server.Endpoints;
@@ -14,8 +14,9 @@ builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
+	.AddSharedModuleServices(builder.Configuration, builder.Environment)
+	.AddHomeModuleServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
-	.AddAuthorizationModuleServices(builder.Configuration, builder.Environment)
 	.AddUserModuleServices(builder.Configuration, builder.Environment)
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
@@ -25,7 +26,6 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseWebAssemblyDebugging();
 	//app.UseMiddleware<DevMigrationsMiddleware>();
-	//app.UseMiddleware<SeedContextMiddleware>();
 }
 else
 {
@@ -38,17 +38,17 @@ app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
 app.UseHttpsRedirection();
 
-app.UseAntiforgery();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseAntiforgery();
+
 app.MapStaticAssets();
+
 app.MapBlazorApp()
-	 .MapSharedModulePages()
+	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
 	 .MapOAuthModuleServerPages()
-	 .MapAuthorizationModulePages()
 	 .MapUserModulePages()
 	 .MapBlogModulePages();
 
@@ -58,3 +58,8 @@ app
 	.MapAuth0ModleEndPoints();
 
 app.Run();
+
+namespace Web.Server
+{
+	public class Program { }
+}

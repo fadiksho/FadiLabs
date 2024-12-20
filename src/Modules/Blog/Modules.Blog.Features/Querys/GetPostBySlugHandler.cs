@@ -1,12 +1,11 @@
-﻿using Fadi.Result;
-using Fadi.Result.Errors;
-using MediatR;
+﻿using Fadi.Result.Errors;
 using Microsoft.EntityFrameworkCore;
 using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Shared.Features.Services;
+using Shared.Integration.Extensions;
 
 namespace Modules.Blog.Features.Querys;
 
@@ -19,7 +18,9 @@ internal class GetPostBySlugHandler(IBlogContext context, ICurrentUser currentUs
 			.Include(x => x.Tags)
 			.AsQueryable();
 
-		if (!currentUser.HasPermission(Permissions.BlogOwner))
+		var user = await currentUser.GetUser();
+
+		if (!user.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		var post = await query.FirstOrDefaultAsync(cancellationToken);

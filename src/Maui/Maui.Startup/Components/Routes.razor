@@ -1,6 +1,6 @@
-﻿<Router AppAssembly="@typeof(Shared.Components.Program).Assembly" AdditionalAssemblies="assemblies">
+﻿<Router AppAssembly="@typeof(MauiProgram).Assembly" AdditionalAssemblies="assemblies">
 	<Found Context="routeData">
-		<AuthorizeRouteView RouteData="routeData" Resource="routeData" DefaultLayout="typeof(Shared.Components.Layout.MainLayout)">
+		<AuthorizeRouteView RouteData="routeData" Resource="routeData" DefaultLayout="typeof(Shared.Components.Layout.SkeletonLayout)">
 			<Authorizing>
 				<p>Authorizing...</p>
 			</Authorizing>
@@ -11,7 +11,7 @@
 		<FocusOnNavigate RouteData="routeData" Selector="h1" />
 	</Found>
 	<NotFound>
-		<LayoutView Layout="typeof(Shared.Components.Layout.MainLayout)">
+		<LayoutView Layout="typeof(Shared.Components.Layout.SkeletonLayout)">
 			<h1>not found component</h1>
 		</LayoutView>
 	</NotFound>
@@ -20,10 +20,9 @@
 @code {
 	System.Reflection.Assembly[] assemblies =
 	[
-		typeof(Shared.Components.Program).Assembly,
+		typeof(Modules.Home.Components.Program).Assembly,
 		typeof(Modules.Blog.Components.Program).Assembly,
 		typeof(Modules.Auth0.Components.Program).Assembly,
-		typeof(Modules.Authorization.Components.Program).Assembly,
 		typeof(Modules.User.Components.Program).Assembly,
 	];
 }

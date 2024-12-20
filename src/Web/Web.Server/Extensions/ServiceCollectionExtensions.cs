@@ -1,13 +1,13 @@
 ﻿using Azure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
-using Shared.Components;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shared.Components.Services;
 using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
+using Shared.Features.Persistence.Interceptors;
 using Shared.Features.Services;
-using Shared.Features.Services.Implementaions;
-using Shared.Integration.Services;
 using Web.Server.Services;
 
 
@@ -24,6 +24,8 @@ public static class ServiceCollectionExtensions
 					new DefaultAzureCredential());
 		}
 
+		services.AddHttpClient();
+		services.AddHttpContextAccessor();
 		services.AddRazorComponents()
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
@@ -31,21 +33,21 @@ public static class ServiceCollectionExtensions
 		services.AddMediator(config);
 		services.AddConfigurationSettings(config);
 
-		services.AddHttpContextAccessor();
 
-		services.AddSharedComponentsServices(config);
+		services.AddCircuitServicesAccessor();
+		services.AddScoped<ICurrentUser, ServerCurrentUser>();
 
 		services.AddScoped<AuthenticationStateProvider, ServerASP>();
 		services.AddScoped<IAuthService, ServerAuthService>();
-
-		services.AddSingleton<LogIndexer>();
-
 		services.AddScoped<IMessageSender, ServerMessageSender>();
-		services.AddScoped<ICurrentUser, ServerCurrentUser>();
 
+		// ToDo: Testing progress
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 		services.AddHybridCache();
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+		services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+		services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
 		return services;
 	}
@@ -68,6 +70,16 @@ public static class ServiceCollectionExtensions
 	{
 		services.Configure<PersistenceConfiguration>(config.GetSection(PersistenceConfiguration.SectionName));
 		services.Configure<DevTunnelConfiguration>(config.GetSection(DevTunnelConfiguration.SectionName));
+		return services;
+	}
+
+	private static IServiceCollection AddCircuitServicesAccessor(
+				this IServiceCollection services)
+	{
+
+		services.AddScoped<CircuitServicesAccessor>();
+		services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
+
 		return services;
 	}
 }

@@ -6,23 +6,23 @@ public class LabAuthorizeAttribute : Microsoft.AspNetCore.Authorization.Authoriz
 
 	public LabAuthorizeAttribute(string policy) : base(policy) { }
 
-	public LabAuthorizeAttribute(Permissions permission)
+	public LabAuthorizeAttribute(LabsPermissions labsPermissions)
 	{
-		Permissions = permission;
+		LabsPermissions = labsPermissions;
 	}
 
-	public Permissions Permissions
+	public LabsPermissions LabsPermissions
 	{
 		get
 		{
 			return !string.IsNullOrEmpty(Policy)
-					? PermissionPolicyManager.ExtractPermissions(Policy)
-					: Permissions.None;
+					? LabsPermissionsPolicyManager.ExtractLabsPermissions(Policy)
+					: LabsPermissions.None;
 		}
 		set
 		{
-			Policy = value != Permissions.None
-					? PermissionPolicyManager.GeneratePolicyName(value)
+			Policy = value != LabsPermissions.None
+					? LabsPermissionsPolicyManager.GeneratePolicyName(value)
 					: string.Empty;
 		}
 	}

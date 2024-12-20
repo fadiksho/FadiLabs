@@ -19,13 +19,7 @@ public class WasmASP : AuthenticationStateProvider
 			return;
 		}
 
-		Claim[] claims = [
-				new Claim(ClaimTypes.NameIdentifier, userInfo.UserId),
-				new Claim(ClaimTypes.Name, userInfo.Name ?? string.Empty),
-				new Claim(ClaimTypes.Email, userInfo.Email ?? string.Empty)];
-
-		_authenticationStateTask = Task.FromResult(new AuthenticationState(
-			new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: nameof(WasmASP)))));
+		_authenticationStateTask = Task.FromResult(new AuthenticationState(UserInfo.BuildClaimsPrincipal(userInfo)));
 	}
 
 	public override Task<AuthenticationState> GetAuthenticationStateAsync()

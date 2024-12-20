@@ -1,0 +1,47 @@
+@inject IAuthService AuthService
+
+@if (RendererInfo.Name == "WebView")
+{
+  <AuthorizeView>
+    <Authorized>
+      <button class="btn btn-ghost justify-start min-h-2 h-auto py-2 leading-5" @onclick="Logout">
+        Logout
+      </button>
+    </Authorized>
+    <NotAuthorized>
+      <button class="btn bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white" @onclick="Login">
+        Login
+      </button>
+    </NotAuthorized>
+  </AuthorizeView>
+}
+else
+{
+  <AuthorizeView>
+    <Authorized>
+      <form action="account/logout" method="post" class="p-0 block">
+        <AntiforgeryToken />
+        <button type="submit" class="btn btn-ghost min-h-2 h-auto py-2 leading-5">
+          Logout
+        </button>
+      </form>
+    </Authorized>
+    <NotAuthorized>
+      <a href="account/login?returnUrl=/labs" class="btn bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white">
+        <span class="font-bold italic text-xl">Login</span>
+      </a>
+    </NotAuthorized>
+  </AuthorizeView>
+}
+
+@code {
+  public async void Logout()
+  {
+    await AuthService.DeAuthenticateAsync();
+  }
+
+  public async Task Login()
+  {
+    await AuthService.AuthenticateAsync();
+  }
+}

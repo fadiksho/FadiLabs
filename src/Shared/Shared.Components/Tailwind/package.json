@@ -7,6 +7,6 @@
 	},
 	"scripts": {
 		"watch": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css -w",
-		"build": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css"
+		"build": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css --minify"
 	}
 }
