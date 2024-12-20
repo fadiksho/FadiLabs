@@ -1,6 +1,6 @@
-﻿using Shared.Integration.Domain.Contracts;
+﻿using Modules.Shared.Integration.Domain.Contracts;
 
-namespace Shared.Integration.Domain;
+namespace Modules.Shared.Integration.Domain;
 
 public abstract class BaseEntity : IBaseEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace Shared.Integration.Domain.Contracts;
+﻿namespace Modules.Shared.Integration.Domain.Contracts;
 
 public interface IOwnedBy
 {

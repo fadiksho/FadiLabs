@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Modules.User.Features.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,11 +21,13 @@ namespace Modules.User.Features.Persistence.Migrations
                 schema: "User",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AutoAssign = table.Column<bool>(type: "bit", nullable: false),
-                    LabsPermissions = table.Column<int>(type: "int", nullable: false)
+                    LabsPermissions = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +44,9 @@ namespace Modules.User.Features.Persistence.Migrations
                     DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EmailVerified = table.Column<bool>(type: "bit", nullable: false),
-                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,8 +83,12 @@ namespace Modules.User.Features.Persistence.Migrations
             migrationBuilder.InsertData(
                 schema: "User",
                 table: "LabRoles",
-                columns: new[] { "Id", "AutoAssign", "Description", "LabsPermissions", "Name" },
-                values: new object[] { new Guid("889027cf-742e-4ec6-a558-f526571819a7"), false, "default admin role.", -1, "admin" });
+                columns: new[] { "Id", "AutoAssign", "Created", "Description", "LabsPermissions", "LastModified", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("044e1975-75a6-4d16-b0b8-19c48fbd3377"), false, new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6741), new TimeSpan(0, 0, 0, 0, 0)), "default admin role.", -1, new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6931), new TimeSpan(0, 0, 0, 0, 0)), "admin" },
+                    { new Guid("2cc3f5d7-4a52-484e-ae64-8613ef92e946"), true, new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7091), new TimeSpan(0, 0, 0, 0, 0)), "default lab user role.", 0, new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7092), new TimeSpan(0, 0, 0, 0, 0)), "lab user" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabRoleLabUser_LabUsersId",

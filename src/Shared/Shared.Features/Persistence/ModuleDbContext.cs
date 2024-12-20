@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Modules.Shared.Integration.Domain;
 using Shared.Features.Configuration;
-using Shared.Integration.Domain;
 
 namespace Shared.Features.Persistence;
 
@@ -17,6 +17,7 @@ public abstract class ModuleDbContext(
 	{
 		modelBuilder.HasDefaultSchema(Schema);
 		modelBuilder.Ignore<EntityEvent>();
+		modelBuilder.Ignore<BaseEntity>();
 
 		base.OnModelCreating(modelBuilder);
 	}

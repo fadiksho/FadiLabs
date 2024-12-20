@@ -42,11 +42,13 @@ namespace Modules.User.Features.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("AutoAssign")
                         .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -54,6 +56,9 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.Property<int>("LabsPermissions")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -70,11 +75,23 @@ namespace Modules.User.Features.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("889027cf-742e-4ec6-a558-f526571819a7"),
+                            Id = new Guid("044e1975-75a6-4d16-b0b8-19c48fbd3377"),
                             AutoAssign = false,
+                            Created = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6741), new TimeSpan(0, 0, 0, 0, 0)),
                             Description = "default admin role.",
                             LabsPermissions = -1,
+                            LastModified = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(6931), new TimeSpan(0, 0, 0, 0, 0)),
                             Name = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("2cc3f5d7-4a52-484e-ae64-8613ef92e946"),
+                            AutoAssign = true,
+                            Created = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7091), new TimeSpan(0, 0, 0, 0, 0)),
+                            Description = "default lab user role.",
+                            LabsPermissions = 0,
+                            LastModified = new DateTimeOffset(new DateTime(2024, 12, 20, 17, 51, 20, 980, DateTimeKind.Unspecified).AddTicks(7092), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "lab user"
                         });
                 });
 
@@ -89,6 +106,9 @@ namespace Modules.User.Features.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
@@ -99,6 +119,9 @@ namespace Modules.User.Features.Persistence.Migrations
 
                     b.Property<bool>("EmailVerified")
                         .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");

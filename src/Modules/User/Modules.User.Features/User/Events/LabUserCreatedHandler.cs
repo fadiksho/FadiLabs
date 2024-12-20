@@ -12,5 +12,3 @@ internal class LabUserCreatedHandler
 		return Task.CompletedTask;
 	}
 }
-
-public record LabUserCreated(Guid LabUserId) : INotification;

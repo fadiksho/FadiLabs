@@ -1,3 +1,5 @@
-﻿namespace Modules.User.Integration.User.Events;
+﻿using Modules.Shared.Integration.Domain;
 
-public record FirstLabUserCreated(Guid LabUserId) : INotification { }
+namespace Modules.User.Integration.User.Events;
+
+public class FirstLabUserCreated() : EntityEvent { }

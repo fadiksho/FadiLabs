@@ -3,6 +3,7 @@ global using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Blog.Components;
@@ -25,8 +26,9 @@ public static class Program
 			cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 		});
 
-		services.AddDbContext<BlogContext>(options =>
+		services.AddDbContext<BlogContext>((sp, options) =>
 		{
+			options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 			options.UseSqlServer(_persistenceOptions.ConnectionString)
 				.UseSeeding(BlogContextSeed.Seed);
 		});

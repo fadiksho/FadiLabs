@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shared.Components.Services;
 using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
+using Shared.Features.Persistence.Interceptors;
 using Shared.Features.Services;
 using Web.Server.Services;
 
@@ -43,6 +45,9 @@ public static class ServiceCollectionExtensions
 #pragma warning disable EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 		services.AddHybridCache();
 #pragma warning restore EXTEXP0018 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+		services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+		services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
 		return services;
 	}

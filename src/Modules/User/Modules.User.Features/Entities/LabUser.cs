@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Shared.Integration.Domain;
-using Shared.Integration.Domain.Contracts;
+using Modules.Shared.Integration.Domain;
+using Modules.Shared.Integration.Domain.Contracts;
 
 namespace Modules.User.Features.Entities;
 
-public class LabUser : BaseEntity, IEntity<Guid>
+public class LabUser : AuditableEntity, IEntity<Guid>
 {
 	public Guid Id { get; set; }
 	public required string Auth0UserId { get; set; }

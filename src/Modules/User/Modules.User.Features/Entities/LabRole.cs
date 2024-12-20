@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modules.Shared.Integration.Authorization;
-using Shared.Integration.Domain.Contracts;
+using Modules.Shared.Integration.Domain;
+using Modules.Shared.Integration.Domain.Contracts;
 
 namespace Modules.User.Features.Entities;
 
-public class LabRole : IEntity<Guid>
+public class LabRole : AuditableEntity, IEntity<Guid>
 {
 	public Guid Id { get; set; }
 
@@ -22,8 +23,8 @@ internal class LabRoleConfiguration : IEntityTypeConfiguration<LabRole>
 {
 	public void Configure(EntityTypeBuilder<LabRole> builder)
 	{
-		builder.Property(b => b.Id)
-			.HasDefaultValueSql("NEWSEQUENTIALID()");
+		//builder.Property(b => b.Id)
+		//	.HasDefaultValueSql("NEWSEQUENTIALID()");
 
 		builder.HasIndex(x => x.Name)
 			.IsUnique();
@@ -38,7 +39,19 @@ internal class LabRoleConfiguration : IEntityTypeConfiguration<LabRole>
 				Name = "admin",
 				Description = "default admin role.",
 				LabsPermissions = LabsPermissions.All,
-				AutoAssign = false
+				AutoAssign = false,
+				Created = DateTimeOffset.UtcNow,
+				LastModified = DateTimeOffset.UtcNow
+			},
+			new LabRole
+			{
+				Id = Guid.NewGuid(),
+				Name = "lab user",
+				Description = "default lab user role.",
+				LabsPermissions = LabsPermissions.None,
+				AutoAssign = true,
+				Created = DateTimeOffset.UtcNow,
+				LastModified = DateTimeOffset.UtcNow
 			}
 		);
 	}

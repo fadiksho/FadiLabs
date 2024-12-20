@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
-using Modules.User.Features.User.Events;
 
 namespace Modules.User.Features.User.Commands;
 
@@ -23,7 +22,7 @@ internal class CreateLabUserHandler(IUserContext context, IMediator mediator) : 
 		await context.SaveChangesAsync(cancellationToken);
 
 		if (isFirstUser)
-			await mediator.Publish(new FirstLabUserCreated(newUser.Id), cancellationToken);
+			await mediator.Publish(new FirstLabUserCreated(), cancellationToken);
 
 		await mediator.Publish(new LabUserCreated(newUser.Id), cancellationToken);
 
