@@ -4,7 +4,7 @@ using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Models;
-using Shared.Integration.Utilities;
+using Shared.Features.Extensions;
 
 namespace Modules.Blog.Features.Querys;
 internal class GetCommentsByPostIdHandler : IRequestHandler<GetCommentsByPostId, Result<PagedList<GetCommentsByPostIdResponse>>>

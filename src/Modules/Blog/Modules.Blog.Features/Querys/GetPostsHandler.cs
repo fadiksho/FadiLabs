@@ -4,9 +4,9 @@ using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Models;
+using Shared.Features.Extensions;
 using Shared.Features.Services;
 using Shared.Integration.Extensions;
-using Shared.Integration.Utilities;
 
 namespace Modules.Blog.Features.Querys;
 internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) : IRequestHandler<GetPosts, Result<PagedList<GetPostsResponse>>>

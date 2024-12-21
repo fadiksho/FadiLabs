@@ -2,7 +2,7 @@
 using Modules.Shared.Integration.Models;
 using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
-using Shared.Integration.Utilities;
+using Shared.Features.Extensions;
 
 namespace Modules.User.Features.User.Querys;
 
