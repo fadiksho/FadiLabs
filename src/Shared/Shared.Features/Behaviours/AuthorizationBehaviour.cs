@@ -5,7 +5,6 @@ using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
 using Shared.Features.Services;
 using Shared.Integration.Extensions;
-using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Shared.Features.Behaviours;
@@ -16,16 +15,10 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 		where TRequest : notnull, IRequest<TResponse>
 		where TResponse : Fadi.Result.IResult
 {
-	private static readonly ConcurrentDictionary<Type, IEnumerable<AuthorizeAttribute>> _attributeCache = new();
-
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
 		var requestType = request.GetType();
-		if (!_attributeCache.TryGetValue(requestType, out var authorizeAttributes))
-		{
-			authorizeAttributes = requestType.GetCustomAttributes<AuthorizeAttribute>();
-			_attributeCache[requestType] = authorizeAttributes;
-		}
+		var authorizeAttributes = requestType.GetCustomAttributes<AuthorizeAttribute>();
 
 		if (!authorizeAttributes.Any())
 			return await next();

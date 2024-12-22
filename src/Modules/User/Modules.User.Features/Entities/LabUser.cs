@@ -9,9 +9,9 @@ public class LabUser : AuditableEntity, IEntity<Guid>
 {
 	public Guid Id { get; set; }
 	public required string Auth0UserId { get; set; }
+	public required string Email { get; set; }
 
 	public string? DisplayName { get; set; }
-	public string? Email { get; set; }
 	public bool EmailVerified { get; set; }
 	public string? ProfilePictureUrl { get; set; }
 

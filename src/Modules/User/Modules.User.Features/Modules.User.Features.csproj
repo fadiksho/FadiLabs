@@ -9,9 +9,15 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 	</ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
     <ProjectReference Include="..\Modules.User.Components\Modules.User.Components.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>Modules.User.Features.Test</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>
