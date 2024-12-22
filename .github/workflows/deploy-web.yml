@@ -1,4 +1,4 @@
-name: Deploy Fadilabs Server
+name: Deploy Server
 
 on:
   workflow_dispatch:

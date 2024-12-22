@@ -69,6 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		dotnet-tools.json = dotnet-tools.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Home", "Home", "{CA5F6929-A35A-46EA-93FE-F809B6B7069E}"
@@ -88,6 +89,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{8BFC0718-1F6A-4981-88D5-4890A447B410}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.Startup", "src\Maui\Maui.Startup\Maui.Startup.csproj", "{2CC4E314-A4A8-4FB8-BBD5-5C7ACE563174}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{FDB881C7-32E4-4DF5-A077-88EF982E03A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{E2160C1F-A7EE-4EB7-BD29-4089A5EADB2B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-web.yml = .github\workflows\build-web.yml
+		.github\workflows\deploy-web.yml = .github\workflows\deploy-web.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,6 +242,7 @@ Global
 		{A01B971E-1A38-4F4E-9BA3-198B573BD087} = {86D94694-66FB-4AAF-9EDC-76E71F997A32}
 		{8BFC0718-1F6A-4981-88D5-4890A447B410} = {B4942C5C-51AA-413A-9499-95F572D55A93}
 		{2CC4E314-A4A8-4FB8-BBD5-5C7ACE563174} = {8BFC0718-1F6A-4981-88D5-4890A447B410}
+		{E2160C1F-A7EE-4EB7-BD29-4089A5EADB2B} = {FDB881C7-32E4-4DF5-A077-88EF982E03A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3494FA6-8791-4182-A2E5-B3454D9A8ECA}

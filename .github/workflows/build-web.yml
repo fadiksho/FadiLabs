@@ -1,4 +1,4 @@
-name: Build FadiLabs Workflow
+name: Build & Test
 
 on:
   workflow_call:
@@ -30,6 +30,9 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build ${{ env.WEB_PROJECT_PATH }} --no-restore --configuration Release
+
+      - name: Test with the dotnet CLI
+        run: dotnet test FadiLabs.Web.slnf
 
       - name: Install EF Tool
         run: |
