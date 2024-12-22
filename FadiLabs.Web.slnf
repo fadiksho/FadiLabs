@@ -1,0 +1,30 @@
+{
+  "solution": {
+    "path": "FadiLabs.sln",
+    "projects": [
+      "lib\\Fadi.Result\\Fadi.Result.Tests\\Fadi.Result.Tests.csproj",
+      "lib\\Fadi.Result\\Fadi.Result\\Fadi.Result.csproj",
+      "src\\Modules\\Auth0\\Modules.Auth0.Components\\Modules.Auth0.Components.csproj",
+      "src\\Modules\\Auth0\\Modules.Auth0.Features.Server\\Modules.Auth0.Features.Server.csproj",
+      "src\\Modules\\Auth0\\Modules.Auth0.Features\\Modules.Auth0.Features.csproj",
+      "src\\Modules\\Auth0\\Modules.Auth0.Integration\\Modules.Auth0.Integration.csproj",
+      "src\\Modules\\Blog\\Modules.Blog.Components\\Modules.Blog.Components.csproj",
+      "src\\Modules\\Blog\\Modules.Blog.Features\\Modules.Blog.Features.csproj",
+      "src\\Modules\\Blog\\Modules.Blog.Integration\\Modules.Blog.Integration.csproj",
+      "src\\Modules\\Home\\Modules.Home.Components\\Modules.Home.Components.csproj",
+      "src\\Modules\\Home\\Modules.Home.Features\\Modules.Home.Features.csproj",
+      "src\\Modules\\Home\\Modules.Home.Integration\\Modules.Home.Integration.csproj",
+      "src\\Modules\\Modules.Shared.Integration\\Modules.Shared.Integration.csproj",
+      "src\\Modules\\User\\Modules.User.Components\\Modules.User.Components.csproj",
+      "src\\Modules\\User\\Modules.User.Features\\Modules.User.Features.csproj",
+      "src\\Modules\\User\\Modules.User.Integration\\Modules.User.Integration.csproj",
+      "src\\Modules\\User\\test\\Modules.User.Features.Test\\Modules.User.Features.Test.csproj",
+      "src\\Shared\\Shared.Components\\Shared.Components.csproj",
+      "src\\Shared\\Shared.Features\\Shared.Features.csproj",
+      "src\\Shared\\Shared.Integration\\Shared.Integration.csproj",
+      "src\\Shared\\test\\Shared.Features.Test\\Shared.Features.Test.csproj",
+      "src\\Web\\Web.Client\\Web.Client.csproj",
+      "src\\Web\\Web.Server\\Web.Server.csproj"
+    ]
+  }
+}
