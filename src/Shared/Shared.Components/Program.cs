@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Modules.Shared.Integration.Authorization;
+using MudBlazor.Services;
 using Shared.Components.Services;
 using Shared.Components.Services.Implementations;
 using Shared.Integration.Services;
@@ -17,6 +18,7 @@ public static class Program
 {
 	public static IServiceCollection AddSharedComponentsServices(this IServiceCollection services, IConfiguration configuration, params Assembly[] moduleAssemblies)
 	{
+		services.AddMudServices();
 		services.AddAuthorizationCore();
 		services.AddCascadingAuthenticationState();
 		services.AddScoped<IUIBus, DefaultUIBus>();

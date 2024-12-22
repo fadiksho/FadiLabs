@@ -4,16 +4,17 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<base href="/" />
-	<link href="@Assets["_content/Shared.Components/app.css"]" rel="stylesheet" />
 	<ImportMap />
 	<link href="@Assets["_content/Shared.Components/favicon.png"]" rel="icon" type="image/png" />
 	<HeadOutlet @rendermode="@PageRenderMode" />
+	<SectionOutlet SectionName="head" />
 </head>
 <body>
-
 	<Routes @rendermode="@PageRenderMode"/>
 
 	<script src="_framework/blazor.web.js"></script>
+	<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+	<script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>
 </body>
 </html>
 
@@ -22,5 +23,5 @@
 	private HttpContext HttpContext { get; set; } = default!;
 
 	private IComponentRenderMode? PageRenderMode
-			=> HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
+			=> HttpContext.AcceptsInteractiveRouting() ? InteractiveAuto : null;
 }

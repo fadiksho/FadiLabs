@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+		<PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.1.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
@@ -22,6 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Interactive\" />
   </ItemGroup>
 	
 </Project>

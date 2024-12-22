@@ -1,0 +1,63 @@
+@implements IDisposable
+@inject NavigationManager NavigationManager
+
+<MudNavMenu>
+	<MudNavGroup Title="Home Lab" Expanded="true">
+		<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+		<MudNavLink Href="/about">About</MudNavLink>
+		<MudNavLink Href="/blog">Blog</MudNavLink>
+		<MudNavLink Href="/labs">Labs</MudNavLink>
+	</MudNavGroup>
+
+	<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
+		<Authorized>
+			<MudNavGroup Title="Test Lab" Expanded="true">
+				<MudNavLink Href="/current-user">Current User</MudNavLink>
+				<MudNavLink Href="/test">Test</MudNavLink>
+				<MudNavLink Href="/test2">Test 2</MudNavLink>
+				<MudNavLink Href="/test3">Test 3</MudNavLink>
+			</MudNavGroup>
+
+			<MudNavGroup Title="Blog Lab" Expanded="true">
+				<MudNavLink Href="/blog">Blog</MudNavLink>
+				<MudNavLink Href="/blog/new">Create New</MudNavLink>
+			</MudNavGroup>
+
+			<MudNavGroup Title="User Lab" Expanded="true">
+				<MudNavLink Href="/user-lab/manage/users">Lab Users</MudNavLink>
+				<MudNavLink Href="/user-lab/manage/roles">Lab Roles</MudNavLink>
+				<MudNavLink Href="/user-lab/manage/roles-permissions">Lab Roles Permissions</MudNavLink>
+			</MudNavGroup>
+
+			<MudNavGroup Title="Auth0 Lab" Expanded="true">
+				<MudNavLink Href="/auth0-lab/manage/users">Auth0 Users</MudNavLink>
+				<MudNavLink Href="/auth0-lab/manage/permissions">Auth0 Permissions</MudNavLink>
+			</MudNavGroup>
+		</Authorized>
+	</LabAuthorizeView>
+
+</MudNavMenu>
+
+
+@code {
+	private string? currentUrl;
+
+	protected override void OnInitialized()
+	{
+		currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+		NavigationManager.LocationChanged += OnLocationChanged;
+	}
+
+	private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+	{
+		currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		NavigationManager.LocationChanged -= OnLocationChanged;
+	}
+}
+
+
