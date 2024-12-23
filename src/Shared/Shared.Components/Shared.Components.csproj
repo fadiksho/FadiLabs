@@ -24,9 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\Interactive\" />
-  </ItemGroup>
 	
 </Project>
