@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        'buttonAnimation': 'button-pop-custom  var(--animation-btn, 0.25s) ease-out'
+        'buttonAnimation': 'button-pop-custom  var(--animation-btn, 0.25s) ease-out',
       },
       transitionProperty: {
         'margin': 'margin',
@@ -39,6 +39,7 @@ module.exports = {
     },
   },
   daisyui: {
+    base: false,
     darkTheme: "dark",
     themes: [
       {
@@ -91,4 +92,3 @@ module.exports = {
     require('tailwindcss-animated')
   ],
 }
-

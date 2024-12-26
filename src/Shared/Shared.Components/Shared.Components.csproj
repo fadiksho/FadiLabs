@@ -24,5 +24,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
-	
+
+	<!--https://github.com/dotnet/razor/issues/4590-->
+	<!--<Target Name="CollectMudBlazorStaticAssets" DependsOnTargets="ResolveStaticWebAssetsInputs" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+		<Message Text="Dummy Hack" />
+		<Copy SourceFiles="%(StaticWebAsset.Identity)" DestinationFolder="wwwroot/temp" Condition="$([System.String]::Copy(%(StaticWebAsset.Identity)).Contains('mudblazor\'))" />
+	</Target>-->
 </Project>

@@ -4,14 +4,14 @@
 {
   <AuthorizeView>
     <Authorized>
-      <button class="btn btn-ghost justify-start min-h-2 h-auto py-2 leading-5" @onclick="Logout">
+      <MudButton Variant="Variant.Text" @onclick="Logout">
         Logout
-      </button>
+      </MudButton>
     </Authorized>
     <NotAuthorized>
-      <button class="btn bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white" @onclick="Login">
+      <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="Login">
         Login
-      </button>
+      </MudButton>
     </NotAuthorized>
   </AuthorizeView>
 }
@@ -21,15 +21,15 @@ else
     <Authorized>
       <form action="account/logout" method="post" class="p-0 block">
         <AntiforgeryToken />
-        <button type="submit" class="btn btn-ghost min-h-2 h-auto py-2 leading-5">
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text">
           Logout
-        </button>
+        </MudButton>
       </form>
     </Authorized>
     <NotAuthorized>
-      <a href="account/login?returnUrl=/labs" class="btn bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white">
-        <span class="font-bold italic text-xl">Login</span>
-      </a>
+      <MudButton Href="account/login?returnUrl=/labs" Variant="Variant.Filled" Color="Color.Primary">
+        Login
+      </MudButton>
     </NotAuthorized>
   </AuthorizeView>
 }

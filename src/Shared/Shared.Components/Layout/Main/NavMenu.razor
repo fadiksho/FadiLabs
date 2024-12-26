@@ -1,77 +1,116 @@
 @inject IAuthService AuthService
 
-<MudNavMenu>
+<div class="flex flex-col h-full gap-4">
 	<AuthorizeView>
 		<Authorized>
-			<MudNavGroup Title="@context.User.GetUserName()" Expanded="true">
-				@if (RendererInfo.Name == "WebView")
-				{
-					<MudButton Variant="Variant.Filled" ButtonType="ButtonType.Button" OnClick="Logout">Logout</MudButton>
-				}
-				else
-				{
-					<form action="account/logout" method="post">
-						<AntiforgeryToken />
-						<MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit">Logout</MudButton>
-					</form>
-				}
-			</MudNavGroup>
+			<MudPaper Elevation="2">
+				<div class="flex gap-1 items-center mud-ripple cursor-pointer p-2"
+						 @onclick="ToggleMenu">
+					<UserAvatarDetailsView AvatarImage="@context.User.GetProfilePicture()"
+																 UserName="@context.User.GetUserName()"
+																 Email="@context.User.GetEmail()" 
+																 class="flex-1"/>
+
+					<MudIcon Icon="@(isMenuExpanded ? Icons.Material.Filled.ArrowDropDown : Icons.Material.Filled.ArrowDropUp)"
+												 Color="Color.Primary"
+												 Size="Size.Medium"
+												 aria-label="account setting" />
+				</div>
+
+				<MudCollapse Expanded="@isMenuExpanded">
+
+					@if (RendererInfo.Name == "WebView")
+					{
+						<MudButton Variant="Variant.Filled" ButtonType="ButtonType.Button" OnClick="Logout">Logout</MudButton>
+					}
+					else
+					{
+						<MudNavMenu>
+							<MudNavLink Href="account/profile">Profile</MudNavLink>
+						</MudNavMenu>
+
+						<MudDivider DividerType="DividerType.Middle" Class="my-1" />
+
+						<form action="account/logout"
+									method="post">
+							<AntiforgeryToken />
+							<button type="submit" class="mud-nav-link mud-ripple">
+								<div class="mud-nav-link-text">
+									Logout
+								</div>
+							</button>
+						</form>
+					}
+				</MudCollapse>
+			</MudPaper>
 		</Authorized>
 		<NotAuthorized>
 			@if (RendererInfo.Name == "WebView")
 			{
-				<MudButton Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Button" OnClick="Login">Login</MudButton>
+				<button type="submit" class="mud-nav-link mud-ripple" @onclick="Login">
+					<div class="mud-nav-link-text">
+						Login
+					</div>
+				</button>
 			}
 			else
 			{
-				<MudButton Href="account/login" Color="Color.Primary" Variant="Variant.Filled" ButtonType="ButtonType.Button">Login</MudButton>
+				<MudButton Href="account/login" Variant="Variant.Filled" Color="Color.Primary">
+					Login
+				</MudButton>
 			}
 		</NotAuthorized>
 	</AuthorizeView>
 
-	<MudNavGroup Title="Home Lab" Expanded="true">
-		<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
-		<MudNavLink Href="/about">About</MudNavLink>
-		<MudNavLink Href="/blog">Blog</MudNavLink>
-		<MudNavLink Href="/labs">Labs</MudNavLink>
-	</MudNavGroup>
+	<MudNavMenu>
+		<MudNavGroup Title="Home Lab" Expanded="true">
+			<MudNavLink Href="" Match="NavLinkMatch.All">Home</MudNavLink>
+			<MudNavLink Href="/about">About</MudNavLink>
+			<MudNavLink Href="/blog">Blog</MudNavLink>
+			<MudNavLink Href="/labs">Labs</MudNavLink>
+		</MudNavGroup>
 
-	<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
-		<Authorized>
-			<MudNavGroup Title="Test Lab" Expanded="true">
-				<MudNavLink Href="/current-user">Current User</MudNavLink>
-				<MudNavLink Href="/test">Test</MudNavLink>
-				<MudNavLink Href="/test2">Test 2</MudNavLink>
-				<MudNavLink Href="/test3">Test 3</MudNavLink>
-			</MudNavGroup>
+		<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
+			<Authorized>
+				<MudNavGroup Title="Test Lab" Expanded="true">
+					<MudNavLink Href="/current-user">Current User</MudNavLink>
+					<MudNavLink Href="/test">Test</MudNavLink>
+					<MudNavLink Href="/test2">Test 2</MudNavLink>
+					<MudNavLink Href="/test3">Test 3</MudNavLink>
+				</MudNavGroup>
 
-			<MudNavGroup Title="Blog Lab" Expanded="true">
-				<MudNavLink Href="/blog">Blog</MudNavLink>
-				<MudNavLink Href="/blog/new">Create New</MudNavLink>
-			</MudNavGroup>
+				<MudNavGroup Title="Blog Lab" Expanded="true">
+					<MudNavLink Href="/blog">Blog</MudNavLink>
+					<MudNavLink Href="/blog/new">Create New</MudNavLink>
+				</MudNavGroup>
 
-			<MudNavGroup Title="User Lab" Expanded="true">
-				<MudNavLink Href="/user-lab/manage/users">Lab Users</MudNavLink>
-				<MudNavLink Href="/user-lab/manage/roles">Lab Roles</MudNavLink>
-				<MudNavLink Href="/user-lab/manage/roles-permissions">Lab Roles Permissions</MudNavLink>
-			</MudNavGroup>
+				<MudNavGroup Title="User Lab" Expanded="true">
+					<MudNavLink Href="/user-lab/manage/users">Lab Users</MudNavLink>
+					<MudNavLink Href="/user-lab/manage/roles">Lab Roles</MudNavLink>
+					<MudNavLink Href="/user-lab/manage/roles-permissions">Lab Roles Permissions</MudNavLink>
+				</MudNavGroup>
 
-			<MudNavGroup Title="Auth0 Lab" Expanded="true">
-				<MudNavLink Href="/auth0-lab/manage/users">Auth0 Users</MudNavLink>
-				<MudNavLink Href="/auth0-lab/manage/permissions">Auth0 Permissions</MudNavLink>
-			</MudNavGroup>
-		</Authorized>
-	</LabAuthorizeView>
+				<MudNavGroup Title="Auth0 Lab" Expanded="true">
+					<MudNavLink Href="/auth0-lab/manage/users">Auth0 Users</MudNavLink>
+					<MudNavLink Href="/auth0-lab/manage/permissions">Auth0 Permissions</MudNavLink>
+				</MudNavGroup>
+			</Authorized>
+		</LabAuthorizeView>
 
-	<MudNavGroup Title="Site Settings" Expanded="true">
-		<MudNavLink Href="">Theme</MudNavLink>
-		<MudNavLink Href="">Overlay Content</MudNavLink>
-	</MudNavGroup>
+		<MudNavGroup Title="Site Settings" Expanded="true">
+			<MudNavLink Href="">Theme</MudNavLink>
+			<MudNavLink Href="">Overlay Content</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
+</div>
 
-</MudNavMenu>
+
+
 
 
 @code {
+	private bool isMenuExpanded = false;
+
 	async Task Login()
 	{
 		await AuthService.AuthenticateAsync();
@@ -80,6 +119,11 @@
 	async void Logout()
 	{
 		await AuthService.DeAuthenticateAsync();
+	}
+
+	void ToggleMenu()
+	{
+		isMenuExpanded = !isMenuExpanded;
 	}
 }
 

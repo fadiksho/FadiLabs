@@ -1,0 +1,23 @@
+@code {
+	[Parameter]
+	public required string UserName { get; set; }
+
+	[Parameter]
+	public required string Email { get; set; }
+
+	[Parameter]
+	public required string AvatarImage { get; set; }
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> Attributes { get; set; } = [];
+}
+
+<div @attributes="Attributes" class="flex gap-2 items-center @(Attributes.GetValueOrDefault("class"))" >
+	<MudAvatar>
+		<MudImage Src="@AvatarImage" />
+	</MudAvatar>
+	<div class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+		<MudText Typo="Typo.body1">@UserName</MudText>
+		<MudText Typo="Typo.caption">@Email</MudText>
+	</div>
+</div>
