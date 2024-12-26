@@ -12,12 +12,12 @@
 	public Dictionary<string, object> Attributes { get; set; } = [];
 }
 
-<div @attributes="Attributes" class="flex gap-2 items-center @(Attributes.GetValueOrDefault("class"))" >
+<div @attributes="Attributes" class="d-flex overflow-hidden gap-2 align-center @(Attributes.GetValueOrDefault("class"))" >
 	<MudAvatar>
 		<MudImage Src="@AvatarImage" />
 	</MudAvatar>
-	<div class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+	<div class="overflow-hidden">
 		<MudText Typo="Typo.body1">@UserName</MudText>
-		<MudText Typo="Typo.caption">@Email</MudText>
+		<MudText Typo="Typo.caption" HtmlTag="p" Class="overflow-hidden" Style="text-overflow:ellipsis;">@Email</MudText>
 	</div>
 </div>
