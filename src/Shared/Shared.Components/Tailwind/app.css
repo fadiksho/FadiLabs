@@ -16,6 +16,9 @@ html, body {
 	.btn {
 		@apply animate-buttonAnimation;
 	}
+	.navbar {
+		min-height: 2rem;
+	}
 }
 
 #components-reconnect-modal {

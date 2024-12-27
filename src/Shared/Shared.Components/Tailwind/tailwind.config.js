@@ -39,7 +39,7 @@ module.exports = {
     },
   },
   daisyui: {
-    base: false,
+    base: true,
     darkTheme: "dark",
     themes: [
       {

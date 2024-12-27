@@ -2,14 +2,14 @@
 @layout InteractiveBaseLayout
 @inject IAuthService AuthService
 
-<MudThemeProvider @bind-IsDarkMode="@isDarkMode" />
+<MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="defaultTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-	<MudAppBar Elevation="1"
-						 Fixed="isFixedNavbar"
+	<MudAppBar Fixed="true"
+						 Elevation="2"
 						 Dense="true"
 						 Gutters="false">
 		<MudIconButton Icon="@Icons.Material.Filled.Menu"
@@ -180,6 +180,24 @@
 	private bool isMenuExpanded = false;
 	private bool isDarkMode = false;
 	private bool isFixedNavbar = true;
+
+	private MudTheme defaultTheme = new()
+		{
+			PaletteDark = new PaletteDark
+			{
+				Primary = "8b5cf6",
+			},
+			PaletteLight = new PaletteLight
+			{
+				Primary = "8b5cf6",
+				AppbarBackground = "5b21b6"
+			},
+			LayoutProperties = new LayoutProperties
+			{
+				DefaultBorderRadius = "0"
+			}
+		};
+
 
 	private void DrawerToggle()
 	{

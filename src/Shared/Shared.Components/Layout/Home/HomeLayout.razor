@@ -38,8 +38,8 @@
   <main class="flex-1 relative flex overflow-hidden" id="main-body">
     <!-- Body Content -->
     <div class="flex-1 relative flex flex-col overflow-hidden">
-      <div class="h-full overflow-auto scroller">
-        <div class="p-2 flex flex-col gap-2">
+      <div class="h-full overflow-auto scroller bg-base-300">
+        <div class="p-2 flex flex-col gap-2 bg-base-100">
           <div id="dev-temp-warning">
             <AlertMessage Type="AlertMessageType.Warning">
               <Body>
@@ -51,7 +51,7 @@
               </Body>
             </AlertMessage>
           </div>
-          <div class="mx-auto w-full max-w-screen-lg">
+          <div class="mx-auto w-full max-w-screen-xl">
             @Body
           </div>
         </div>
@@ -60,7 +60,7 @@
   </main>
 
   <!-- Bottom Footer -->
-  <footer class="text-center text-xs">© 2024 Fadi Ksho | Built with ❤ using .NET @Environment.Version.Major & Blazor</footer>
+  <footer class="bg-base-300 text-center text-xs">© 2024 Fadi Ksho | Built with ❤ using .NET @Environment.Version.Major & Blazor</footer>
 </main>
 
 <div id="blazor-error-ui" class="bg-error text-white">
