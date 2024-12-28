@@ -6,6 +6,9 @@
 	[Inject]
 	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
 
+	[Inject]
+	public required ISnackbar Snackbar { get; set; }
+
 	private Result<PagedList<GetLabRolesResponse>> geLabRolesResult;
 	private Dictionary<string, bool> showLabRoleDetails = [];
 
@@ -33,52 +36,49 @@
 			LabRoleId = role.Id,
 			UpdatedPermissions = role.LabsPermissions
 		};
-		await ServiceExecutor.ExecuteAsync(nameof(SetLabRolePermissions), x => x.Send(setRolePermissionRequet));
+		var result = await ServiceExecutor.ExecuteAsync(nameof(SetLabRolePermissions), x => x.Send(setRolePermissionRequet));
+		if (result.IsSuccess)
+			Snackbar.Add(result.SuccessMessage, Severity.Success);
+		else
+			Snackbar.Add(result.Error.Message, Severity.Error);
 	}
 }
 
-<Papper>
-	<LoadingTitle Title="@($"Labs Roles Permissions")"
-								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(GetLabRoles)))" />
 
-	@if (geLabRolesResult.IsFailed)
-	{
-		<ResultError Error="@geLabRolesResult.Error" />
-	}
+<MudToolBar WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
+	<MudText Typo="Typo.h5" Class="flex-grow-1">Labs Roles Permissions</MudText>
+</MudToolBar>
 
-	@if (geLabRolesResult.IsSuccess)
-	{
-		<div class="overflow-x-auto scroller">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Permissions</th>
-						@foreach (var role in geLabRolesResult.Entity.Items)
-						{
-							<th>@role.Name</th>
-						}
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
+@if (geLabRolesResult.IsSuccess)
+{
+	<MudSimpleTable>
+		<thead>
+			<tr>
+				<th>Permissions</th>
+				@foreach (var role in geLabRolesResult.Entity.Items)
+				{
+					<th>@role.Name</th>
+				}
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
+			{
+				if (permission == LabsPermissions.None) continue;
+				<tr>
+					<td>@permission</td>
+					@foreach (var role in geLabRolesResult.Entity.Items)
 					{
-						if (permission == LabsPermissions.None) continue;
-						<tr>
-							<td>@permission</td>
-							@foreach (var role in geLabRolesResult.Entity.Items)
-							{
-								<td>
-									<input type="checkbox"
-												 class="checkbox"
-												 disabled="@ServiceExecutor.IsRequestLoading(nameof(AssignLabRoleToUser))"
-												 @onchange="(args) => UpdateRolePermission(role, permission, (bool)args.Value!)"
-												 checked="@role.LabsPermissions.HasFlag(permission)" />
-								</td>
-							}
-						</tr>
+						<td>
+							<MudCheckBox Disabled="@ServiceExecutor.IsRequestLoading(nameof(AssignLabRoleToUser))"
+													 ValueChanged="(value) => UpdateRolePermission(role, permission, value)"
+													 T="bool"
+													 Value="@role.LabsPermissions.HasFlag(permission)">
+							</MudCheckBox>
+						</td>
 					}
-				</tbody>
-			</table>
-		</div>
-	}
-</Papper>
+				</tr>
+			}
+		</tbody>
+	</MudSimpleTable>
+}

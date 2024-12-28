@@ -18,7 +18,14 @@ public static class Program
 {
 	public static IServiceCollection AddSharedComponentsServices(this IServiceCollection services, IConfiguration configuration, params Assembly[] moduleAssemblies)
 	{
-		services.AddMudServices();
+		services.AddMudServices(config =>
+		{
+			config.SnackbarConfiguration.NewestOnTop = true;
+			config.SnackbarConfiguration.PreventDuplicates = true;
+			config.SnackbarConfiguration.ShowTransitionDuration = 150;
+			config.SnackbarConfiguration.HideTransitionDuration = 150;
+			config.SnackbarConfiguration.VisibleStateDuration = 5000;
+		});
 		services.AddAuthorizationCore();
 		services.AddCascadingAuthenticationState();
 		services.AddScoped<IUIBus, DefaultUIBus>();
