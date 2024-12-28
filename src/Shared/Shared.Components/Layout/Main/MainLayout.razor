@@ -99,7 +99,6 @@
 							<MudNavLink Href="/current-user">Current User</MudNavLink>
 							<MudNavLink Href="/test">Test</MudNavLink>
 							<MudNavLink Href="/test2">Test 2</MudNavLink>
-							<MudNavLink Href="/test3">Test 3</MudNavLink>
 						</MudNavGroup>
 
 						<MudNavGroup Title="Blog Lab" Expanded="true">
@@ -179,7 +178,7 @@
 @code {
 	private bool _drawerOpen = true;
 	private bool isMenuExpanded = false;
-	private bool isDarkMode = false;
+	private bool isDarkMode = true;
 	private bool isFixedNavbar = true;
 
 	private MudTheme defaultTheme = new()

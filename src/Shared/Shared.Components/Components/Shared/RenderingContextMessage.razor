@@ -1,7 +1,8 @@
-﻿<AlertMessage Type="AlertMessageType.Default">
-  <Body>
-    Render Mode:
-    <span class="text-primary font-bold">@RendererInfo.Name</span>
-    <div class="text-xs">@($"Is Interactive: {RendererInfo.IsInteractive}")</div>
-  </Body>
-</AlertMessage>
+﻿<MudAlert Variant="Variant.Filled">
+  <MudText>
+    Render Mode: <strong>@RendererInfo.Name</strong>
+  </MudText>
+  <MudText>
+    Is Interactive: <strong>@RendererInfo.IsInteractive</strong>
+  </MudText>
+</MudAlert>
