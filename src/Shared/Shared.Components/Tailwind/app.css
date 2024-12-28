@@ -14,7 +14,7 @@ html, body {
 
 @layer components {
 	.btn {
-		@apply animate-buttonAnimation;
+		@apply tw-animate-buttonAnimation;
 	}
 	.navbar {
 		min-height: 2rem;

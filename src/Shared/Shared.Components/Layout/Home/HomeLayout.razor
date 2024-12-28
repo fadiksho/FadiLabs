@@ -2,44 +2,44 @@
 @layout StaticBaseLayout
 @inject NavigationManager Navigation
 
-<main class="group flex h-full flex-col">
+<main class="tw-group tw-flex tw-h-full tw-flex-col">
   <!-- Top Header -->
-  <div class="navbar bg-base-300">
-    <div class="mx-2 mr-auto px-2">
-      <p class="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent text-3xl font-bold italic">
+  <div class="tw-navbar bg-base-300">
+    <div class="tw-mx-2 tw-mr-auto tw-px-2">
+      <p class="tw-bg-gradient-to-r tw-from-primary tw-via-purple-500 tw-to-pink-500 tw-bg-clip-text tw-text-transparent tw-text-3xl tw-font-bold tw-italic">
         Fadi Labs
       </p>
     </div>
 
-    <div class="flex-1 gap-2 ml-4">
-      <ul class="menu menu-horizontal p-0 gap-1 hidden sm:flex">
+    <div class="tw-flex-1 tw-gap-2 tw-ml-4">
+      <ul class="tw-menu tw-menu-horizontal tw-p-0 tw-gap-1 tw-hidden sm:tw-flex">
        <HomeLayoutNavBarLinks />
       </ul>
     </div>
 
     <ThemeControllerButton />
-    <div class="dropdown dropdown-bottom dropdown-end py-0 sm:hidden">
-      <div tabindex="0" role="button" class="btn btn-square btn-ghost">
+    <div class="tw-dropdown tw-dropdown-bottom tw-dropdown-end tw-py-0 sm:tw-hidden">
+      <div tabindex="0" role="button" class="tw-btn tw-btn-square tw-btn-ghost">
         <!-- dots-vertical icon -->
-        <svg class="h-8 w-8" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <svg class="tw-h-8 tw-w-8" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
           <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 6h.01M12 12h.01M12 18h.01" />
         </svg>
       </div>
-      <ul tabindex="0" class="dropdown-content menu z-[1] w-52 shadow-xl bg-base-200 gap-1">
+      <ul tabindex="0" class="tw-dropdown-content tw-menu tw-z-[1] tw-w-52 tw-shadow-xl bg-base-200 tw-gap-1">
         <HomeLayoutNavBarLinks />
       </ul>
     </div>
   </div>
 
-  <div class="bg-gradient-to-r from-primary via-purple-500 to-pink-500 relative h-1 overflow-hidden">
+  <div class="tw-bg-gradient-to-r tw-from-primary tw-via-purple-500 tw-to-pink-500 tw-relative tw-h-1 tw-overflow-hidden">
     <SectionOutlet SectionName="nav-loading"></SectionOutlet>
   </div>
 
-  <main class="flex-1 relative flex overflow-hidden" id="main-body">
+  <main class="tw-flex-1 tw-relative tw-flex tw-overflow-hidden" id="main-body">
     <!-- Body Content -->
-    <div class="flex-1 relative flex flex-col overflow-hidden">
-      <div class="h-full overflow-auto scroller bg-base-300">
-        <div class="p-2 flex flex-col gap-2 bg-base-100">
+    <div class="tw-flex-1 tw-relative tw-flex tw-flex-col tw-overflow-hidden">
+      <div class="tw-h-full tw-overflow-auto scroller bg-base-300">
+        <div class="tw-p-2 tw-flex tw-flex-col tw-gap-2 bg-base-100">
           <div id="dev-temp-warning">
             <AlertMessage Type="AlertMessageType.Warning">
               <Body>
@@ -51,7 +51,7 @@
               </Body>
             </AlertMessage>
           </div>
-          <div class="mx-auto w-full max-w-screen-xl">
+          <div class="tw-mx-auto tw-w-full tw-max-w-screen-xl">
             @Body
           </div>
         </div>
@@ -60,7 +60,7 @@
   </main>
 
   <!-- Bottom Footer -->
-  <footer class="bg-base-300 text-center text-xs">© 2024 Fadi Ksho | Built with ❤ using .NET @Environment.Version.Major & Blazor</footer>
+  <footer class="bg-base-300 tw-text-center tw-text-xs">© 2024 Fadi Ksho | Built with ❤ using .NET @Environment.Version.Major & Blazor</footer>
 </main>
 
 <div id="blazor-error-ui" class="bg-error text-white">

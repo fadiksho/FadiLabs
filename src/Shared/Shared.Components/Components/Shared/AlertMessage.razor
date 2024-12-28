@@ -19,7 +19,7 @@
 		{
 			AlertMessageType.Info => new MessageTemplate
 					{
-						CssClass = "bg-info text-info-content",
+						CssClass = "tw-bg-info tw-text-info-content",
 						SVGPath = @<path stroke-linecap="round"
 														 	stroke-linejoin="round"
 														 	stroke-width="2"
@@ -27,7 +27,7 @@
 			},
 			AlertMessageType.Success => new MessageTemplate
 			{
-				CssClass = "bg-success text-success-content",
+				CssClass = "tw-bg-success tw-text-success-content",
 				SVGPath = @<path stroke-linecap="round"
 												 	stroke-linejoin="round"
 												 	stroke-width="2"
@@ -35,7 +35,7 @@
 			},
 			AlertMessageType.Warning => new MessageTemplate
 			{
-				CssClass = "bg-warning text-warning-content",
+				CssClass = "tw-bg-warning tw-text-warning-content",
 				SVGPath = @<path stroke-linecap="round"
 												 	stroke-linejoin="round"
 												 	stroke-width="2"
@@ -43,7 +43,7 @@
 			},
 			AlertMessageType.Error => new MessageTemplate
 			{
-				CssClass = "bg-error text-error-content",
+				CssClass = "tw-bg-error tw-text-error-content",
 				SVGPath = @<path stroke-linecap="round"
 												 	stroke-linejoin="round"
 												 	stroke-width="2"
@@ -68,18 +68,18 @@
 }
 
 
-<div role="alert" class="flex flex-col p-2 @messageTemplate?.CssClass gap-4 shadow-lg">
-	<div class="flex gap-2">
+<div role="alert" class="tw-flex tw-flex-col tw-p-2 @messageTemplate?.CssClass tw-gap-4 tw-shadow-lg">
+	<div class="tw-flex tw-gap-2">
 		<svg xmlns="http://www.w3.org/2000/svg"
 				 fill="none"
 				 viewBox="0 0 24 24"
-				 class="stroke-current h-6 w-6 shrink-0">
+				 class="tw-stroke-current tw-h-6 tw-w-6 shrink-0">
 			@messageTemplate?.SVGPath
 		</svg>
-		<div class="break-words flex-1">
+		<div class="tw-break-words tw-flex-1">
 			@if (!string.IsNullOrEmpty(MessageText))
 			{
-				<h1 class="font-bold">@MessageText</h1>
+				<h1 class="tw-font-bold">@MessageText</h1>
 			}
 			else if (Body != null)
 			{
@@ -87,7 +87,7 @@
 			}
 		</div>
 	</div>
-	<div class="flex flex-wrap gap-1 justify-end">
+	<div class="tw-flex tw-flex-wrap tw-gap-1 tw-justify-end">
 		@Footer
 	</div>
 </div>

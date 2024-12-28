@@ -9,6 +9,7 @@ module.exports = {
     '../../../Modules/Auth0/Modules.Auth0.Components/**/*.{razor,html,js}',
     '../../../Modules/Auth0/Modules.Auth0.Features.Server/**/*.{razor,html,js}'
   ],
+  prefix: 'tw-',
   theme: {
     extend: {
       animation: {
