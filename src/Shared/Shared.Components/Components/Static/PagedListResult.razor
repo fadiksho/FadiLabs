@@ -20,18 +20,18 @@
 	}
 }
 
-<nav aria-label="page navigation" class="join justify-end">
+<nav aria-label="page navigation" class="tw-join tw-justify-end">
 	@if (PagedList.HasPreviousPage)
 	{
-		<NavLink class="join-item btn btn-sm"
+		<NavLink class="tw-join-item tw-btn tw-btn-sm"
 						 href="@getNavigationPageLink(PagedList.PageNumber - 1)">
 			Previous
 		</NavLink>
 	}
 
-	<button class="join-item btn btn-disabled btn-sm" type="button">
+	<button class="tw-join-item tw-btn tw-btn-disabled tw-btn-sm" type="button">
 		Page
-		<span class="text-primary">
+		<span class="tw-text-primary">
 			<strong>@PagedList.PageNumber</strong>
 		</span>
 		<span>
@@ -41,7 +41,7 @@
 
 	@if (PagedList.HasNextPage)
 	{
-		<NavLink class="join-item btn btn-sm"
+		<NavLink class="tw-join-item tw-btn tw-btn-sm"
 						 href="@getNavigationPageLink(PagedList.PageNumber + 1)">
 			Next
 		</NavLink>

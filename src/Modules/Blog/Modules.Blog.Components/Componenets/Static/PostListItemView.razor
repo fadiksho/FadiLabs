@@ -7,16 +7,16 @@
 	private NavigationManager Navigation { get; set; } = default!;
 }
 
-<article class="p-2 flex flex-col shadow-lg bg-base-100">
-	<h2 class="text-3xl font-bold leading-8 tracking-tight mb-2">
-		<a class="inline-block text-primary"
+<article class="tw-p-2 tw-flex tw-flex-col tw-shadow-lg tw-bg-base-100">
+	<h2 class="tw-text-3xl tw-font-bold tw-leading-8 tw-tracking-tight tw-mb-2">
+		<a class="tw-inline-block tw-text-primary"
 			 href="/blog/@Post.Slug">
 			@Post.Title
 		</a>
 	</h2>
-	<dl class="p-2">
-		<dt class="sr-only">Published on</dt>
-		<dd class="text-base font-medium italic leading-6">
+	<dl class="tw-p-2">
+		<dt class="tw-sr-only">Published on</dt>
+		<dd class="tw-text-base tw-font-medium tw-italic tw-leading-6">
 			<time datetime="@Post.PublishedDate.ToLongDateString()">
 				@Post.PublishedDate.ToString("MMMM dd, yyyy")
 			</time>
@@ -25,21 +25,21 @@
 
 	<PostListItemTagsView Tags="Post.Tags" Path="blog" />
 
-	<div class="ml-2">
+	<div class="tw-ml-2">
 		@Post.Description
-		<a class="btn btn-ghost text-primary btn-sm mt-2 ms-2 float-right"
+		<a class="tw-btn tw-btn-ghost tw-text-primary tw-btn-sm tw-mt-2 tw-ms-2 tw-float-right"
 			 href="/blog/@Post.Slug">
 			Read more
-			<svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+			<svg class="tw-w-6 tw-h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 				<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
 			</svg>
 		</a>
-		<span class="clear-right table"></span>
+		<span class="tw-clear-right tw-table"></span>
 	</div>
 	<AuthorizeView>
 		<Authorized>
-			<div class="flex justify-end my-2">
-				<a class="btn btn-primary btn-sm"
+			<div class="tw-flex tw-justify-end tw-my-2">
+				<a class="tw-btn tw-btn-primary tw-btn-sm"
 					 href="/blog/edit/@Post.Id">
 					Edit
 				</a>

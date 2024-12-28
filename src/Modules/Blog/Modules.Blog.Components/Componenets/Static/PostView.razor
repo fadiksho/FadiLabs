@@ -4,30 +4,30 @@
 	public required GetPostBySlugResponse Post { get; set; }
 }
 
-<article class="flex flex-col gap-4">
-	<header class="p-2 flex flex-col bg-base-200 shadow">
-		<h1 class="text-4xl mb-4 font-extrabold tracking-tight text-primary">
+<article class="tw-flex tw-flex-col tw-gap-4">
+	<header class="tw-p-2 tw-flex tw-flex-col tw-bg-base-200 tw-shadow">
+		<h1 class="tw-text-4xl tw-mb-4 tw-font-extrabold tw-tracking-tight tw-text-primary">
 			@Post.Title
 		</h1>
 
-		<dl class="p-2">
-			<dt class="sr-only">Published on</dt>
-			<dd class="text-base font-medium leading-6">
+		<dl class="tw-p-2">
+			<dt class="tw-sr-only">Published on</dt>
+			<dd class="tw-text-base tw-font-medium tw-leading-6">
 				<time datetime="@Post.PublishedDate.ToLongDateString()">@Post.PublishedDate.ToString("MMMM dd, yyyy")</time>
 			</dd>
 		</dl>
 
-		<PostListItemTagsView Tags="Post.Tags" Path="blog"/>
+		<PostListItemTagsView Tags="Post.Tags" Path="blog" />
 	</header>
 
 	<div>
-		<MarkdownViewer Markdown="@Post.Body" class="prose lg:prose-lg prose-neutral mx-auto max-w-screen-xl prose-pre:bg-black prose-pre:text-white" />
+		<MarkdownViewer Markdown="@Post.Body" class="tw-prose lg:tw-prose-lg tw-prose-neutral tw-mx-auto tw-max-w-screen-xl" />
 	</div>
 
-	<footer class="p-2 shadow">
-		<div class="text-sm font-medium leading-5 flex flex-wrap gap-6 justify-between">
-			<div class="w-full">
-				<a class="btn btn-ghost btn-sm"
+	<footer class="tw-p-2 tw-shadow">
+		<div class="tw-text-sm tw-font-medium tw-leading-5 tw-flex tw-flex-wrap tw-gap-6 tw-justify-between">
+			<div class="tw-w-full">
+				<a class="tw-btn tw-btn-ghost tw-btn-sm"
 					 aria-label="Back to the blog"
 					 href="/blog">
 					← Back to the blog
@@ -36,7 +36,7 @@
 		</div>
 	</footer>
 
-	<div class="p-2 shadow">
+	<div class="tw-p-2 tw-shadow">
 		Comments Not Implemented Yet!
 	</div>
 </article>
