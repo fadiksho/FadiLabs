@@ -1,0 +1,30 @@
+@typeparam TErrorResult where TErrorResult : IResultError
+
+@code {
+	[Parameter]
+	public TErrorResult? Error { get; set; }
+
+	[Parameter]
+	public EventCallback OnClear { get; set; }
+
+	async Task ClearError()
+	{
+		await OnClear.InvokeAsync();
+	}
+}
+
+@if (Error != null)
+{
+	if (Error is ValidationErrorResult validationErrorResult)
+	{
+		<MudAlert Severity="Severity.Error" ShowCloseIcon="true">
+			@Error.Message
+		</MudAlert>
+	}
+	else
+	{
+		<MudAlert Severity="Severity.Error" ShowCloseIcon="true" CloseIconClicked="ClearError">
+			@Error.Message
+		</MudAlert>
+	}
+}

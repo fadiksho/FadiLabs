@@ -8,77 +8,24 @@
 	private Result<CreatePostResponse> createPostResult;
 	private CreatePost createPostRequest = new();
 
-	private Result<PagedList<TagResponse>> tagsResponse;
-	private List<TagResponse> selectedTags = [];
-	private string? filterSearchTagInput;
-
-	private MudAutocomplete<string> mudAutocomplete = default!;
 	private MudForm form = default!;
 
-	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
+	private void TagsChangedHandler(List<TagResponse> tags)
 	{
-		IEnumerable<string> filterTags = [];
-
-		if (ServiceExecutor.IsRequestLoading(nameof(GetTags)))
-			return filterTags;
-
-		if (!tagsResponse.IsDefined || tagsResponse.IsFailed)
-			tagsResponse = await ServiceExecutor.ExecuteAsync(nameof(GetTags), x => x.Send(new GetTags()));
-
-		if (tagsResponse.IsSuccess)
-		{
-			// filter tags to exclude those already present (case-insensitive)
-			filterTags = tagsResponse.Entity.Items
-				.Where(tag => !selectedTags
-					.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
-					.Select(x => x.Name);
-
-			// further filter to include only those whose Name contains the filtered string (case-insensitive)
-			if (!string.IsNullOrEmpty(value))
-				filterTags = filterTags.Where(tag => tag.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-		}
-
-		return filterTags;
-	}
-	
-	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
-	{
-		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterSearchTagInput) && tagsResponse.IsSuccess)
-		{
-			var selectedTag = tagsResponse.Entity.Items
-			.FirstOrDefault(x => x.Name.Equals(filterSearchTagInput, StringComparison.InvariantCultureIgnoreCase));
-
-			if (selectedTag == null)
-			{
-				selectedTag = new TagResponse { Name = filterSearchTagInput };
-			}
-
-			var tagAlreadySelected = selectedTags.Any(x => x.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase));
-			if (!tagAlreadySelected)
-				selectedTags.Add(selectedTag);
-
-			await mudAutocomplete.ClearAsync();
-		}
+		createPostRequest.Tags = tags;
 	}
 
-	private void RemoveTag(TagResponse tag)
-	{
-		selectedTags.Remove(tag);
-	}
-	
 	private async Task Submit()
 	{
 		await form.Validate();
 
 		if (form.IsValid)
 		{
-			createPostRequest.Tags = selectedTags;
 			createPostResult = await ServiceExecutor
 				.ExecuteAsync(nameof(CreatePost), x => x.Send(createPostRequest));
 
 			if (createPostResult.IsSuccess)
 			{
-				selectedTags.Clear();
 				createPostRequest.ResetToDefault();
 
 				Snackbar.Add(createPostResult.Entity.Title, Severity.Normal, config =>
@@ -94,46 +41,42 @@
 			}
 		}
 	}
+
+	private void ClearCreatePostResultError()
+	{
+		createPostResult = default;	
+	}
 }
 
+
+
 <MudPaper Class="pa-4">
-	<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
-		<MudStack>
-			<MudTextField @bind-Value="createPostRequest.Title"
-										For="@(() => createPostRequest.Title)"
-										Immediate="true"
-										Label="Title" />
+	<MudStack>
+		<MudToolBar Dense="true" WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
+			<MudText Typo="Typo.h5" Class="flex-grow-1">Create new post</MudText>
+		</MudToolBar>
 
-			<MudTextField @bind-Value="createPostRequest.Description"
-										For="@(() => createPostRequest.Description)"
-										Lines="5"
-										Immediate="true"
-										Label="Description" />
+		<ResultError Error="createPostResult.Error" OnClear="ClearCreatePostResultError" />
 
-			<MudAutocomplete T="string"
-											 Label="Tags"
-											 @ref="mudAutocomplete"
-											 @bind-Value="filterSearchTagInput"
-											 Immediate="true"
-											 CoerceValue="true"
-											 CoerceText="false"
-											 ResetValueOnEmptyText="false"
-											 OnKeyDown="HandleTagKeyDownHandler"
-											 SearchFunc="@SearchTags"
-											 TextUpdateSuppression="false"
-											 Clearable="true"
-											 OnClearButtonClick="@(async () => await mudAutocomplete.ClearAsync())"
-											 ShowProgressIndicator="true"
-											 ProgressIndicatorColor="Color.Primary">
-			</MudAutocomplete>
-			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
-				@foreach (var selectedTag in selectedTags)
-				{
-					<MudChip T="string" Color="(Guid.Empty == selectedTag.TagId ? Color.Success : Color.Default)"
-									 OnClose="() => RemoveTag(selectedTag)">@selectedTag.Name</MudChip>
-				}
+		<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
+			<MudStack>
+				<MudTextField @bind-Value="createPostRequest.Title"
+											For="@(() => createPostRequest.Title)"
+											Variant="Variant.Outlined"
+											Immediate="true"
+											Label="Title" />
+
+				<MudTextField @bind-Value="createPostRequest.Description"
+											For="@(() => createPostRequest.Description)"
+											Variant="Variant.Outlined"
+											AutoGrow
+											Immediate="true"
+											Label="Description" />
+
+				<PostTagsInput OnTagsChanged="TagsChangedHandler" Tags="createPostRequest.Tags" />
+
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto" OnClick="@(async () => await Submit())">Save</MudButton>
 			</MudStack>
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Save</MudButton>
-		</MudStack>
-	</MudForm>
+		</MudForm>
+	</MudStack>
 </MudPaper>

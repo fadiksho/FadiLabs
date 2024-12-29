@@ -1,16 +1,16 @@
 @code {
 	[Inject]
-	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
 
 	[Inject]
-	public NavigationManager NavigationManager { get; set; } = default!;
+	public required NavigationManager NavigationManager { get; set; }
 
 	[Parameter]
 	public Guid PostId { get; set; }
 
 	private Result deletePostResult;
 
-	private async Task HandleValidSubmit()
+	private async Task HandleDeletePost()
 	{
 		deletePostResult =
 			await ServiceExecutor.ExecuteAsync(nameof(DeletePostById), x => x.Send(new DeletePostById(PostId)));
@@ -20,21 +20,26 @@
 			NavigationManager.NavigateTo("/blog");
 		}
 	}
+
+	private void ClearDeletePostResultError()
+	{
+		deletePostResult = default;
+	}
 }
 
-<Papper>
-	<LoadingTitle Title="@($"Delete")"
-								IsLoading="ServiceExecutor.IsRequestLoading(nameof(DeletePostById))" />
+<MudPaper Class="pa-4">
+	<MudStack>
+		<MudToolBar Dense="true" WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
+			<MudText Typo="Typo.h5" Class="flex-grow-1">Delete</MudText>
+		</MudToolBar>
 
-	@if (deletePostResult.IsFailed)
-	{
-		<ResultError Error="deletePostResult.Error" />
-	}
-	<div>
-		<button class="btn btn-error" @onclick="HandleValidSubmit"
-						disabled="@(ServiceExecutor.IsRequestLoading(nameof(DeletePostById)))">
+		<ResultError Error="deletePostResult.Error" OnClear="ClearDeletePostResultError" />
+
+		<MudButton Variant="Variant.Filled"
+							 Color="Color.Error" Class="mr-auto"
+							 OnClick="HandleDeletePost">
 			Delete
-		</button>
-	</div>
-</Papper>
+		</MudButton>
+	</MudStack>
+</MudPaper>
 

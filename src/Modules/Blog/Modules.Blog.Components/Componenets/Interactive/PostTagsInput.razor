@@ -1,119 +1,102 @@
-﻿@code {
-	[Inject]
-	public IUIBus Bus { get; set; } = default!;
-
-	[Parameter]
-	public List<TagResponse> Tags { get; set; } = [];
+@code {
+	[Inject] 
+	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
 
 	[Parameter]
 	public EventCallback<List<TagResponse>> OnTagsChanged { get; set; }
 
+	[Parameter]
+	public List<TagResponse> Tags { get; set; } = [];
+
+	private MudAutocomplete<string> mudAutocomplete = default!;
 	private Result<PagedList<TagResponse>> tagsResponse;
-	private List<TagResponse> filteredTags = [];
-	private string? filterTagInput;
+	private string? filterSearchTagInput;
 
-	public async Task HandleAddTagKeyPress(KeyboardEventArgs e)
+	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
 	{
-		if (!(e.Code == "13" || e.Key == "Enter" || e.Key == "NumpadEnter"))
-			return;
+		IEnumerable<string> filterTags = [];
 
-		if (string.IsNullOrEmpty(filterTagInput))
-			return;
+		if (ServiceExecutor.IsRequestLoading(nameof(GetTags)))
+			return filterTags;
 
-		var tag = filteredTags
-			.Find(x => x.Name.Equals(filterTagInput, StringComparison.InvariantCultureIgnoreCase))
-			?? new TagResponse { Name = filterTagInput };
+		if (!tagsResponse.IsDefined || tagsResponse.IsFailed)
+			tagsResponse = await ServiceExecutor.ExecuteAsync(nameof(GetTags), x => x.Send(new GetTags()));
 
-		await AddTag(tag);
-	}
-
-	private async Task HandleTagChange(ChangeEventArgs e)
-	{
-		// Fetch tags on first change
-		if (!tagsResponse.IsDefined || !tagsResponse.IsSuccess)
+		if (tagsResponse.IsSuccess)
 		{
-			tagsResponse = await Bus.Send(new GetTags { PageSize = 100 });
-		}
-
-		filterTagInput = e.Value?.ToString();
-
-		if (filterTagInput?.Length > 0)
-		{
-			filteredTags = tagsResponse.Entity.Items
-				// Filter tags to include only those whose Name contains the filtered string (case-insensitive)
-				.Where(tag => tag.Name.Contains(filterTagInput, StringComparison.CurrentCultureIgnoreCase))
-				// Further filter tags to exclude those already present (case-insensitive)
+			// filter tags to exclude those already present (case-insensitive)
+			filterTags = tagsResponse.Entity.Items
 				.Where(tag => !Tags
-						.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
-				.ToList();
+					.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
+					.Select(x => x.Name);
+
+			// further filter to include only those whose Name contains the filtered string (case-insensitive)
+			if (!string.IsNullOrEmpty(value))
+				filterTags = filterTags.Where(tag => tag.Contains(value, StringComparison.InvariantCultureIgnoreCase));
 		}
-		else
+
+		return filterTags;
+	}
+
+	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
+	{
+		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterSearchTagInput) && tagsResponse.IsSuccess)
 		{
-			filteredTags = [];
+			var selectedTag = tagsResponse.Entity.Items
+			.FirstOrDefault(x => x.Name.Equals(filterSearchTagInput, StringComparison.InvariantCultureIgnoreCase));
+
+			if (selectedTag == null)
+			{
+				selectedTag = new TagResponse { Name = filterSearchTagInput };
+			}
+
+			var tagAlreadySelected = Tags.Any(x => x.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase));
+			if (!tagAlreadySelected)
+				await AddTagAsync(selectedTag);
+
+			await mudAutocomplete.ClearAsync();
 		}
 	}
 
-	private async Task HandleTagChangeClick(TagResponse tag)
+	private async Task AddTagAsync(TagResponse tag)
 	{
-		await AddTag(tag);
-	}
-
-	private async Task AddTag(TagResponse tag)
-	{
-		var addedTagExist = Tags
-				.Where(x => x.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase))
-				.Any();
-
-		if (addedTagExist)
-			return;
-
 		Tags.Add(tag);
-		filterTagInput = null;
-		filteredTags = [];
 
 		await OnTagsChanged.InvokeAsync(Tags);
 	}
 
-	private async Task RemoveTag(TagResponse tag)
+	private async Task RemoveTagAsync(TagResponse tag)
 	{
-		Tags = Tags
-			.Where(x => x.TagId != tag.TagId)
-			.ToList();
+		Tags.Remove(tag);
 
 		await OnTagsChanged.InvokeAsync(Tags);
 	}
 }
 
-<div class="flex flex-col gap-1">
-	<div>
-		<label class="form-control w-full">
-			<span class="label">
-				<span class="label-text">Tags</span>
-			</span>
-			<input type="text"
-						 placeholder="Type here"
-						 class="input input-bordered"
-						 @bind="filterTagInput"
-						 @oninput="HandleTagChange"
-						 @onkeypress="HandleAddTagKeyPress" />
-		</label>
+<MudStack Spacing="1">
+	<MudAutocomplete T="string"
+									 Label="Tags"
+									 Variant="Variant.Outlined"
+									 @ref="mudAutocomplete"
+									 @bind-Value="filterSearchTagInput"
+									 Immediate="true"
+									 CoerceValue="true"
+									 CoerceText="false"
+									 ResetValueOnEmptyText="false"
+									 OnKeyDown="HandleTagKeyDownHandler"
+									 SearchFunc="@SearchTags"
+									 TextUpdateSuppression="false"
+									 Clearable="true"
+									 OnClearButtonClick="@(async () => await mudAutocomplete.ClearAsync())"
+									 ShowProgressIndicator="true"
+									 ProgressIndicatorColor="Color.Primary">
+	</MudAutocomplete>
 
-		<SimpleAutoComplete TItem="TagResponse"
-												Items="filteredTags"
-												For="(x) => x.Name"
-												OnItemClick="HandleTagChangeClick" />
-	</div>
-	<div class="flex flex-wrap gap-1">
-		@foreach (var tag in Tags)
+	<MudStack Row="true" Spacing="0" Wrap="Wrap.Wrap">
+		@foreach (var selectedTag in Tags)
 		{
-			<div>
-				<button type="button"
-								@onclick="@(() => RemoveTag(tag))"
-								class="btn btn-sm">
-					@tag.Name
-					<span class="text-error">🗙</span>
-				</button>
-			</div>
+			<MudChip T="string" Color="(Guid.Empty == selectedTag.TagId ? Color.Success : Color.Default)"
+							 OnClose="() => RemoveTagAsync(selectedTag)">@selectedTag.Name</MudChip>
 		}
-	</div>
-</div>
+	</MudStack>
+</MudStack>

@@ -1,9 +1,15 @@
-﻿@page "/blog/edit/{id:guid}"
-
+﻿@page "/blog-lab/edit/{id:guid}"
 @attribute [LabAuthorize(LabsPermissions.BlogOwner)]
 
-<PageTitle>Edit @_getToUpdatePostResult.Entity?.Title</PageTitle>
+<PageTitle>Edit</PageTitle>
 
 <PostEditForm PostId="Id" />
 
+<MudDivider DividerType="DividerType.Middle" Class="my-2" />
+
 <PostDeleteForm PostId="Id" />
+
+@code {
+	[Parameter]
+	public Guid Id { get; set; }
+}
