@@ -24,7 +24,7 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 
 		var user = await currentUser.GetUser();
 
-		if (user.HasLabPermission(LabsPermissions.BlogOwner))
+		if (!user.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
 		if (!string.IsNullOrEmpty(request.Search))

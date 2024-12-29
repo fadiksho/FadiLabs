@@ -1,95 +1,135 @@
+@using System.Diagnostics
 @code {
-	[Inject]
-	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	[Inject] public required CreatePostValidator CreatePostValidator { get; set; }
+	[Inject] public required ISnackbar Snackbar { get; set; }
+	[Inject] public required NavigationManager Navigation { get; set; }
 
 	private Result<CreatePostResponse> createPostResult;
-	private EditContext? editContext;
+
+	private Result<PagedList<TagResponse>> tagsResponse;
+	private List<TagResponse> selectedTags = [];
+	private string filterIntercanlTagInput = string.Empty;
+
+	private MudAutocomplete<string> mudAutocomplete = default!;
+	private MudForm form = default!;
+
 	private CreatePost createPostRequest = new();
 
-	protected override void OnInitialized()
+	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
 	{
-		editContext = new(createPostRequest);
+		if (ServiceExecutor.IsRequestLoading(nameof(GetTags)))
+			return [];
+
+		if (!tagsResponse.IsDefined || tagsResponse.IsFailed)
+			tagsResponse = await ServiceExecutor.ExecuteAsync(nameof(GetTags), x => x.Send(new GetTags()));
+
+		if (tagsResponse.IsSuccess && !string.IsNullOrEmpty(value))
+		{
+			return tagsResponse.Entity.Items
+				// Filter tags to include only those whose Name contains the filtered string (case-insensitive)
+				.Where(tag => tag.Name.Contains(value, StringComparison.CurrentCultureIgnoreCase))
+				// Further filter tags to exclude those already present (case-insensitive)
+				.Where(tag => !selectedTags
+						.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
+				.Select(tag => tag.Name)
+				.ToList();
+		}
+
+		return [];
 	}
 
-	private async Task HandleValidSubmit()
+	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
 	{
-		createPostResult = new();
-		createPostResult = await ServiceExecutor
-			.ExecuteAsync(nameof(CreatePost), x => x.Send(createPostRequest));
-
-		if (createPostResult.IsSuccess)
+		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterIntercanlTagInput) && tagsResponse.IsSuccess)
 		{
-			createPostRequest.ResetToDefault();
+			var selectedTag = tagsResponse.Entity.Items
+			.FirstOrDefault(x => x.Name.Equals(filterIntercanlTagInput, StringComparison.InvariantCultureIgnoreCase));
+
+			if (selectedTag == null)
+			{
+				selectedTag = new TagResponse { Name = filterIntercanlTagInput };
+			}
+
+			var tagAlreadySelected = selectedTags.Any(x => x.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase));
+			if (!tagAlreadySelected)
+				selectedTags.Add(selectedTag);
+
+			await mudAutocomplete.ClearAsync();
 		}
 	}
 
-	private void HandleTagsChanged(List<TagResponse> tags)
+	private void RemoveTag(TagResponse tag)
 	{
-		createPostRequest.Tags = tags;
+		selectedTags.Remove(tag);
+	}
+
+	private async Task Submit()
+	{
+		await form.Validate();
+
+		if (form.IsValid)
+		{
+			createPostRequest.Tags = selectedTags;
+			createPostResult = await ServiceExecutor
+				.ExecuteAsync(nameof(CreatePost), x => x.Send(createPostRequest));
+
+			if (createPostResult.IsSuccess)
+			{
+				selectedTags.Clear();
+				createPostRequest.ResetToDefault();
+
+				Snackbar.Add(createPostResult.Entity.Title, Severity.Normal, config =>
+				{
+					config.Action = "Edit";
+					config.ActionColor = Color.Primary;					
+					config.Onclick = snackbar =>
+					{
+						Navigation.NavigateTo($"/blog/edit/{createPostResult.Entity.PostId}");
+						return Task.CompletedTask;
+					};
+				});
+			}
+		}
 	}
 }
 
-<div class="flex flex-col gap-2">
-	@if (createPostResult.IsSuccess)
-	{
-		<AlertMessage MessageText="@createPostResult.Entity.Title"
-									Type="AlertMessageType.Success">
-			<Footer>
-				<a class="btn btn-success btn-sm" href="/blog/edit/@createPostResult.Entity.PostId">Go to Edit</a>
-				<button class="btn btn-success btn-sm">Close</button>
-			</Footer>
-		</AlertMessage>
-	}
+<MudPaper Class="pa-4">
+	<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
+		<MudStack>
+			<MudTextField @bind-Value="createPostRequest.Title"
+										For="@(() => createPostRequest.Title)"
+										Immediate="true"
+										Label="Title" />
 
-	<Papper CssClass="relative">
+			<MudTextField @bind-Value="createPostRequest.Description"
+										For="@(() => createPostRequest.Description)"
+										Lines="5"
+										Immediate="true"
+										Label="Description" />
 
-		<LoadingTitle Title="Create new post" IsLoading="ServiceExecutor.IsLoading" ShowOverlay="true" />
+			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+				@foreach (var selectedTag in selectedTags)
+				{
+					<MudChip T="string" Color="(Guid.Empty == selectedTag.TagId ? Color.Success : Color.Default)"
+									 OnClose="() => RemoveTag(selectedTag)">@selectedTag.Name</MudChip>
+				}
+			</MudStack>
+			<MudAutocomplete T="string"
+											 Label="Tags"
+											 @ref="mudAutocomplete"
+											 @bind-Text="filterIntercanlTagInput"
+											 OnKeyDown="HandleTagKeyDownHandler"
+											 CoerceValue="true"
+											 TextUpdateSuppression="false"
+											 SearchFunc="@SearchTags"
+											 Immediate="true"
+											 ShowProgressIndicator="true"
+											 ProgressIndicatorColor="Color.Primary">
+			</MudAutocomplete>
 
-		<EditForm EditContext="editContext" class="flex flex-col gap-2">
-			<FluentValidationValidator ValidatorType=typeof(CreatePostValidator) />
-
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Title</span>
-				</div>
-
-				<InputTextOnInput @bind-Value="createPostRequest.Title"
-													placeholder="Type here"
-													class="input input-bordered" />
-
-				<ValidationMessage For="() => createPostRequest.Title" class="text-red-500 text-sm italic" />
-			</label>
-
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Description</span>
-				</div>
-				<InputTextArea @bind-Value="createPostRequest.Description"
-											 placeholder="Type here"
-											 class="textarea textarea-bordered min-h-24" />
-				<ValidationMessage For="() => createPostRequest.Description" class="text-red-500 text-sm italic" />
-
-			</label>
-
-			<PostTagsInput OnTagsChanged="HandleTagsChanged" />
-
-			@if (createPostResult.IsFailed)
-			{
-				<AlertMessage MessageText="@createPostResult.Error.Message"
-											Type="AlertMessageType.Error" />
-			}
-
-			<div class="flex gap-2 items-center">
-				<SubmitButton OnValidSubmit="HandleValidSubmit"
-											class="btn btn-primary"
-											disabled="@(ServiceExecutor.IsRequestLoading(nameof(CreatePost)))">
-					Save
-					@if (ServiceExecutor.IsRequestLoading(nameof(CreatePost)))
-					{
-						<span class="ml-2 loading loading-spinner loading-md"></span>
-					}
-				</SubmitButton>
-			</div>
-		</EditForm>
-	</Papper>
-</div>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Save</MudButton>
+		</MudStack>
+	</MudForm>
+</MudPaper>
