@@ -4,18 +4,6 @@
 
 <PageTitle>Edit @_getToUpdatePostResult.Entity?.Title</PageTitle>
 
-<Papper>
-	<LoadingTitle Title="@($"Edit: {_getToUpdatePostResult.Entity?.Title}")"
-								IsLoading="serviceExecutor.IsRequestLoading(nameof(GetToUpdatePost))" />
-	@if (_getToUpdatePostResult.IsFailed)
-	{
-		<ResultError Error="_getToUpdatePostResult.Error" />
-	}
+<PostEditForm PostId="Id" />
 
-	@if (_getToUpdatePostResult.IsSuccess)
-	{
-		<PostEditForm UpdatePost="_getToUpdatePostResult.Entity" />
-	}
-
-	<PostDeleteForm PostId="Id" />
-</Papper>
+<PostDeleteForm PostId="Id" />

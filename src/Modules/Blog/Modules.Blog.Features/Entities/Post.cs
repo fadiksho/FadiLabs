@@ -12,8 +12,8 @@ public class Post : AuditableEntity, IEntity<Guid>, IOwnedBy
 	public required string Slug { get; set; }
 	public string? Description { get; set; }
 	public string? Body { get; set; }
-	public DateTime PublishedDate { get; set; } = DateTime.UtcNow;
-	public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
+	public DateTime? PublishedDate { get; set; } = DateTime.UtcNow;
+	public DateTime? UpdatedDate { get; set; } = DateTime.UtcNow;
 	public bool IsPublished { get; set; }
 	public List<Tag> Tags { get; set; } = [];
 	public List<Comment> Comments { get; set; } = [];

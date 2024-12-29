@@ -1,6 +1,4 @@
-﻿using Fadi.Result;
-using Fadi.Result.Errors;
-using MediatR;
+﻿using Fadi.Result.Errors;
 using Microsoft.EntityFrameworkCore;
 using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;

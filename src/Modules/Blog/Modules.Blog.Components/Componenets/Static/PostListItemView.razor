@@ -17,8 +17,8 @@
 	<dl class="tw-p-2">
 		<dt class="tw-sr-only">Published on</dt>
 		<dd class="tw-text-base tw-font-medium tw-italic tw-leading-6">
-			<time datetime="@Post.PublishedDate.ToLongDateString()">
-				@Post.PublishedDate.ToString("MMMM dd, yyyy")
+			<time datetime="@Post.PublishedDate?.ToLongDateString()">
+				@Post.PublishedDate?.ToString("MMMM dd, yyyy")
 			</time>
 		</dd>
 	</dl>

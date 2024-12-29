@@ -1,130 +1,167 @@
 @code {
-	[Inject]
-	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
-
 	[Parameter]
-	public required UpdatePost UpdatePost { get; set; }
+	public Guid PostId { get; set; }
 
+	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	[Inject] public required UpdatePostValidator UpdatePostValidator { get; set; }
+
+
+	private Result<UpdatePost> getToUpdatePostResult;
 	private Result<UpdatePostResponse> updatePostResult;
-	private EditContext? editContext;
 
-	protected override void OnInitialized()
+	private MudAutocomplete<string> mudAutocomplete = default!;
+	private MudForm form = default!;
+	private Result<PagedList<TagResponse>> tagsResponse;
+	private List<TagResponse> selectedTags = [];
+	private string? filterSearchTagInput;
+
+	protected override async Task OnParametersSetAsync()
 	{
-		editContext = new(UpdatePost);
+		getToUpdatePostResult = await ServiceExecutor
+			.ExecuteAsync(nameof(GetToUpdatePost), x => x.Send(new GetToUpdatePost(PostId)), true);
+
+		if (getToUpdatePostResult.IsSuccess)
+		{
+			selectedTags = getToUpdatePostResult.Entity.Tags.ToList();
+		}
 	}
 
-	protected override void OnParametersSet()
+	private async Task Submit()
 	{
-		base.OnParametersSet();
+		await form.Validate();
+
+		if (form.IsValid)
+		{
+			updatePostResult = await ServiceExecutor
+			.ExecuteAsync(nameof(UpdatePostResponse), x => x.Send(getToUpdatePostResult.Entity));
+		}
 	}
 
-	private void HandleTagsChanged(List<TagResponse> tags)
+	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
 	{
-		UpdatePost.Tags = tags;
+		IEnumerable<string> filterTags = [];
+
+		if (ServiceExecutor.IsRequestLoading(nameof(GetTags)))
+			return filterTags;
+
+		if (!tagsResponse.IsDefined || tagsResponse.IsFailed)
+			tagsResponse = await ServiceExecutor.ExecuteAsync(nameof(GetTags), x => x.Send(new GetTags()));
+
+		if (tagsResponse.IsSuccess)
+		{
+			// filter tags to exclude those already present (case-insensitive)
+			filterTags = tagsResponse.Entity.Items
+				.Where(tag => !selectedTags
+					.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
+					.Select(x => x.Name);
+
+			// further filter to include only those whose Name contains the filtered string (case-insensitive)
+			if (!string.IsNullOrEmpty(value))
+				filterTags = filterTags.Where(tag => tag.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+		}
+
+		return filterTags;
 	}
 
-	private async Task HandleValidSubmit()
+	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
 	{
-		updatePostResult = await ServiceExecutor
-			.ExecuteAsync(nameof(UpdatePostResponse), x => x.Send(UpdatePost));
+		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterSearchTagInput) && tagsResponse.IsSuccess)
+		{
+			var selectedTag = tagsResponse.Entity.Items
+			.FirstOrDefault(x => x.Name.Equals(filterSearchTagInput, StringComparison.InvariantCultureIgnoreCase));
+
+			if (selectedTag == null)
+			{
+				selectedTag = new TagResponse { Name = filterSearchTagInput };
+			}
+
+			var tagAlreadySelected = selectedTags.Any(x => x.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase));
+			if (!tagAlreadySelected)
+				selectedTags.Add(selectedTag);
+
+			await mudAutocomplete.ClearAsync();
+		}
+	}
+
+	private void RemoveTag(TagResponse tag)
+	{
+		selectedTags.Remove(tag);
 	}
 }
 
-<Papper>
-	<EditForm EditContext="editContext">
-		<div class="flex flex-col gap-2">
-			<FluentValidationValidator ValidatorType=typeof(UpdatePostValidator) />
+<MudPaper Class="pa-4">
+	@if (getToUpdatePostResult.IsSuccess == true)
+	{
+		<MudForm Model="@getToUpdatePostResult.Entity" @ref="@form" Validation="@(UpdatePostValidator.ValidateValue)" ValidationDelay="0">
+			<MudStack Spacing="4">
+				<MudTextField @bind-Value="getToUpdatePostResult.Entity.Title"
+											For="@(() => getToUpdatePostResult.Entity.Title)"
+											Variant="Variant.Outlined"
+											Immediate="true"
+											Label="Title" />
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Title</span>
-				</div>
-				<InputText @bind-Value="UpdatePost.Title"
-									 placeholder="Type here"
-									 class="input input-bordered" />
-				<ValidationMessage For="() => UpdatePost.Title" class="text-red-500 text-sm italic" />
-			</label>
+				<MudTextField @bind-Value="getToUpdatePostResult.Entity.Slug"
+											For="@(() => getToUpdatePostResult.Entity.Slug)"
+											Variant="Variant.Outlined"
+											AutoGrow
+											Immediate="true"
+											Label="Slug" />
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Slug</span>
-				</div>
-				<InputText @bind-Value="UpdatePost.Slug"
-									 placeholder="Type here"
-									 class="input input-bordered" />
-				<ValidationMessage For="() => UpdatePost.Slug" class="text-red-500 text-sm italic" />
+				<MudTextField @bind-Value="getToUpdatePostResult.Entity.Description"
+											For="@(() => getToUpdatePostResult.Entity.Description)"
+											Variant="Variant.Outlined"
+											AutoGrow
+											Immediate="true"
+											Label="Description" />
 
-			</label>
+				<MudTextField @bind-Value="getToUpdatePostResult.Entity.Body"
+											For="@(() => getToUpdatePostResult.Entity.Body)"
+											Variant="Variant.Outlined"
+											AutoGrow
+											Immediate="true"
+											Label="Body" />
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Description</span>
-				</div>
-				<InputTextArea @bind-Value="UpdatePost.Description"
-											 placeholder="Type here"
-											 class="textarea textarea-bordered min-h-24" />
-				<ValidationMessage For="() => UpdatePost.Description" class="text-red-500 text-sm italic" />
+				<MudStack Spacing="2">
+					<MudAutocomplete T="string"
+													 Label="Tags"
+													 Variant="Variant.Outlined"
+													 @ref="mudAutocomplete"
+													 @bind-Value="filterSearchTagInput"
+													 Immediate="true"
+													 CoerceValue="true"
+													 CoerceText="false"
+													 ResetValueOnEmptyText="false"
+													 OnKeyDown="HandleTagKeyDownHandler"
+													 SearchFunc="@SearchTags"
+													 TextUpdateSuppression="false"
+													 Clearable="true"
+													 OnClearButtonClick="@(async () => await mudAutocomplete.ClearAsync())"
+													 ShowProgressIndicator="true"
+													 ProgressIndicatorColor="Color.Primary">
+					</MudAutocomplete>
 
-			</label>
+					<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+						@foreach (var selectedTag in selectedTags)
+						{
+							<MudChip T="string" Color="(Guid.Empty == selectedTag.TagId ? Color.Success : Color.Default)"
+											 OnClose="() => RemoveTag(selectedTag)">@selectedTag.Name</MudChip>
+						}
+					</MudStack>
+				</MudStack>
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">Body</span>
-				</div>
-				<InputTextArea @bind-Value="UpdatePost.Body"
-											 placeholder="Type here"
-											 class="textarea textarea-bordered min-h-72" />
-				<ValidationMessage For="() => UpdatePost.Body" class="text-red-500 text-sm italic" />
-			</label>
 
-			<PostTagsInput Tags="UpdatePost.Tags" OnTagsChanged="HandleTagsChanged" />
+				<MudDatePicker Label="PublishedDate"
+											 @bind-Date="getToUpdatePostResult.Entity.PublishedDate"
+											 Variant="Variant.Outlined" />
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">PublishedDate</span>
-				</div>
-				<InputDate @bind-Value="UpdatePost.PublishedDate"
-									 Type="InputDateType.DateTimeLocal"
-									 placeholder="Type here"
-									 class="input input-bordered" />
-				<ValidationMessage For="() => UpdatePost.PublishedDate" class="text-red-500 text-sm italic" />
-			</label>
+				<MudDatePicker Label="PublishedDate"
+											 @bind-Date="getToUpdatePostResult.Entity.UpdatedDate"
+											 Variant="Variant.Outlined" />
 
-			<label class="form-control w-full">
-				<div class="label">
-					<span class="label-text">UpdatedDate</span>
-				</div>
-				<InputDate @bind-Value="UpdatePost.UpdatedDate"
-									 Type="InputDateType.DateTimeLocal"
-									 placeholder="Type here"
-									 class="input input-bordered" />
-				<ValidationMessage For="() => UpdatePost.UpdatedDate" class="text-red-500 text-sm italic" />
-			</label>
+				<MudCheckBox Label="Published" @bind-Value="getToUpdatePostResult.Entity.IsPublished" Color="Color.Primary"></MudCheckBox>
 
-			<label class="form-control w-full cursor-pointer">
-				<span class="label justify-start gap-4">
-					<span class="label-text">Publish</span>
-					<InputCheckbox @bind-Value="UpdatePost.IsPublished" class="checkbox" />
-				</span>
-				<ValidationMessage For="() => UpdatePost.IsPublished" class="text-red-500 text-sm italic" />
-			</label>
-
-			@if (updatePostResult.IsFailed)
-			{
-				<ResultError Error="updatePostResult.Error" />
-			}
-
-			<div class="flex gap-2 items-center">
-				<SubmitButton OnValidSubmit="HandleValidSubmit"
-											class="btn btn-primary"
-											disabled="@(ServiceExecutor.IsRequestLoading(nameof(UpdatePostResponse)))">
-					Save
-					@if (ServiceExecutor.IsRequestLoading(nameof(UpdatePostResponse)))
-					{
-						<span class="ml-2 loading loading-spinner loading-md"></span>
-					}
-				</SubmitButton>
-			</div>
-		</div>
-	</EditForm>
-</Papper>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Save</MudButton>
+			</MudStack>
+		</MudForm>
+	}
+</MudPaper>

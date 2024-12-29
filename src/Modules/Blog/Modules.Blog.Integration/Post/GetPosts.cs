@@ -15,8 +15,8 @@ public class GetPostsResponse
 	public string? Description { get; set; }
 	public string Title { get; set; } = string.Empty;
 	public string Slug { get; set; } = string.Empty;
-	public DateTime PublishedDate { get; set; }
-	public DateTime UpdatedDate { get; set; }
+	public DateTime? PublishedDate { get; set; }
+	public DateTime? UpdatedDate { get; set; }
 	public List<string> Tags { get; set; } = [];
 	public int CommentsCount { get; set; }
 }

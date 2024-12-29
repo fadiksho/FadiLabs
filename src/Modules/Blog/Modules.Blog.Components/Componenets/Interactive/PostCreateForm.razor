@@ -6,6 +6,7 @@
 	[Inject] public required NavigationManager Navigation { get; set; }
 
 	private Result<CreatePostResponse> createPostResult;
+	private CreatePost createPostRequest = new();
 
 	private Result<PagedList<TagResponse>> tagsResponse;
 	private List<TagResponse> selectedTags = [];
@@ -13,8 +14,6 @@
 
 	private MudAutocomplete<string> mudAutocomplete = default!;
 	private MudForm form = default!;
-
-	private CreatePost createPostRequest = new();
 
 	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
 	{
@@ -42,7 +41,6 @@
 		return filterTags;
 	}
 	
-
 	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
 	{
 		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterSearchTagInput) && tagsResponse.IsSuccess)
@@ -67,7 +65,7 @@
 	{
 		selectedTags.Remove(tag);
 	}
-
+	
 	private async Task Submit()
 	{
 		await form.Validate();
@@ -98,7 +96,6 @@
 	}
 }
 
-<Shared.Components.Components.Shared.RenderingContextMessage />
 <MudPaper Class="pa-4">
 	<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
 		<MudStack>

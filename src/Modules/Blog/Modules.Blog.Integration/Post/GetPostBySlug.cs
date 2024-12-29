@@ -8,8 +8,8 @@ public record GetPostBySlugResponse
 
 	public required string Title { get; init; }
 	public string? Body { get; set; }
-	public DateTime PublishedDate { get; set; }
-	public DateTime UpdatedDate { get; set; }
+	public DateTime? PublishedDate { get; set; }
+	public DateTime? UpdatedDate { get; set; }
 	public List<string> Tags { get; set; } = [];
 
 	public bool IsPublished { get; set; }
