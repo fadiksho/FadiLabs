@@ -1,6 +1,5 @@
 @using System.Diagnostics
 @code {
-
 	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
 	[Inject] public required CreatePostValidator CreatePostValidator { get; set; }
 	[Inject] public required ISnackbar Snackbar { get; set; }
@@ -10,7 +9,7 @@
 
 	private Result<PagedList<TagResponse>> tagsResponse;
 	private List<TagResponse> selectedTags = [];
-	private string filterIntercanlTagInput = string.Empty;
+	private string? filterSearchTagInput;
 
 	private MudAutocomplete<string> mudAutocomplete = default!;
 	private MudForm form = default!;
@@ -19,37 +18,41 @@
 
 	private async Task<IEnumerable<string>> SearchTags(string value, CancellationToken token)
 	{
+		IEnumerable<string> filterTags = [];
+
 		if (ServiceExecutor.IsRequestLoading(nameof(GetTags)))
-			return [];
+			return filterTags;
 
 		if (!tagsResponse.IsDefined || tagsResponse.IsFailed)
 			tagsResponse = await ServiceExecutor.ExecuteAsync(nameof(GetTags), x => x.Send(new GetTags()));
 
-		if (tagsResponse.IsSuccess && !string.IsNullOrEmpty(value))
+		if (tagsResponse.IsSuccess)
 		{
-			return tagsResponse.Entity.Items
-				// Filter tags to include only those whose Name contains the filtered string (case-insensitive)
-				.Where(tag => tag.Name.Contains(value, StringComparison.CurrentCultureIgnoreCase))
-				// Further filter tags to exclude those already present (case-insensitive)
+			// filter tags to exclude those already present (case-insensitive)
+			filterTags = tagsResponse.Entity.Items
 				.Where(tag => !selectedTags
-						.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
-				.Select(tag => tag.Name)
-				.ToList();
+					.Any(existingTag => existingTag.Name.Equals(tag.Name, StringComparison.CurrentCultureIgnoreCase)))
+					.Select(x => x.Name);
+
+			// further filter to include only those whose Name contains the filtered string (case-insensitive)
+			if (!string.IsNullOrEmpty(value))
+				filterTags = filterTags.Where(tag => tag.Contains(value, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		return [];
+		return filterTags;
 	}
+	
 
 	private async Task HandleTagKeyDownHandler(KeyboardEventArgs args)
 	{
-		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterIntercanlTagInput) && tagsResponse.IsSuccess)
+		if (args.Key == "Enter" && !string.IsNullOrEmpty(filterSearchTagInput) && tagsResponse.IsSuccess)
 		{
 			var selectedTag = tagsResponse.Entity.Items
-			.FirstOrDefault(x => x.Name.Equals(filterIntercanlTagInput, StringComparison.InvariantCultureIgnoreCase));
+			.FirstOrDefault(x => x.Name.Equals(filterSearchTagInput, StringComparison.InvariantCultureIgnoreCase));
 
 			if (selectedTag == null)
 			{
-				selectedTag = new TagResponse { Name = filterIntercanlTagInput };
+				selectedTag = new TagResponse { Name = filterSearchTagInput };
 			}
 
 			var tagAlreadySelected = selectedTags.Any(x => x.Name.Equals(selectedTag.Name, StringComparison.InvariantCultureIgnoreCase));
@@ -83,7 +86,7 @@
 				Snackbar.Add(createPostResult.Entity.Title, Severity.Normal, config =>
 				{
 					config.Action = "Edit";
-					config.ActionColor = Color.Primary;					
+					config.ActionColor = Color.Primary;
 					config.Onclick = snackbar =>
 					{
 						Navigation.NavigateTo($"/blog/edit/{createPostResult.Entity.PostId}");
@@ -95,6 +98,7 @@
 	}
 }
 
+<Shared.Components.Components.Shared.RenderingContextMessage />
 <MudPaper Class="pa-4">
 	<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
 		<MudStack>
@@ -109,6 +113,22 @@
 										Immediate="true"
 										Label="Description" />
 
+			<MudAutocomplete T="string"
+											 Label="Tags"
+											 @ref="mudAutocomplete"
+											 @bind-Value="filterSearchTagInput"
+											 Immediate="true"
+											 CoerceValue="true"
+											 CoerceText="false"
+											 ResetValueOnEmptyText="false"
+											 OnKeyDown="HandleTagKeyDownHandler"
+											 SearchFunc="@SearchTags"
+											 TextUpdateSuppression="false"
+											 Clearable="true"
+											 OnClearButtonClick="@(async () => await mudAutocomplete.ClearAsync())"
+											 ShowProgressIndicator="true"
+											 ProgressIndicatorColor="Color.Primary">
+			</MudAutocomplete>
 			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
 				@foreach (var selectedTag in selectedTags)
 				{
@@ -116,19 +136,6 @@
 									 OnClose="() => RemoveTag(selectedTag)">@selectedTag.Name</MudChip>
 				}
 			</MudStack>
-			<MudAutocomplete T="string"
-											 Label="Tags"
-											 @ref="mudAutocomplete"
-											 @bind-Text="filterIntercanlTagInput"
-											 OnKeyDown="HandleTagKeyDownHandler"
-											 CoerceValue="true"
-											 TextUpdateSuppression="false"
-											 SearchFunc="@SearchTags"
-											 Immediate="true"
-											 ShowProgressIndicator="true"
-											 ProgressIndicatorColor="Color.Primary">
-			</MudAutocomplete>
-
 			<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">Save</MudButton>
 		</MudStack>
 	</MudForm>
