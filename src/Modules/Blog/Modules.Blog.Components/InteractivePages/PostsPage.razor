@@ -1,16 +1,75 @@
 @page "/blog-lab"
-@page "/blog-lab/{page:int}"
 
 @code {
-	[Parameter]
-	[SupplyParameterFromQuery(Name = "page")]
-	public int Page { get; set; }
+	[Inject]
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
 
-	[Parameter]
-	[SupplyParameterFromQuery(Name = "tag")]
-	public string Tag { get; set; } = string.Empty;
+	[Inject]
+	public required NavigationManager Navigation { get; set; }
 
-	[Parameter]
-	[SupplyParameterFromQuery(Name = "q")]
-	public string SearchQuery { get; set; } = string.Empty;
+	private Result<PagedList<GetPostsResponse>> getPostsResult;
+	private MudDataGrid<GetPostsResponse>? dataGrid;
+	private string? searchString = null;
+	private GetPosts getPostsRequest = new();
+
+	private async Task<GridData<GetPostsResponse>> ServerReload(GridState<GetPostsResponse> state)
+	{
+		getPostsRequest = new()
+			{
+				PageNumber = state.Page + 1,
+				PageSize = state.PageSize
+			};
+
+		getPostsResult = await ServiceExecutor.ExecuteAsync(nameof(GetPosts), x =>
+		{
+			return x.Send(getPostsRequest);
+		}, false);
+
+		return new GridData<GetPostsResponse>
+			{
+				TotalItems = getPostsResult.Entity.TotalCount,
+				Items = getPostsResult.Entity.Items
+			};
+	}
+
+	private void ClearGetPostResultError()
+	{
+		getPostsResult = default;
+	}
 }
+
+<MudToolBar WrapContent="true"
+						Gutters="false"
+						Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
+	<MudText Typo="Typo.h5" Class="flex-grow-1">posts</MudText>
+	<div class="d-flex justify-center gap-4 flex-grow-1">
+		<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
+									AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
+		<MudFab Href="@("/blog-lab/new")" Color="Color.Primary"
+						Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
+						Class="flex-shrink-0" />
+	</div>
+</MudToolBar>
+
+<ResultError Error="getPostsResult.Error" OnClear="ClearGetPostResultError" />
+
+<MudDataGrid @ref="dataGrid"
+						 T="GetPostsResponse"
+						 ServerData="ServerReload"
+						 Filterable="false"
+						 SortMode="SortMode.None">
+	<Columns>
+		<PropertyColumn Property="x => x.Title" Title="Name" />
+		<PropertyColumn Property="x => x.Description" Title="Description" />
+		<PropertyColumn Property="x => x.PublishedDate" Title="PublishDate" />
+
+		<TemplateColumn>
+			<CellTemplate>
+				<MudIconButton Href="@($"/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
+			</CellTemplate>
+		</TemplateColumn>
+	</Columns>
+	<PagerContent>
+		<MudDataGridPager T="GetPostsResponse" />
+	</PagerContent>
+</MudDataGrid>

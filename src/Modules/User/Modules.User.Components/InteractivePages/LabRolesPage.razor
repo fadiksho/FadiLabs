@@ -7,37 +7,16 @@
 	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
 
 	private Result<PagedList<GetLabRolesResponse>> getRolesResult;
-	private Dictionary<Guid, bool> showRoleEdit = [];
-
-	private void toggleRoleEditHandler(Guid roleId)
-	{
-		showRoleEdit.Keys.ToList().ForEach(key =>
-		{
-			if (key != roleId)
-			{
-				showRoleEdit[key] = false;
-			}
-		});
-
-		if (showRoleEdit.ContainsKey(roleId))
-		{
-			showRoleEdit[roleId] = !showRoleEdit[roleId];
-		}
-		else
-		{
-			showRoleEdit[roleId] = true;
-		}
-	}
-
+	
 	private void OnLabRoleCreatedHandler((CreateLabRoleResponse createLabRoleResponse, CreateLabRole createLabRole) roleCreated)
 	{
 		getRolesResult.Entity.Items.Add(new GetLabRolesResponse
-			{
-				Id = roleCreated.createLabRoleResponse.LabRoleId,
-				Name = roleCreated.createLabRole.Name,
-				Description = roleCreated.createLabRole.Description,
-				AutoAssign = roleCreated.createLabRole.AutoAssign
-			});
+		{
+			Id = roleCreated.createLabRoleResponse.LabRoleId,
+			Name = roleCreated.createLabRole.Name,
+			Description = roleCreated.createLabRole.Description,
+			AutoAssign = roleCreated.createLabRole.AutoAssign
+		});
 	}
 
 	private void OnLabRoleUpdatedHandler(UpdateLabRole editedRole)
@@ -45,8 +24,6 @@
 		var roleToEdit = getRolesResult.Entity.Items.First(x => x.Id == editedRole.Id);
 		roleToEdit.Name = editedRole.Name;
 		roleToEdit.Description = editedRole.Description;
-
-		toggleRoleEditHandler(roleToEdit.Id);
 	}
 
 	private void OnRoleDeletedHandler(Guid roleId)
@@ -61,10 +38,10 @@
 	private async Task<GridData<GetLabRolesResponse>> ServerReload(GridState<GetLabRolesResponse> state)
 	{
 		getRolesRequest = new()
-			{
-				PageNumber = state.Page + 1,
-				PageSize = state.PageSize
-			};
+		{
+			PageNumber = state.Page + 1,
+			PageSize = state.PageSize
+		};
 
 		getRolesResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabRoles), x =>
 		{
