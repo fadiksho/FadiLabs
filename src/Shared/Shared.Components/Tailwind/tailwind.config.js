@@ -40,7 +40,7 @@ module.exports = {
     },
   },
   daisyui: {
-    base: true,
+    base: false,
     darkTheme: "dark",
     themes: [
       {

@@ -1,2 +1,16 @@
 @page "/blog-lab"
 @page "/blog-lab/{page:int}"
+
+@code {
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "page")]
+	public int Page { get; set; }
+
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "tag")]
+	public string Tag { get; set; } = string.Empty;
+
+	[Parameter]
+	[SupplyParameterFromQuery(Name = "q")]
+	public string SearchQuery { get; set; } = string.Empty;
+}
