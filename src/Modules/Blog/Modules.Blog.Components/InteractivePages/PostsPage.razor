@@ -95,56 +95,58 @@
 	}
 }
 
-<MudToolBar WrapContent="true"
-						Gutters="false"
-						Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
-	<MudText Typo="Typo.h5" Class="flex-grow-1">posts</MudText>
-	<div class="d-flex justify-center gap-4 flex-grow-1">
-		<MudTextField T="string" Placeholder="Search"
-									ValueChanged="@(s => OnSearch(s))"
-									Adornment="Adornment.Start"
-									AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pl-2 sticky z-10 mud-elevation-2 mb-2"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">posts</MudText>
+		<div class="d-flex justify-center gap-4 flex-grow-1">
+			<MudTextField T="string" Placeholder="Search"
+										ValueChanged="@(s => OnSearch(s))"
+										Adornment="Adornment.Start"
+										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
 
-		<MudFab Href="@("/blog-lab/new")" Color="Color.Primary"
-						Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
-						Class="flex-shrink-0" />
-	</div>
-</MudToolBar>
-<MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-	<MudToolBar WrapContent="true">
-		<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap" Class="flex-grow-1">
-			<MudSelect T="string" Label="Sort by" Value="selectedSortProperty" ValueChanged="SortByValueChangedHandler">
-				<MudSelectItem Value="@("Title")">Name</MudSelectItem>
-				<MudSelectItem Value="@("Description")">Description</MudSelectItem>
-				<MudSelectItem Value="@("PublishedDate")">Publish Date</MudSelectItem>
-			</MudSelect>
-			<MudRadioGroup T="SortDirection" Value="selectedSortDirection" ValueChanged="SortDirectionValueChangedHandler" Class="mt-2">
-				<MudRadio Size="Size.Small" Value="SortDirection.Ascending">@SortDirection.Ascending</MudRadio>
-				<MudRadio Size="Size.Small" Value="SortDirection.Descending">@SortDirection.Descending</MudRadio>
-			</MudRadioGroup>
-		</MudStack>
+			<MudFab Href="@("/blog-lab/new")" Color="Color.Primary"
+							Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
+							Class="flex-shrink-0" />
+		</div>
 	</MudToolBar>
-</MudHidden>
+	<MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+		<MudToolBar WrapContent="true">
+			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap" Class="flex-grow-1 mb-2">
+				<MudSelect T="string" Label="Sort by" Value="selectedSortProperty" ValueChanged="SortByValueChangedHandler">
+					<MudSelectItem Value="@("Title")">Name</MudSelectItem>
+					<MudSelectItem Value="@("Description")">Description</MudSelectItem>
+					<MudSelectItem Value="@("PublishedDate")">Publish Date</MudSelectItem>
+				</MudSelect>
+				<MudRadioGroup T="SortDirection" Value="selectedSortDirection" ValueChanged="SortDirectionValueChangedHandler" Class="mt-2">
+					<MudRadio Size="Size.Small" Value="SortDirection.Ascending">@SortDirection.Ascending</MudRadio>
+					<MudRadio Size="Size.Small" Value="SortDirection.Descending">@SortDirection.Descending</MudRadio>
+				</MudRadioGroup>
+			</MudStack>
+		</MudToolBar>
+	</MudHidden>
 
+	<ResultError Error="getPostsResult.Error" OnClear="ClearGetPostResultError" />
 
-<ResultError Error="getPostsResult.Error" OnClear="ClearGetPostResultError" />
+	<MudDataGrid @ref="dataGrid"
+							 T="GetPostsResponse"
+							 ServerData="ServerReload"
+							 SortMode="SortMode.Single">
+		<Columns>
+			<PropertyColumn Property="x => x.Title" Title="Name" Sortable="true" />
+			<PropertyColumn Property="x => x.Description" Title="Description" Sortable="true" />
+			<PropertyColumn Property="x => x.PublishedDate" Title="PublishDate" Sortable="true" />
 
-<MudDataGrid @ref="dataGrid"
-						 T="GetPostsResponse"
-						 ServerData="ServerReload"
-						 SortMode="SortMode.Single">
-	<Columns>
-		<PropertyColumn Property="x => x.Title" Title="Name" Sortable="true" />
-		<PropertyColumn Property="x => x.Description" Title="Description" Sortable="true" />
-		<PropertyColumn Property="x => x.PublishedDate" Title="PublishDate" Sortable="true" />
-
-		<TemplateColumn>
-			<CellTemplate>
-				<MudIconButton Href="@($"/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
-			</CellTemplate>
-		</TemplateColumn>
-	</Columns>
-	<PagerContent>
-		<MudDataGridPager T="GetPostsResponse" />
-	</PagerContent>
-</MudDataGrid>
+			<TemplateColumn>
+				<CellTemplate>
+					<MudIconButton Href="@($"/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+		<PagerContent>
+			<MudDataGridPager T="GetPostsResponse" />
+		</PagerContent>
+	</MudDataGrid>
+</MudPaper>

@@ -2,8 +2,9 @@
 	[Parameter]
 	public Guid PostId { get; set; }
 
-	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
 	[Inject] public required UpdatePostValidator UpdatePostValidator { get; set; }
+	[Inject] public required IJSRuntime JSRuntime { get; set; }
 
 	private Result<UpdatePost> getPostResult;
 	private Result<UpdatePostResponse> updatePostResult;
@@ -19,6 +20,11 @@
 	private void TagsChangedHandler(List<TagResponse> tags)
 	{
 		getPostResult.Entity.Tags = tags;
+	}
+
+	private async Task GoBack()
+	{
+		await JSRuntime.InvokeVoidAsync("history.back");
 	}
 
 	private async Task Submit()
@@ -38,10 +44,16 @@
 	}
 }
 
-<MudPaper Class="pa-4">
+<MudPaper Class="pa-2">
 	<MudStack>
-		<MudToolBar Dense="true" WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
-			<MudText Typo="Typo.h5" Class="flex-grow-1">Edit @getPostResult.Entity?.Title</MudText>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pl-2 sticky z-10 mud-elevation-2 mb-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Edit @getPostResult.Entity?.Title</MudText>
+			<MudFab OnClick="GoBack" Color="Color.Primary"
+							Size="Size.Medium" StartIcon="@Icons.Material.Filled.ArrowBack"
+							Class="flex-shrink-0" />
 		</MudToolBar>
 
 		<ResultError Error="updatePostResult.Error" OnClear="ClearUpdatePostResultError" />

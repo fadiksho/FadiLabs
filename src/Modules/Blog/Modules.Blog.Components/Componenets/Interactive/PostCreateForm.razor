@@ -44,16 +44,19 @@
 
 	private void ClearCreatePostResultError()
 	{
-		createPostResult = default;	
+		createPostResult = default;
 	}
 }
 
 
 
-<MudPaper Class="pa-4">
+<MudPaper Class="pa-2">
 	<MudStack>
-		<MudToolBar Dense="true" WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
-			<MudText Typo="Typo.h5" Class="flex-grow-1">Create new post</MudText>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pl-2 sticky z-10 mud-elevation-2 mb-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Create new post</MudText>
 		</MudToolBar>
 
 		<ResultError Error="createPostResult.Error" OnClear="ClearCreatePostResultError" />
