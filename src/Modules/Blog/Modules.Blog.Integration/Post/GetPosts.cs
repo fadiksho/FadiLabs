@@ -7,6 +7,8 @@ public record GetPosts : PagedFilterQuery, IRequest<Result<PagedList<GetPostsRes
 {
 	public string? Tag { get; set; }
 	public string? Search { get; set; }
+	public string? SortBy { get; set; }
+	public bool Descending { get; set; }
 }
 
 public class GetPostsResponse

@@ -18,8 +18,13 @@
 		<MudText Typo="Typo.h5" Class="ml-3">Fadi Labs</MudText>
 		<MudSpacer />
 		<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" />
+
+		<MudProgressLinear Color="Color.Secondary"
+											 Style="position:absolute; bottom: 0;"
+											 Size="Size.Small"
+											 Indeterminate="false" />
 	</MudAppBar>
-	
+
 	<MudDrawer @bind-Open="_drawerOpen"
 						 ClipMode="DrawerClipMode.Always" Overlay="true"
 						 Elevation="2"
@@ -156,7 +161,6 @@
 	</MudDrawer>
 
 	<MudMainContent Class="d-flex flex-column overflow-hidden" Style="height:100vh;">
-		<MudProgressLinear Color="Color.Secondary" Indeterminate="false" />
 		<div class="flex-1 overflow-auto pa-2">
 			@Body
 		</div>

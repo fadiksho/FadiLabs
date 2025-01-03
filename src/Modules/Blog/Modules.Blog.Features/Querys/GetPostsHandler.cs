@@ -7,6 +7,7 @@ using Modules.Shared.Integration.Models;
 using Shared.Features.Extensions;
 using Shared.Features.Services;
 using Shared.Integration.Extensions;
+using System.Linq.Expressions;
 
 namespace Modules.Blog.Features.Querys;
 internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) : IRequestHandler<GetPosts, Result<PagedList<GetPostsResponse>>>
@@ -16,8 +17,12 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 		var query = context.Posts
 			.Include(x => x.Tags)
 			.Include(x => x.Comments)
-			.OrderByDescending(x => x.PublishedDate)
+			//.OrderByDescending(x => x.PublishedDate)
 			.AsQueryable();
+
+		query = !string.IsNullOrEmpty(request.SortBy)
+			? SortByProperty(query, request.SortBy, request.Descending)
+			: SortByProperty(query, nameof(Post.Title), request.Descending);
 
 		if (!string.IsNullOrEmpty(request.Tag))
 			query = query.Where(x => x.Tags.Any(t => t.Name == request.Tag));
@@ -27,8 +32,11 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 		if (!user.HasLabPermission(LabsPermissions.BlogOwner))
 			query = query.Where(x => x.IsPublished);
 
+		//if (!string.IsNullOrEmpty(request.Search))
+		//	query = query.Where(x => EF.Functions.Like(x.Title, $"%{request.Search}%"));
+
 		if (!string.IsNullOrEmpty(request.Search))
-			query = query.Where(x => EF.Functions.Like(x.Title, $"%{request.Search}%"));
+			query = query.Where(x => x.Title.Contains(request.Search));
 
 		var mappedQuery = Map(query);
 
@@ -50,5 +58,17 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 			CommentsCount = x.Comments.Count,
 			Description = x.Description,
 		});
+	}
+
+	public static IQueryable<T> SortByProperty<T>(IQueryable<T> source, string propertyName, bool descending)
+	{
+		var param = Expression.Parameter(typeof(T), "p");
+		var property = Expression.Property(param, propertyName)
+				?? throw new ArgumentException($"Property '{propertyName}' does not exist on type '{typeof(T).Name}'");
+		var sortExpression = Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), param);
+
+		return descending
+			? source.OrderByDescending(sortExpression)
+			: source.OrderBy(sortExpression);
 	}
 }
