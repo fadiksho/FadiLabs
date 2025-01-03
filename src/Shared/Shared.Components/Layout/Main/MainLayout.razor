@@ -99,26 +99,26 @@
 
 				<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
 					<Authorized>
-						<MudNavGroup Title="Test Lab" Expanded="true">
-							<MudNavLink Href="/current-user">Current User</MudNavLink>
-							<MudNavLink Href="/test">Test</MudNavLink>
-							<MudNavLink Href="/test2">Test 2</MudNavLink>
+						<MudNavGroup Title="Test Lab" Expanded="false">
+							<MudNavLink Href="/labs/current-user">Current User</MudNavLink>
+							<MudNavLink Href="/labs/test">Test</MudNavLink>
+							<MudNavLink Href="/labs/test2">Test 2</MudNavLink>
 						</MudNavGroup>
 
 						<MudNavGroup Title="Blog Lab" Expanded="true">
-							<MudNavLink Href="/blog-lab" Match="NavLinkMatch.All">Blog</MudNavLink>
-							<MudNavLink Href="/blog-lab/new">Create New</MudNavLink>
+							<MudNavLink Href="/labs/blog-lab" Match="NavLinkMatch.All">Blog</MudNavLink>
+							<MudNavLink Href="/labs/blog-lab/new">Create New</MudNavLink>
 						</MudNavGroup>
 
 						<MudNavGroup Title="User Lab" Expanded="true">
-							<MudNavLink Href="/user-lab/manage/users">Lab Users</MudNavLink>
-							<MudNavLink Href="/user-lab/manage/roles">Lab Roles</MudNavLink>
-							<MudNavLink Href="/user-lab/manage/roles-permissions">Lab Roles Permissions</MudNavLink>
+							<MudNavLink Href="/labs/user-lab/manage/users">Lab Users</MudNavLink>
+							<MudNavLink Href="/labs/user-lab/manage/roles">Lab Roles</MudNavLink>
+							<MudNavLink Href="/labs/user-lab/manage/roles-permissions">Lab Roles Permissions</MudNavLink>
 						</MudNavGroup>
 
 						<MudNavGroup Title="Auth0 Lab" Expanded="true">
-							<MudNavLink Href="/auth0-lab/manage/users">Auth0 Users</MudNavLink>
-							<MudNavLink Href="/auth0-lab/manage/permissions">Auth0 Permissions</MudNavLink>
+							<MudNavLink Href="/labs/auth0-lab/manage/users">Auth0 Users</MudNavLink>
+							<MudNavLink Href="/labs/auth0-lab/manage/permissions">Auth0 Permissions</MudNavLink>
 						</MudNavGroup>
 					</Authorized>
 				</LabAuthorizeView>

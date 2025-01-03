@@ -9,12 +9,12 @@
 	<div class="tw-flex tw-flex-col tw-gap-4">
 		@if (!string.IsNullOrEmpty(Tag) || !string.IsNullOrEmpty(SearchQuery))
 		{
-			<div class="bg-primary text-primary-content tw-sticky tw-top-0 tw-p-2 tw-flex tw-flex-wrap tw-items-center tw-gap-2">
+			<div class="tw-bg-primary tw-text-primary-content tw-sticky tw-top-0 tw-p-2 tw-flex tw-flex-wrap tw-items-center tw-gap-2">
 				<span class="tw-text-2xl tw-italic">Filters: </span>
 
 				@if (!string.IsNullOrEmpty(Tag))
 				{
-					<a class="tw-btn tw-btn-sm"
+					<a class="tw-btn tw-btn-sm tw-p-1 tw-gap-1"
 						 href="@GetClearFilterLink("tag")">
 						<span>
 							<strong>Tag:</strong>

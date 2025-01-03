@@ -1,4 +1,4 @@
-@page "/blog-lab"
+@page "/labs/blog-lab"
 
 @code {
 	[Inject]
@@ -98,7 +98,7 @@
 <MudPaper Class="pa-2">
 	<MudToolBar WrapContent="true"
 							Gutters="false"
-							Class="gap-2 pl-2 sticky z-10 mud-elevation-2 mb-2"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
 							Style="top: 0; background: var(--mud-palette-background)">
 		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">posts</MudText>
 		<div class="d-flex justify-center gap-4 flex-grow-1">
@@ -107,7 +107,7 @@
 										Adornment="Adornment.Start"
 										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
 
-			<MudFab Href="@("/blog-lab/new")" Color="Color.Primary"
+			<MudFab Href="@("/labs/blog-lab/new")" Color="Color.Primary"
 							Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
 							Class="flex-shrink-0" />
 		</div>
@@ -135,13 +135,14 @@
 							 ServerData="ServerReload"
 							 SortMode="SortMode.Single">
 		<Columns>
-			<PropertyColumn Property="x => x.Title" Title="Name" Sortable="true" />
-			<PropertyColumn Property="x => x.Description" Title="Description" Sortable="true" />
-			<PropertyColumn Property="x => x.PublishedDate" Title="PublishDate" Sortable="true" />
-
-			<TemplateColumn>
+			<PropertyColumn CellClass="align-start" Property="x => x.Title" Title="Name" Sortable="true" />
+			<PropertyColumn CellClass="align-start" Property="x => x.Description" Title="Description" Sortable="true" />
+			<PropertyColumn CellClass="align-start" Property="x => x.PublishedDate" Title="PublishDate" Sortable="true" />
+			<TemplateColumn HeaderStyle="width:0;">
+				<HeaderTemplate>
+				</HeaderTemplate>
 				<CellTemplate>
-					<MudIconButton Href="@($"/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
+					<MudIconButton Href="@($"/labs/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
 				</CellTemplate>
 			</TemplateColumn>
 		</Columns>
