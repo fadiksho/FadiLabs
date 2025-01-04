@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+		<PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.1.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
@@ -23,5 +24,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
-	
+
+	<!--https://github.com/dotnet/razor/issues/4590-->
+	<!--<Target Name="CollectMudBlazorStaticAssets" DependsOnTargets="ResolveStaticWebAssetsInputs" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+		<Message Text="Dummy Hack" />
+		<Copy SourceFiles="%(StaticWebAsset.Identity)" DestinationFolder="wwwroot/temp" Condition="$([System.String]::Copy(%(StaticWebAsset.Identity)).Contains('mudblazor\'))" />
+	</Target>-->
 </Project>

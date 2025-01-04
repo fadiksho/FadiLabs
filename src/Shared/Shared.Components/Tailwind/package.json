@@ -7,6 +7,8 @@
 	},
 	"scripts": {
 		"watch": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css -w",
-		"build": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css --minify"
+		"build": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css",
+		"build:prod": "npx tailwindcss -i ./app.css -o ../wwwroot/app.css --minify",
+		"copy:@material-tailwind-scripts": "cpx ./node_modules/@material-tailwind/html/scripts/*.js ./../wwwroot/scripts"
 	}
 }

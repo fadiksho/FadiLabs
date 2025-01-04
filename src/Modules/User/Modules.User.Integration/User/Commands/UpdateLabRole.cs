@@ -26,4 +26,13 @@ public class UpdateLabRoleValidator : AbstractValidator<UpdateLabRole>
 		RuleFor(x => x.Description)
 			.NotEmpty();
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<UpdateLabRole>.CreateWithOptions((UpdateLabRole)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }

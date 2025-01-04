@@ -35,7 +35,10 @@ public static class Program
 		{
 			options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 			options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-			options.UseSqlServer(_persistenceOptions.ConnectionString);
+			options.UseSqlServer(_persistenceOptions.ConnectionString, providerOptions =>
+			{
+				providerOptions.EnableRetryOnFailure(maxRetryCount: 3);
+			});
 		});
 
 		services.AddTransient<IUserContext, UserContext>();

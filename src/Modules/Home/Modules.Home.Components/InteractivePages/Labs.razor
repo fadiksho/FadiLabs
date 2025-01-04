@@ -2,53 +2,115 @@
 
 <PageTitle>Labs</PageTitle>
 
-<div class="w-full bg-base-100 shadow-xl p-4">
-  <!-- Description Row for Cards -->
-  <div class="mb-4">
-    <h2 class="text-2xl font-bold">My lab account</h2>
-  </div>
-  <!-- Primary Card for User Profile -->
-  <div class="w-full bg-base-100 shadow-xl p-4 flex flex-col">
-    <LabAuthorizeView>
-      <div class="flex gap-4 items-center">
-        <figure>
-          <img src="@context.User.GetProfilePicture()" alt="Profile Image" class="rounded-full w-16 h-16" />
-        </figure>
-        <div class="flex-1 flex flex-col gap-2">
-          <div>
-            <h2 class="text-2xl font-bold">@context.User.GetUserName()</h2>
-            <p>@context.User.GetEmail()</p>
-          </div>
-        </div>
-      </div>
-    </LabAuthorizeView>
 
-    <div class="ml-auto">
-      <LoginLogoutButton />
-    </div>
-    
-  </div>
-</div>
+<MudCard Class="my-4">
+	<MudCardContent>
+		<MudText Class="mb-4" Typo="Typo.h4">
+			My lab account
+		</MudText>
+		<LabAuthorizeView>
+			<UserAvatarDetailsView AvatarImage="@context.User.GetProfilePicture()"
+														 UserName="@context.User.GetUserName()"
+														 Email="@context.User.GetEmail()" />
+		</LabAuthorizeView>
+	</MudCardContent>
+	<MudCardActions Class="justify-end">
+		<LoginLogoutButton />
+	</MudCardActions>
+</MudCard>
 
-<!-- Section for Cards -->
-<div class="w-full bg-base-100 shadow-xl p-4">
-  <!-- Description Row for Cards -->
-  <div class="mb-4">
-    <h2 class="text-2xl font-bold">Labs</h2>
-    <p>This section represents the different labs currently available.</p>
-  </div>
+<MudCard Class="my-4">
+	<MudCardContent>
+		<div class="mb-4">
+			<MudText Typo="Typo.h6">
+				Labs
+			</MudText>
+			<MudText Typo="Typo.body1">
+				This section represents the different labs currently available.
+			</MudText>
+		</div>
+		<MudGrid Spacing="2">
+			<MudItem xs="12">
+				<MudCard>
+					<MudCardContent>
+						<MudText Typo="Typo.h6">
+							Pick Your First Module Lab!
+						</MudText>
+						<MudText Typo="Typo.body1">
+							Hey there! I'm working on some cool new modules. Which one should I build first? Let me know your thoughts!
+						</MudText>
+					</MudCardContent>
+					<MudCardActions Class="justify-end">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="true">
+							Enter Lap
+						</MudButton>
+					</MudCardActions>
+				</MudCard>
+			</MudItem>
+		</MudGrid>
+	</MudCardContent>
+</MudCard>
 
-  <!-- Grid for Cards -->
-  <div class="grid grid-cols-1 gap-4">
-    <!-- Card 1 -->
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Pick Your First Module Lab!</h2>
-        <p>Hey there! I'm working on some cool new modules. Which one should I build first? Let me know your thoughts!</p>
-        <div class="card-actions justify-end">
-          <button class="btn btn-ghost btn-disabled" disabled>Enter lab</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<MudCard Class="my-4">
+	<MudCardContent>
+		<div class="mb-4">
+			<MudText Typo="Typo.h6">
+				Labs
+			</MudText>
+			<MudText Typo="Typo.body1">
+				This section represents the different labs currently available.
+			</MudText>
+		</div>
+		<MudGrid Spacing="2">
+			<MudItem xs="12">
+				<MudCard>
+					<MudCardContent>
+						<MudText Typo="Typo.h6">
+							Pick Your First Module Lab!
+						</MudText>
+						<MudText Typo="Typo.body1">
+							Hey there! I'm working on some cool new modules. Which one should I build first? Let me know your thoughts!
+						</MudText>
+					</MudCardContent>
+					<MudCardActions Class="justify-end">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary">
+							Enter Lap
+						</MudButton>
+					</MudCardActions>
+				</MudCard>
+			</MudItem>
+		</MudGrid>
+	</MudCardContent>
+</MudCard>
+
+<MudCard Class="my-4">
+	<MudCardContent>
+		<div class="mb-4">
+			<MudText Typo="Typo.h6">
+				Labs
+			</MudText>
+			<MudText Typo="Typo.body1">
+				This section represents the different labs currently available.
+			</MudText>
+		</div>
+		<MudGrid Spacing="2">
+			<MudItem xs="12">
+				<MudCard>
+					<MudCardContent>
+						<MudText Typo="Typo.h6">
+							Pick Your First Module Lab!
+						</MudText>
+						<MudText Typo="Typo.body1">
+							Hey there! I'm working on some cool new modules. Which one should I build first? Let me know your thoughts!
+						</MudText>
+					</MudCardContent>
+					<MudCardActions Class="justify-end">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="true">
+							Enter Lap
+						</MudButton>
+					</MudCardActions>
+				</MudCard>
+			</MudItem>
+		</MudGrid>
+	</MudCardContent>
+</MudCard>

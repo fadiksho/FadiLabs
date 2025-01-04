@@ -29,4 +29,13 @@ public class CreatePostValidator : AbstractValidator<CreatePost>
 		RuleFor(x => x.Title)
 			.NotEmpty();
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<CreatePost>.CreateWithOptions((CreatePost)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }

@@ -1,0 +1,22 @@
+@code {
+	[Parameter]
+	public int Count { get; set; } = 1;
+}
+
+@for (int i = 0; i < Count; i++)
+{
+	<div class="tw-bg-base-200 tw-p-2 tw-flex tw-flex-col tw-gap-2 tw-shadow">
+		<div class="tw-skeleton tw-h-8 tw-w-24"></div>
+		<div class="tw-skeleton tw-h-4 tw-w-48"></div>
+		<div class="tw-skeleton tw-h-12 tw-w-full"></div>
+		<div class="tw-flex tw-flex-col tw-gap-1">
+			<div class="tw-skeleton tw-h-4 tw-w-full"></div>
+			<div class="tw-skeleton tw-h-4 tw-w-full"></div>
+			<div class="tw-skeleton tw-h-4 tw-w-full"></div>
+		</div>
+		<div class="tw-flex tw-justify-end">
+			<div class="tw-skeleton tw-h-8 tw-w-20"></div>
+		</div>
+	</div>
+}
+

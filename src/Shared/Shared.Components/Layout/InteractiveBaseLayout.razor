@@ -1,0 +1,56 @@
+@using MudBlazor
+@inherits LayoutComponentBase
+
+<SectionContent SectionName="head">
+	<link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+	@* <link href="@Assets["_content/Shared.Components/app.css"]" rel="stylesheet" /> *@
+</SectionContent>
+<SectionContent SectionName="scripts">
+	<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+  <script async>
+    function applyMudBlazorStyles() {
+      let dialog = document.getElementById('components-reconnect-modal');
+      if (dialog) {
+        var shadowRoot = dialog.shadowRoot;
+        if (shadowRoot) {
+          let style = document.createElement('style');
+          style.textContent += `
+            .components-reconnect-overlay .btn {
+                background-color: var(--mud-palette-primary);
+								color: var(--mud-palette-primary-text);
+                border-radius: var(--mud-default-borderradius);
+                font-size: var(--mud-typography-button-size);
+                cursor: pointer;
+              }
+            .components-reconnect-overlay .btn:hover {
+              background-color: var(--mud-palette-primary-darken);
+            }
+          `;
+          shadowRoot.appendChild(style);
+          let dialogContent = shadowRoot.querySelector('.components-reconnect-dialog');
+          if (dialogContent) {
+            dialogContent.style.backgroundColor = 'var(--mud-palette-background)';
+            dialogContent.style.color = 'var(--mud-palette-text-primary)';
+          }
+          let button = shadowRoot.querySelector('button');
+          
+          if (button) {
+            button.classList.add('btn');
+          }
+
+          let ringDivs = shadowRoot.querySelectorAll('.components-rejoining-animation div');
+          ringDivs.forEach(div => {
+            div.style.borderColor = 'var(--mud-palette-primary)';
+          });
+        }
+      }
+    }
+
+    const observer = new MutationObserver(() => {
+      requestIdleCallback(applyMudBlazorStyles);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: false, attributes: false });
+  </script>
+</SectionContent>
+@Body

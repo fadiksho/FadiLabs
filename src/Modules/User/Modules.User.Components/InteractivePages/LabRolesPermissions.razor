@@ -1,10 +1,13 @@
-@page "/user-lab/manage/roles-permissions"
+@page "/labs/user-lab/manage/roles-permissions"
 @attribute [LabAuthorize(LabsPermissions.ConfigureSite)]
 
 @code
 {
 	[Inject]
 	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+
+	[Inject]
+	public required ISnackbar Snackbar { get; set; }
 
 	private Result<PagedList<GetLabRolesResponse>> geLabRolesResult;
 	private Dictionary<string, bool> showLabRoleDetails = [];
@@ -29,56 +32,57 @@
 		}
 
 		var setRolePermissionRequet = new SetLabRolePermissions
-		{
-			LabRoleId = role.Id,
-			UpdatedPermissions = role.LabsPermissions
-		};
-		await ServiceExecutor.ExecuteAsync(nameof(SetLabRolePermissions), x => x.Send(setRolePermissionRequet));
+			{
+				LabRoleId = role.Id,
+				UpdatedPermissions = role.LabsPermissions
+			};
+		var result = await ServiceExecutor.ExecuteAsync(nameof(SetLabRolePermissions), x => x.Send(setRolePermissionRequet));
+		if (result.IsSuccess)
+			Snackbar.Add(result.SuccessMessage, Severity.Success);
+		else
+			Snackbar.Add(result.Error.Message, Severity.Error);
 	}
 }
 
-<Papper>
-	<LoadingTitle Title="@($"Labs Roles Permissions")"
-								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(GetLabRoles)))" />
-
-	@if (geLabRolesResult.IsFailed)
-	{
-		<ResultError Error="@geLabRolesResult.Error" />
-	}
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Labs Roles Permissions</MudText>
+	</MudToolBar>
 
 	@if (geLabRolesResult.IsSuccess)
 	{
-		<div class="overflow-x-auto scroller">
-			<table class="table">
-				<thead>
+		<MudSimpleTable>
+			<thead>
+				<tr>
+					<th>Permissions</th>
+					@foreach (var role in geLabRolesResult.Entity.Items)
+					{
+						<th>@role.Name</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
+				{
+					if (permission == LabsPermissions.None) continue;
 					<tr>
-						<th>Permissions</th>
+						<td>@permission</td>
 						@foreach (var role in geLabRolesResult.Entity.Items)
 						{
-							<th>@role.Name</th>
+							<td>
+								<MudCheckBox Disabled="@ServiceExecutor.IsRequestLoading(nameof(AssignLabRoleToUser))"
+														 ValueChanged="(value) => UpdateRolePermission(role, permission, value)"
+														 T="bool"
+														 Value="@role.LabsPermissions.HasFlag(permission)">
+								</MudCheckBox>
+							</td>
 						}
 					</tr>
-				</thead>
-				<tbody>
-					@foreach (var permission in LabsPermissionsPolicyManager.GetAllLabsPermissions())
-					{
-						if (permission == LabsPermissions.None) continue;
-						<tr>
-							<td>@permission</td>
-							@foreach (var role in geLabRolesResult.Entity.Items)
-							{
-								<td>
-									<input type="checkbox"
-												 class="checkbox"
-												 disabled="@ServiceExecutor.IsRequestLoading(nameof(AssignLabRoleToUser))"
-												 @onchange="(args) => UpdateRolePermission(role, permission, (bool)args.Value!)"
-												 checked="@role.LabsPermissions.HasFlag(permission)" />
-								</td>
-							}
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
+				}
+			</tbody>
+		</MudSimpleTable>
 	}
-</Papper>
+</MudPaper>

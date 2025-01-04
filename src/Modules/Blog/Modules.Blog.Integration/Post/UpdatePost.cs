@@ -8,8 +8,8 @@ public record UpdatePost : IRequest<Result<UpdatePostResponse>>
 	public required string Slug { get; set; }
 	public string? Description { get; set; }
 	public string? Body { get; set; }
-	public DateTime PublishedDate { get; set; }
-	public DateTime UpdatedDate { get; set; }
+	public DateTime? PublishedDate { get; set; }
+	public DateTime? UpdatedDate { get; set; }
 	public bool IsPublished { get; set; }
 	public List<TagResponse> Tags { get; set; } = [];
 }
@@ -40,7 +40,9 @@ public class UpdatePostValidator : AbstractValidator<UpdatePost>
 			.When(x => x.IsPublished);
 
 		RuleFor(x => x.UpdatedDate)
-			.GreaterThanOrEqualTo(x => x.PublishedDate);
+			.NotEmpty()
+			.GreaterThanOrEqualTo(x => x.PublishedDate)
+			.When(x => x.IsPublished);
 
 		RuleFor(x => x.Body)
 			.NotEmpty()
@@ -50,4 +52,13 @@ public class UpdatePostValidator : AbstractValidator<UpdatePost>
 			.NotEmpty()
 			.When(x => x.IsPublished);
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<UpdatePost>.CreateWithOptions((UpdatePost)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }

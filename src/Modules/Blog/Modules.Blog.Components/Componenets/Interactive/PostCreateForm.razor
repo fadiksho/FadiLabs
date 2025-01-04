@@ -1,0 +1,83 @@
+@using System.Diagnostics
+@code {
+	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	[Inject] public required CreatePostValidator CreatePostValidator { get; set; }
+	[Inject] public required ISnackbar Snackbar { get; set; }
+	[Inject] public required NavigationManager Navigation { get; set; }
+
+	private Result<CreatePostResponse> createPostResult;
+	private CreatePost createPostRequest = new();
+
+	private MudForm form = default!;
+
+	private void TagsChangedHandler(List<TagResponse> tags)
+	{
+		createPostRequest.Tags = tags;
+	}
+
+	private async Task Submit()
+	{
+		await form.Validate();
+
+		if (form.IsValid)
+		{
+			createPostResult = await ServiceExecutor
+				.ExecuteAsync(nameof(CreatePost), x => x.Send(createPostRequest));
+
+			if (createPostResult.IsSuccess)
+			{
+				createPostRequest.ResetToDefault();
+
+				Snackbar.Add(createPostResult.Entity.Title, Severity.Normal, config =>
+				{
+					config.Action = "Edit";
+					config.ActionColor = Color.Primary;
+					config.Onclick = snackbar =>
+					{
+						Navigation.NavigateTo($"/labs/blog-lab/edit/{createPostResult.Entity.PostId}");
+						return Task.CompletedTask;
+					};
+				});
+			}
+		}
+	}
+
+	private void ClearCreatePostResultError()
+	{
+		createPostResult = default;
+	}
+}
+
+<MudPaper Class="pa-2">
+	<MudStack>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Create new post</MudText>
+		</MudToolBar>
+
+		<ResultError Error="createPostResult.Error" OnClear="ClearCreatePostResultError" />
+
+		<MudForm Model="@createPostRequest" @ref="@form" Validation="@(CreatePostValidator.ValidateValue)" ValidationDelay="0">
+			<MudStack>
+				<MudTextField @bind-Value="createPostRequest.Title"
+											For="@(() => createPostRequest.Title)"
+											Variant="Variant.Outlined"
+											Immediate="true"
+											Label="Title" />
+
+				<MudTextField @bind-Value="createPostRequest.Description"
+											For="@(() => createPostRequest.Description)"
+											Variant="Variant.Outlined"
+											AutoGrow
+											Immediate="true"
+											Label="Description" />
+
+				<PostTagsInput OnTagsChanged="TagsChangedHandler" Tags="createPostRequest.Tags" />
+
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto" OnClick="@(async () => await Submit())">Save</MudButton>
+			</MudStack>
+		</MudForm>
+	</MudStack>
+</MudPaper>

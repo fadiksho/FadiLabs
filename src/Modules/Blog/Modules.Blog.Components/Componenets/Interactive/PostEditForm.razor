@@ -1,0 +1,109 @@
+@code {
+	[Parameter]
+	public Guid PostId { get; set; }
+
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+	[Inject] public required UpdatePostValidator UpdatePostValidator { get; set; }
+	[Inject] public required IJSRuntime JSRuntime { get; set; }
+
+	private Result<UpdatePost> getPostResult;
+	private Result<UpdatePostResponse> updatePostResult;
+
+	private MudForm form = default!;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		getPostResult = await ServiceExecutor
+			.ExecuteAsync(nameof(GetToUpdatePost), x => x.Send(new GetToUpdatePost(PostId)), true);
+	}
+
+	private void TagsChangedHandler(List<TagResponse> tags)
+	{
+		getPostResult.Entity.Tags = tags;
+	}
+
+	private async Task GoBack()
+	{
+		await JSRuntime.InvokeVoidAsync("history.back");
+	}
+
+	private async Task Submit()
+	{
+		await form.Validate();
+
+		if (form.IsValid)
+		{
+			updatePostResult = await ServiceExecutor
+			.ExecuteAsync(nameof(UpdatePostResponse), x => x.Send(getPostResult.Entity));
+		}
+	}
+
+	private void ClearUpdatePostResultError()
+	{
+		updatePostResult = default;
+	}
+}
+
+<MudPaper Class="pa-2">
+	<MudStack>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Edit @getPostResult.Entity?.Title</MudText>
+			<MudFab OnClick="GoBack" Color="Color.Primary"
+							Size="Size.Medium" StartIcon="@Icons.Material.Filled.ArrowBack"
+							Class="flex-shrink-0" />
+		</MudToolBar>
+
+		<ResultError Error="updatePostResult.Error" OnClear="ClearUpdatePostResultError" />
+
+		@if (getPostResult.IsSuccess == true)
+		{
+			<MudForm Model="@getPostResult.Entity" @ref="@form" Validation="@(UpdatePostValidator.ValidateValue)" ValidationDelay="0">
+				<MudStack Spacing="4">
+					<MudTextField @bind-Value="getPostResult.Entity.Title"
+												For="@(() => getPostResult.Entity.Title)"
+												Variant="Variant.Outlined"
+												Immediate="true"
+												Label="Title" />
+
+					<MudTextField @bind-Value="getPostResult.Entity.Slug"
+												For="@(() => getPostResult.Entity.Slug)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Slug" />
+
+					<MudTextField @bind-Value="getPostResult.Entity.Description"
+												For="@(() => getPostResult.Entity.Description)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Description" />
+
+					<MudTextField @bind-Value="getPostResult.Entity.Body"
+												For="@(() => getPostResult.Entity.Body)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Body" />
+
+					<PostTagsInput OnTagsChanged="TagsChangedHandler" Tags="getPostResult.Entity.Tags" />
+
+					<MudDatePicker Label="PublishedDate"
+												 @bind-Date="getPostResult.Entity.PublishedDate"
+												 Variant="Variant.Outlined" />
+
+					<MudDatePicker Label="PublishedDate"
+												 @bind-Date="getPostResult.Entity.UpdatedDate"
+												 Variant="Variant.Outlined" />
+
+					<MudCheckBox Label="Published" @bind-Value="getPostResult.Entity.IsPublished" Color="Color.Primary"></MudCheckBox>
+
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto" OnClick="@(async () => await Submit())">Save</MudButton>
+				</MudStack>
+			</MudForm>
+		}
+	</MudStack>
+</MudPaper>

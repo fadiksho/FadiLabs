@@ -9,10 +9,11 @@ module.exports = {
     '../../../Modules/Auth0/Modules.Auth0.Components/**/*.{razor,html,js}',
     '../../../Modules/Auth0/Modules.Auth0.Features.Server/**/*.{razor,html,js}'
   ],
+  prefix: 'tw-',
   theme: {
     extend: {
       animation: {
-        'buttonAnimation': 'button-pop-custom  var(--animation-btn, 0.25s) ease-out'
+        'buttonAnimation': 'button-pop-custom  var(--animation-btn, 0.25s) ease-out',
       },
       transitionProperty: {
         'margin': 'margin',
@@ -39,6 +40,7 @@ module.exports = {
     },
   },
   daisyui: {
+    base: false,
     darkTheme: "dark",
     themes: [
       {
@@ -91,4 +93,3 @@ module.exports = {
     require('tailwindcss-animated')
   ],
 }
-

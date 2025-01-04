@@ -7,13 +7,15 @@
 
 <PageTitle>Test 2</PageTitle>
 
-<Papper>
+<MudStack Spacing="4">
+
 	<RenderingContextMessage />
+
 	<AuthorizeView>
 		<Authorized>
-			<div class="flex flex-col gap-1">
-				<span class="text-success text-xl font-bold">Authorized</span>
-				<span class="font-bold">@($"Expire in: {context.User.GetIdTokenExpiration() - DateTimeOffset.Now}")</span>
+			<div class="d-flex flex-column gap-1">
+				<span>Authorized</span>
+				<span>@($"Expire in: {context.User.GetIdTokenExpiration() - DateTimeOffset.Now}")</span>
 			</div>
 		</Authorized>
 		<NotAuthorized>
@@ -21,16 +23,16 @@
 		</NotAuthorized>
 	</AuthorizeView>
 
-	<Papper>
-		<button class="btn btn-primary" @onclick="GetQueryTestClickHandler">
+	<MudPaper Class="pa-4 d-flex flex-column gap-2">
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GetQueryTestClickHandler">
 			Send
 			@if (ServiceExecutor.IsRequestLoading(nameof(GetTestQuery)))
 			{
-				<span class="loading loading-spinner loading-md"></span>
+				<MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
 			}
-		</button>
+		</MudButton>
 		<pre>
-		<code class="whitespace-break-spaces">
+		<code>
 				@if (getTestQueryResult.IsSuccess)
 				{
 					@getTestQueryResult.SuccessMessage
@@ -41,18 +43,19 @@
 				}
 			</code>
 		</pre>
-	</Papper>
+	</MudPaper>
 
-	<Papper>
-		<button class="btn btn-primary" @onclick="GetTestAuthorizedQueryClickHandler">
-			Send Authorized
-			@if (ServiceExecutor.IsRequestLoading(nameof(GetTestAuthorizedQuery)))
+	<MudPaper Class="pa-4 d-flex flex-column gap-2">
+
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GetTestAuthorizedQueryClickHandler">
+			Send
+			@if (ServiceExecutor.IsRequestLoading(nameof(GetTestQuery)))
 			{
-				<span class="loading loading-spinner loading-md"></span>
+				<MudProgressCircular Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
 			}
-		</button>
+		</MudButton>
 		<pre>
-		<code class="whitespace-break-spaces">
+		<code>
 				@if (getTestAuthorizeQueryResult.IsSuccess)
 				{
 					@getTestAuthorizeQueryResult.SuccessMessage
@@ -63,9 +66,9 @@
 				}
 			</code>
 		</pre>
-	</Papper>
+	</MudPaper>
 
-</Papper>
+</MudStack>
 
 @code {
 	private Result getTestQueryResult;

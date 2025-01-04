@@ -1,0 +1,42 @@
+﻿@code {
+	[Parameter]
+	[EditorRequired]
+	public required GetPostBySlugResponse Post { get; set; }
+}
+
+<article class="tw-flex tw-flex-col tw-gap-4">
+	<header class="tw-p-2 tw-flex tw-flex-col tw-bg-base-200 tw-shadow">
+		<h1 class="tw-text-4xl tw-mb-4 tw-font-extrabold tw-tracking-tight tw-text-primary">
+			@Post.Title
+		</h1>
+
+		<dl class="tw-p-2">
+			<dt class="tw-sr-only">Published on</dt>
+			<dd class="tw-text-base tw-font-medium tw-leading-6">
+				<time datetime="@Post.PublishedDate?.ToLongDateString()">@Post.PublishedDate?.ToString("MMMM dd, yyyy")</time>
+			</dd>
+		</dl>
+
+		<PostListItemTagsView Tags="Post.Tags" Path="blog" />
+	</header>
+
+	<div>
+		<MarkdownViewer Markdown="@Post.Body" class="tw-prose lg:tw-prose-lg tw-prose-neutral tw-mx-auto tw-max-w-screen-xl" />
+	</div>
+
+	<footer class="tw-p-2 tw-shadow">
+		<div class="tw-text-sm tw-font-medium tw-leading-5 tw-flex tw-flex-wrap tw-gap-6 tw-justify-between">
+			<div class="tw-w-full">
+				<a class="tw-btn tw-btn-ghost tw-btn-sm"
+					 aria-label="Back to the blog"
+					 href="/blog">
+					← Back to the blog
+				</a>
+			</div>
+		</div>
+	</footer>
+
+	<div class="tw-p-2 tw-shadow">
+		Comments Not Implemented Yet!
+	</div>
+</article>

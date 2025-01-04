@@ -1,0 +1,72 @@
+@code {
+	[CascadingParameter]
+	private MudDialogInstance MudDialog { get; set; } = default!;
+
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+	[Inject] public required CreateLabRoleValidator CreateLabRoleValidator { get; set; }
+
+	private CreateLabRole createLabRoleRequest = new();
+	private Result<CreateLabRoleResponse> createLabRoleResult;
+	private MudForm form = default!;
+
+	private async Task createRoleHandler()
+	{
+		createLabRoleResult = await ServiceExecutor.ExecuteAsync(nameof(CreateLabRole), x =>
+		{
+			return x.Send(createLabRoleRequest);
+		});
+
+		if (createLabRoleResult.IsSuccess)
+		{
+			createLabRoleRequest.ResetToDefault();
+		}
+	}
+}
+
+<MudDialog TitleClass="pa-0">
+	<TitleContent>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pa-2 mud-elevation-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">
+				Create new role
+			</MudText>
+		</MudToolBar>
+	</TitleContent>
+	<DialogContent>
+		<MudStack>
+			<ResultError Error="createLabRoleResult.Error" OnClear="@(() => { createLabRoleResult = default; })" />
+			<MudForm Model="@createLabRoleRequest" @ref="@form"
+							 Validation="@(CreateLabRoleValidator.ValidateValue)"
+							 ValidationDelay="0">
+				<MudStack>
+					<MudTextField @bind-Value="createLabRoleRequest.Name"
+												For="@(() => createLabRoleRequest.Name)"
+												Variant="Variant.Outlined"
+												Immediate="true"
+												Label="Title" />
+
+					<MudTextField @bind-Value="createLabRoleRequest.Description"
+												For="@(() => createLabRoleRequest.Description)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Description" />
+
+					<MudCheckBox Label="AutoAssign"
+											 @bind-Value="createLabRoleRequest.AutoAssign"
+											 Color="Color.Primary"></MudCheckBox>
+					<MudStack Row="true">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+											 OnClick="@(async () => await createRoleHandler())">
+							Save
+						</MudButton>
+						<MudButton OnClick="() => MudDialog.Cancel()">Cancel</MudButton>
+					</MudStack>
+				</MudStack>
+			</MudForm>
+		</MudStack>
+
+	</DialogContent>
+</MudDialog>

@@ -53,7 +53,7 @@
 		}
 
 		var orderedPayload = new Dictionary<string, List<string>>();
-		
+
 		if (payload.ContainsKey("sub")) orderedPayload["sub"] = payload["sub"];
 		if (payload.ContainsKey("aud")) orderedPayload["aud"] = payload["aud"];
 		if (payload.ContainsKey("iat")) orderedPayload["iat"] = payload["iat"];
@@ -61,13 +61,13 @@
 		if (payload.ContainsKey("tokenLifetime")) orderedPayload["tokenLifetime"] = payload["tokenLifetime"];
 		if (payload.ContainsKey("role")) orderedPayload["role"] = payload["role"];
 		if (payload.ContainsKey("labs-permissions")) orderedPayload["labs-permissions"] = payload["labs-permissions"];
-		
+
 		foreach (var item in payload)
-		{ 
-			if (!orderedPayload.ContainsKey(item.Key)) 
-			{ 
-				orderedPayload[item.Key] = item.Value; 
-			} 
+		{
+			if (!orderedPayload.ContainsKey(item.Key))
+			{
+				orderedPayload[item.Key] = item.Value;
+			}
 		}
 
 		string headerJson = JsonSerializer.Serialize(header, new JsonSerializerOptions { WriteIndented = true });
@@ -81,28 +81,21 @@
 	}
 }
 
-<Papper>
+<MudPaper Class="pa-4">
 	<RenderingContextMessage />
-	<LoadingTitle Title="User Principal" />
 	<AuthorizeView>
 		<Authorized>
 			<!-- User Identities -->
-			@{
-				int index = 0;
-				foreach (var identity in context.User.Identities)
-				{
-					index++;
-
-					<div class="divider divider-start divider-primary">@index</div>
-					if (identity != null)
+			<MudExpansionPanels MultiExpansion="true">
+				@{
+					int index = 0;
+					foreach (var identity in context.User.Identities)
 					{
-						<div class="collapse bg-base-200">
-							<input type="checkbox" />
-							<div class="collapse-title text-xl font-medium">
-								@identity.AuthenticationType
-							</div>
-							<div class="collapse-content overflow-x-auto">
-								<table class="table">
+						index++;
+						if (identity != null)
+						{
+							<MudExpansionPanel Text="@($"{identity.AuthenticationType}: {index}")" Expanded="true">
+								<MudSimpleTable>
 									<!-- head -->
 									<tbody>
 										<!-- rows -->
@@ -125,17 +118,11 @@
 											<td>@(identity?.Claims.FirstOrDefault(x => x.Type == identity.RoleClaimType)?.Value ?? "Role claim not found!")</td>
 										</tr>
 									</tbody>
-								</table>
-							</div>
-						</div>
+								</MudSimpleTable>
+							</MudExpansionPanel>
 
-						<div class="collapse bg-base-200">
-							<input type="checkbox" />
-							<div class="collapse-title text-xl font-medium">
-								@identity?.AuthenticationType Claims
-							</div>
-							<div class="collapse-content overflow-x-auto">
-								<table class="table">
+							<MudExpansionPanel Text="@($"{identity?.AuthenticationType}: {index}, Claims")" Expanded="true">
+								<MudSimpleTable>
 									<thead>
 										<tr>
 											<th>Claim Type</th>
@@ -169,57 +156,54 @@
 												{
 													<td>@claim.Value</td>
 												}
-
 											</tr>
 										}
 									</tbody>
-								</table>
-							</div>
-						</div>
+								</MudSimpleTable>
+							</MudExpansionPanel>
+						}
 					}
 				}
-			}
+			</MudExpansionPanels>
 		</Authorized>
 		<NotAuthorized>
 			<!-- Authentication Status -->
-			<div class="flex gap-2 align-middle">
+			<div class="d-flex gap-2">
 				<div>
 					Authentication Status:
-					<span class="text-error">Not Authenticated</span>
+					<span class="mud-text-error">Not Authenticated</span>
 				</div>
 			</div>
 		</NotAuthorized>
 	</AuthorizeView>
-</Papper>
+</MudPaper>
 
-<Papper>
-	<LoadingTitle Title="Lab Authorize View Checks" />
-
+<MudPaper Class="pa-4">
 	<LabAuthorizeView>
 		<Authorized>
 			<text>Permissions: </text>
-			<div class="flex flex-wrap gap-1">
-				<span class="badge badge-neutral">@context.User.GetPermissions()</span>
-			</div>
+			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+				<MudChip T="string">@context.User.GetPermissions()</MudChip>
+			</MudStack>
 		</Authorized>
 	</LabAuthorizeView>
 
 	@if (getLabRolesResult.IsSuccess)
 	{
 		<text>Roles: </text>
-		<div class="flex flex-wrap gap-1">
+		<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
 			@foreach (var labRole in getLabRolesResult.Entity.Items)
 			{
 				<AuthorizeView Roles="@labRole.Name">
 					<Authorized>
-						<span class="badge badge-success">@labRole.Name</span>
+						<MudChip T="string" Color="Color.Success">@labRole.Name</MudChip>
 					</Authorized>
 
 					<NotAuthorized>
-						<span class="badge badge-error">@labRole.Name</span>
+						<MudChip T="string" Color="Color.Error">@labRole.Name</MudChip>
 					</NotAuthorized>
 				</AuthorizeView>
 			}
-		</div>
+		</MudStack>
 	}
-</Papper>
+</MudPaper>

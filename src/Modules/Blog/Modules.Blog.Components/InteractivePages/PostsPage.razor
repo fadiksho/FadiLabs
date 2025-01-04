@@ -1,0 +1,153 @@
+@page "/labs/blog-lab"
+
+@code {
+	[Inject]
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
+	[Inject]
+	public required NavigationManager Navigation { get; set; }
+
+	private Result<PagedList<GetPostsResponse>> getPostsResult;
+	private MudDataGrid<GetPostsResponse> dataGrid = null!;
+
+	private string? searchString = null;
+	private GetPosts getPostsRequest = new();
+
+	private string? selectedSortProperty;
+	private SortDirection selectedSortDirection;
+	private SortDefinition<GetPostsResponse> defaultSortDefinitaion =
+		new SortDefinition<GetPostsResponse>(nameof(GetPostsResponse.PublishedDate), true, 0, x => null!, null);
+
+	private SortDefinition<GetPostsResponse> CreateSortDefinition(string sortBy)
+	{
+		var descending = selectedSortDirection == SortDirection.Descending ? true : false;
+		return new SortDefinition<GetPostsResponse>(sortBy, descending, 0, x => null!, null);
+	}
+
+	private async Task<GridData<GetPostsResponse>> ServerReload(GridState<GetPostsResponse> state)
+	{
+		if (dataGrid.SortDefinitions.Count == 0)
+		{
+			dataGrid.SortDefinitions.Add(defaultSortDefinitaion.SortBy, defaultSortDefinitaion);
+			state.SortDefinitions.Add(defaultSortDefinitaion);
+		}
+
+		selectedSortDirection = state.SortDefinitions.First().Descending
+				? SortDirection.Descending
+				: SortDirection.Ascending;
+
+		selectedSortProperty = state.SortDefinitions.First().SortBy;
+
+		getPostsRequest = new()
+		{
+			PageNumber = state.Page + 1,
+			PageSize = state.PageSize,
+			Search = searchString,
+			SortBy = state.SortDefinitions.First().SortBy,
+			Descending = state.SortDefinitions.First().Descending
+		};
+
+		getPostsResult = await ServiceExecutor.ExecuteAsync(nameof(GetPosts), x =>
+		{
+			return x.Send(getPostsRequest);
+		}, false);
+
+		return new GridData<GetPostsResponse>
+		{
+			TotalItems = getPostsResult.Entity.TotalCount,
+			Items = getPostsResult.Entity.Items
+		};
+	}
+
+	private Task OnSearch(string value)
+	{
+		searchString = value;
+		return dataGrid.ReloadServerData();
+	}
+
+	private void SortByValueChangedHandler(string value)
+	{
+		selectedSortProperty = value;
+		defaultSortDefinitaion = CreateSortDefinition(value);
+
+		dataGrid.SortDefinitions.Clear();
+		dataGrid.ReloadServerData();
+	}
+
+	private void SortDirectionValueChangedHandler(SortDirection value)
+	{
+		selectedSortDirection = value;
+		defaultSortDefinitaion = CreateSortDefinition(selectedSortProperty ?? defaultSortDefinitaion.SortBy);
+
+		dataGrid.SortDefinitions.Clear();
+		dataGrid.ReloadServerData();
+	}
+
+	private Task OnSort()
+	{
+		return dataGrid?.ReloadServerData()
+			?? throw new ArgumentNullException(nameof(dataGrid));
+	}
+
+	private void ClearGetPostResultError()
+	{
+		getPostsResult = default;
+	}
+}
+
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">posts</MudText>
+		<div class="d-flex justify-center gap-4 flex-grow-1">
+			<MudTextField T="string" Placeholder="Search"
+										ValueChanged="@(s => OnSearch(s))"
+										Adornment="Adornment.Start"
+										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
+
+			<MudFab Href="@("/labs/blog-lab/new")" Color="Color.Primary"
+							Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
+							Class="flex-shrink-0" />
+		</div>
+	</MudToolBar>
+	<MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+		<MudToolBar WrapContent="true">
+			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap" Class="flex-grow-1 mb-2">
+				<MudSelect T="string" Label="Sort by" Value="selectedSortProperty" ValueChanged="SortByValueChangedHandler">
+					<MudSelectItem Value="@("Title")">Name</MudSelectItem>
+					<MudSelectItem Value="@("Description")">Description</MudSelectItem>
+					<MudSelectItem Value="@("PublishedDate")">Publish Date</MudSelectItem>
+				</MudSelect>
+				<MudRadioGroup T="SortDirection" Value="selectedSortDirection" ValueChanged="SortDirectionValueChangedHandler" Class="mt-2">
+					<MudRadio Size="Size.Small" Value="SortDirection.Ascending">@SortDirection.Ascending</MudRadio>
+					<MudRadio Size="Size.Small" Value="SortDirection.Descending">@SortDirection.Descending</MudRadio>
+				</MudRadioGroup>
+			</MudStack>
+		</MudToolBar>
+	</MudHidden>
+
+	<ResultError Error="getPostsResult.Error" OnClear="ClearGetPostResultError" />
+
+	<MudDataGrid @ref="dataGrid"
+							 T="GetPostsResponse"
+							 ServerData="ServerReload"
+							 SortMode="SortMode.Single">
+		<Columns>
+			<PropertyColumn CellClass="align-start" Property="x => x.Title" Title="Name" Sortable="true" />
+			<PropertyColumn CellClass="align-start" Property="x => x.Description" Title="Description" Sortable="true" />
+			<PropertyColumn CellClass="align-start" Property="x => x.PublishedDate" Title="PublishDate" Sortable="true" />
+			<TemplateColumn HeaderStyle="width:0;">
+				<HeaderTemplate>
+				</HeaderTemplate>
+				<CellTemplate>
+					<MudIconButton Href="@($"/labs/blog-lab/edit/{context.Item.Id}")" Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+		<PagerContent>
+			<MudDataGridPager T="GetPostsResponse" />
+		</PagerContent>
+	</MudDataGrid>
+</MudPaper>

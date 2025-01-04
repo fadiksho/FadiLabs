@@ -1,0 +1,49 @@
+﻿@code {
+	[Parameter]
+	[EditorRequired]
+	public required GetPostsResponse Post { get; set; }
+
+	[Inject]
+	private NavigationManager Navigation { get; set; } = default!;
+}
+
+<article class="tw-p-2 tw-flex tw-flex-col tw-shadow-lg tw-bg-base-100">
+	<h2 class="tw-text-3xl tw-font-bold tw-leading-8 tw-tracking-tight tw-mb-2">
+		<a class="tw-inline-block tw-text-primary"
+			 href="/blog/@Post.Slug">
+			@Post.Title
+		</a>
+	</h2>
+	<dl class="tw-p-2">
+		<dt class="tw-sr-only">Published on</dt>
+		<dd class="tw-text-base tw-font-medium tw-italic tw-leading-6">
+			<time datetime="@Post.PublishedDate?.ToLongDateString()">
+				@Post.PublishedDate?.ToString("MMMM dd, yyyy")
+			</time>
+		</dd>
+	</dl>
+
+	<PostListItemTagsView Tags="Post.Tags" Path="blog" />
+
+	<div class="tw-ml-2">
+		@Post.Description
+		<a class="tw-btn tw-btn-ghost tw-text-primary tw-btn-sm tw-mt-2 tw-ms-2 tw-float-right"
+			 href="/blog/@Post.Slug">
+			Read more
+			<svg class="tw-w-6 tw-h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+				<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+			</svg>
+		</a>
+		<span class="tw-clear-right tw-table"></span>
+	</div>
+	<AuthorizeView>
+		<Authorized>
+			<div class="tw-flex tw-justify-end tw-my-2">
+				<a class="tw-btn tw-btn-primary tw-btn-sm"
+					 href="/blog-lab/edit/@Post.Id">
+					Edit
+				</a>
+			</div>
+		</Authorized>
+	</AuthorizeView>
+</article>

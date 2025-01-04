@@ -1,0 +1,47 @@
+@inject IAuthService AuthService
+
+@if (RendererInfo.Name == "WebView")
+{
+  <AuthorizeView>
+    <Authorized>
+      <MudButton Variant="Variant.Text" @onclick="Logout">
+        Logout
+      </MudButton>
+    </Authorized>
+    <NotAuthorized>
+      <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="Login">
+        Login
+      </MudButton>
+    </NotAuthorized>
+  </AuthorizeView>
+}
+else
+{
+  <AuthorizeView>
+    <Authorized>
+      <form action="account/logout" method="post" class="p-0 block">
+        <AntiforgeryToken />
+        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text">
+          Logout
+        </MudButton>
+      </form>
+    </Authorized>
+    <NotAuthorized>
+      <MudButton Href="account/login?returnUrl=/labs" Variant="Variant.Filled" Color="Color.Primary">
+        Login
+      </MudButton>
+    </NotAuthorized>
+  </AuthorizeView>
+}
+
+@code {
+  public async void Logout()
+  {
+    await AuthService.DeAuthenticateAsync();
+  }
+
+  public async Task Login()
+  {
+    await AuthService.AuthenticateAsync();
+  }
+}

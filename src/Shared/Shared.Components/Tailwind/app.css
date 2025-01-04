@@ -12,22 +12,19 @@ html, body {
 	scrollbar-color: currentColor transparent;
 }
 
-@layer components {
-	.btn {
-		@apply animate-buttonAnimation;
+@layer base {
+	html {
+		font-family: Roboto, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 	}
 }
 
-#components-reconnect-modal {
-	background: red;
-}
-
-#components-reconnect-modal.components-reconnect-overlay {
-	background: red;
-}
-
-#components-reconnect-modal > .components-reconnect-overlay {
-	background: red;
+@layer components {
+	.btn {
+		@apply tw-animate-buttonAnimation;
+	}
+	.navbar {
+		min-height: 2rem;
+	}
 }
 
 #blazor-error-ui {

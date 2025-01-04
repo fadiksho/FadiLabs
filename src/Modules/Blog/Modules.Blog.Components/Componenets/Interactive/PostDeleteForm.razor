@@ -1,0 +1,48 @@
+@code {
+	[Inject]
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
+	[Inject]
+	public required NavigationManager NavigationManager { get; set; }
+
+	[Parameter]
+	public Guid PostId { get; set; }
+
+	private Result deletePostResult;
+
+	private async Task HandleDeletePost()
+	{
+		deletePostResult =
+			await ServiceExecutor.ExecuteAsync(nameof(DeletePostById), x => x.Send(new DeletePostById(PostId)));
+
+		if (deletePostResult.IsSuccess)
+		{
+			NavigationManager.NavigateTo("/labs/blog-lab");
+		}
+	}
+
+	private void ClearDeletePostResultError()
+	{
+		deletePostResult = default;
+	}
+}
+
+<MudPaper Class="pa-2">
+	<MudStack>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pa-2 mud-elevation-2 mb-2"
+								Style="background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Delete</MudText>
+		</MudToolBar>
+
+		<ResultError Error="deletePostResult.Error" OnClear="ClearDeletePostResultError" />
+
+		<MudButton Variant="Variant.Filled"
+							 Color="Color.Error" Class="mr-auto"
+							 OnClick="HandleDeletePost">
+			Delete
+		</MudButton>
+	</MudStack>
+</MudPaper>
+

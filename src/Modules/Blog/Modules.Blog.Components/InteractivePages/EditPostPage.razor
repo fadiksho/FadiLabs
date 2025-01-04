@@ -1,21 +1,15 @@
-﻿@page "/blog/edit/{id:guid}"
-
+﻿@page "/labs/blog-lab/edit/{id:guid}"
 @attribute [LabAuthorize(LabsPermissions.BlogOwner)]
 
-<PageTitle>Edit @_getToUpdatePostResult.Entity?.Title</PageTitle>
+<PageTitle>Edit</PageTitle>
 
-<Papper>
-	<LoadingTitle Title="@($"Edit: {_getToUpdatePostResult.Entity?.Title}")"
-								IsLoading="serviceExecutor.IsRequestLoading(nameof(GetToUpdatePost))" />
-	@if (_getToUpdatePostResult.IsFailed)
-	{
-		<ResultError Error="_getToUpdatePostResult.Error" />
-	}
+<PostEditForm PostId="Id" />
 
-	@if (_getToUpdatePostResult.IsSuccess)
-	{
-		<PostEditForm UpdatePost="_getToUpdatePostResult.Entity" />
-	}
+<MudDivider DividerType="DividerType.Middle" Class="my-2" />
 
-	<PostDeleteForm PostId="Id" />
-</Papper>
+<PostDeleteForm PostId="Id" />
+
+@code {
+	[Parameter]
+	public Guid Id { get; set; }
+}

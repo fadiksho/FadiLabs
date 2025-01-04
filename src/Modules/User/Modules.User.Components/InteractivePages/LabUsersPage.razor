@@ -1,4 +1,4 @@
-@page "/user-lab/manage/users"
+@page "/labs/user-lab/manage/users"
 @attribute [LabAuthorize(LabsPermissions.ConfigureSite)]
 
 @code
@@ -9,13 +9,27 @@
 	private Result<PagedList<GetLabUsersResponse>> getLabUsersResult;
 	private Dictionary<Guid, bool> showLabUserDetails = [];
 	private GetLabUsers getUsersRequest = new();
+	private MudDataGrid<GetLabUsersResponse>? dataGrid;
+	private string? searchString = null;
 
-	protected override async Task OnInitializedAsync()
+	private async Task<GridData<GetLabUsersResponse>> ServerReload(GridState<GetLabUsersResponse> state)
 	{
+		getUsersRequest = new()
+			{
+				PageNumber = state.Page + 1,
+				PageSize = state.PageSize
+			};
+
 		getLabUsersResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabUsers), x =>
 		{
 			return x.Send(getUsersRequest);
-		}, true);
+		}, false);
+
+		return new GridData<GetLabUsersResponse>
+			{
+				TotalItems = getLabUsersResult.Entity.TotalCount,
+				Items = getLabUsersResult.Entity.Items
+			};
 	}
 
 	private void toggleLabUserDetailsHandler(Guid userId)
@@ -30,82 +44,33 @@
 		}
 	}
 }
-
-<Papper>
-	<LoadingTitle Title="Labs Users"
-								IsLoading="ServiceExecutor.IsRequestLoading(nameof(GetLabUsers))" />
-
-	@if (getLabUsersResult.IsFailed)
-	{
-		<ResultError Error="@getLabUsersResult.Error" />
-	}
-
-	@if (getLabUsersResult.IsSuccess)
-	{
-		<div class="overflow-x-auto scroller">
-			<table class="table table-pin-cols">
-				<thead>
-					<tr>
-						<th>@nameof(GetLabUsersResponse.LabUserId)</th>
-						<th>@nameof(GetLabUsersResponse.DisplayName)</th>
-						<th>@nameof(GetLabUsersResponse.EmailVerified)</th>
-						<th class="p-0 text-end">
-							#
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var user in getLabUsersResult.Entity.Items)
-					{
-						<tr>
-							<td>@user.LabUserId</td>
-							<td>
-								<div class="flex items-center gap-3">
-									<div class="avatar">
-										<div class="mask mask-squircle h-12 w-12">
-											<img src="@user.ProfilePictureUrl"
-													 alt="" />
-										</div>
-									</div>
-									<div>
-										<div class="font-bold">@user.DisplayName</div>
-										<div class="text-sm opacity-50">@user.Email</div>
-									</div>
-								</div>
-							</td>
-							<td>@user.EmailVerified</td>
-							<th class="p-0">
-								<div class="flex justify-end">
-									<button class="btn btn-info btn-sm" @onclick="() => toggleLabUserDetailsHandler(user.LabUserId)">
-										Details
-									</button>
-								</div>
-							</th>
-						</tr>
-
-						if (showLabUserDetails.ContainsKey(user.LabUserId) && showLabUserDetails[user.LabUserId])
-						{
-							<tr class="bg-base-200">
-								<td colspan="4" class="p-0">
-									<Papper>
-										<h1>...</h1>
-									</Papper>
-								</td>
-							</tr>
-						}
-
-						if (getLabUsersResult.Entity.Items.Count == 0)
-						{
-							<tr>
-								<td colspan="3">
-									Empty Users.
-								</td>
-							</tr>
-						}
-					}
-				</tbody>
-			</table>
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Lab Users</MudText>
+		<div class="d-flex justify-center gap-4 flex-grow-1">
+			<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
+										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
 		</div>
-	}
+	</MudToolBar>
 
-</Papper>
+	<MudDataGrid @ref="dataGrid" T="GetLabUsersResponse" ServerData="ServerReload" Filterable="false" SortMode="SortMode.None">
+		<Columns>
+			<TemplateColumn Title="User Info">
+				<CellTemplate>
+					<UserAvatarDetailsView AvatarImage="@context.Item.ProfilePictureUrl"
+																 Email="@context.Item.Email"
+																 UserName="@context.Item.DisplayName" />
+				</CellTemplate>
+			</TemplateColumn>
+			<PropertyColumn Property="x => x.EmailVerified" />
+			<PropertyColumn Property="x => x.LabUserId" Title="Lab Id" />
+			<PropertyColumn Property="x => x.Auth0UserId" Title="External Id" />
+		</Columns>
+		<PagerContent>
+			<MudDataGridPager T="GetLabUsersResponse" />
+		</PagerContent>
+	</MudDataGrid>
+</MudPaper>
