@@ -6,17 +6,20 @@
 	[Inject]
 	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
 
+	[Inject]
+	public required IDialogService DialogService { get; set; }
+
 	private Result<PagedList<GetLabRolesResponse>> getRolesResult;
-	
+
 	private void OnLabRoleCreatedHandler((CreateLabRoleResponse createLabRoleResponse, CreateLabRole createLabRole) roleCreated)
 	{
 		getRolesResult.Entity.Items.Add(new GetLabRolesResponse
-		{
-			Id = roleCreated.createLabRoleResponse.LabRoleId,
-			Name = roleCreated.createLabRole.Name,
-			Description = roleCreated.createLabRole.Description,
-			AutoAssign = roleCreated.createLabRole.AutoAssign
-		});
+			{
+				Id = roleCreated.createLabRoleResponse.LabRoleId,
+				Name = roleCreated.createLabRole.Name,
+				Description = roleCreated.createLabRole.Description,
+				AutoAssign = roleCreated.createLabRole.AutoAssign
+			});
 	}
 
 	private void OnLabRoleUpdatedHandler(UpdateLabRole editedRole)
@@ -32,16 +35,16 @@
 		getRolesResult.Entity.Items.Remove(roleToDelete);
 	}
 
-	private MudDataGrid<GetLabRolesResponse>? dataGrid;
+	private MudDataGrid<GetLabRolesResponse> dataGrid = null!;
 	private GetLabRoles getRolesRequest = new();
 	private string? searchString = null;
 	private async Task<GridData<GetLabRolesResponse>> ServerReload(GridState<GetLabRolesResponse> state)
 	{
 		getRolesRequest = new()
-		{
-			PageNumber = state.Page + 1,
-			PageSize = state.PageSize
-		};
+			{
+				PageNumber = state.Page + 1,
+				PageSize = state.PageSize
+			};
 
 		getRolesResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabRoles), x =>
 		{
@@ -54,38 +57,73 @@
 				Items = getRolesResult.Entity.Items
 			};
 	}
+	private async Task EditRoleModalHandler(GetLabRolesResponse role)
+	{
+		var parameters = new DialogParameters<LabRoleUpdateForm> { { x => x.Role, role } };
+		var dialogOptions = new DialogOptions()
+			{
+				MaxWidth = MaxWidth.Medium,
+				FullWidth = true,
+				CloseButton = true,
+				CloseOnEscapeKey = true
+			};
+
+		await DialogService.ShowAsync<LabRoleUpdateForm>(null, parameters, dialogOptions);
+	}
+	private async Task AddRoleModalHandler()
+	{
+		var dialogOptions = new DialogOptions()
+			{
+				MaxWidth = MaxWidth.Medium,
+				FullWidth = true,
+				CloseButton = true,
+				CloseOnEscapeKey = true
+			};
+
+		await DialogService.ShowAsync<LabRoleCreateForm>(null, dialogOptions);
+	}
 }
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Lab Roles</MudText>
+		<div class="d-flex justify-center gap-4 flex-grow-1">
+			<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
+										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
+			<MudFab Color="Color.Primary"
+							Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add"
+							Class="flex-shrink-0"
+							OnClick="AddRoleModalHandler" />
+		</div>
+	</MudToolBar>
 
-<MudToolBar WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
-	<MudText Typo="Typo.h5" Class="flex-grow-1">Lab Roles</MudText>
-	<div class="d-flex justify-center gap-4 flex-grow-1">
-		<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
-									AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
-		<MudFab Color="Color.Primary" Size="Size.Medium" StartIcon="@Icons.Material.Filled.Add" Class="flex-shrink-0" />
-	</div>
-</MudToolBar>
-
-<MudDataGrid @ref="dataGrid"
-						 T="GetLabRolesResponse"
-						 ServerData="ServerReload"
-						 Filterable="false"
-						 SortMode="SortMode.None">
-	<Columns>
-		<PropertyColumn Property="x => x.Id" />
-		<PropertyColumn Property="x => x.Name" Title="Name" />
-		<PropertyColumn Property="x => x.Description" Title="Description" />
-		<PropertyColumn Property="x => x.AutoAssign" Title="Auto Assign">
-			<EditTemplate>
+	<MudDataGrid @ref="dataGrid"
+							 T="GetLabRolesResponse"
+							 ServerData="ServerReload"
+							 Filterable="false"
+							 SortMode="SortMode.Single">
+		<Columns>
+			<PropertyColumn Property="x => x.Id" />
+			<PropertyColumn Property="x => x.Name" Title="Name" />
+			<PropertyColumn Property="x => x.Description" Title="Description" />
+			<PropertyColumn Property="x => x.AutoAssign" Title="Auto Assign">
+				<EditTemplate>
 					<MudCheckBox @bind-Value="context.Item.AutoAssign" T="bool" Label="Auto assign" />
-			</EditTemplate>
-		</PropertyColumn>
-		<TemplateColumn>
-			<CellTemplate>
-				<MudIconButton Icon="@Icons.Material.Outlined.Edit" Class="pa-2" />
-			</CellTemplate>
-		</TemplateColumn>
-	</Columns>
-	<PagerContent >
-		<MudDataGridPager T="GetLabRolesResponse" />
-	</PagerContent>
-</MudDataGrid>
+				</EditTemplate>
+			</PropertyColumn>
+			<TemplateColumn>
+				<HeaderTemplate>
+					<MudIconButton Icon="@Icons.Material.Outlined.Refresh" Class="pa-2" OnClick="dataGrid.ReloadServerData" />
+				</HeaderTemplate>
+				<CellTemplate>
+					<MudIconButton Icon="@Icons.Material.Outlined.Edit" Class="pa-2" OnClick="() => EditRoleModalHandler(context.Item)" />
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+		<PagerContent>
+			<MudDataGridPager T="GetLabRolesResponse" />
+		</PagerContent>
+	</MudDataGrid>
+</MudPaper>

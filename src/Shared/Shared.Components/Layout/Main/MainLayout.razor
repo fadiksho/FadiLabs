@@ -9,11 +9,11 @@
 <MudLayout>
 	<MudAppBar Fixed="true"
 						 Elevation="2"
-						 Dense="true"
+						 Dense="@isDenseNavbar"
 						 Gutters="false">
 		<MudIconButton Icon="@Icons.Material.Filled.Menu"
 									 Color="Color.Inherit"
-									 Class="rounded-0"
+									 Class="rounded-0 align-self-stretch"
 									 OnClick="@((e) => DrawerToggle())" />
 		<MudText Typo="Typo.h5" Class="ml-3">Fadi Labs</MudText>
 		<MudSpacer />
@@ -141,16 +141,16 @@
 								</MudText>
 							</MudStack>
 						</MudListItem>
-						<MudListItem OnClick="ToggleNavbar" Dense="true">
+						<MudListItem OnClick="ToggleDenseNavbar" Dense="true">
 							<MudStack Row="true" StretchItems="StretchItems.End" AlignItems="AlignItems.Center">
-								<MudToggleIconButton @bind-Toggled="isFixedNavbar"
+								<MudToggleIconButton @bind-Toggled="isDenseNavbar"
 																		 Class="pa-0"
 																		 Icon="@Icons.Material.Filled.CheckBoxOutlineBlank"
 																		 ToggledIcon="@Icons.Material.Filled.CheckBox"
 																		 ToggledColor="@Color.Primary" />
 
 								<MudText Class="mud-nav-link-text">
-									Fixed navbar
+									Dinsed navbar
 								</MudText>
 							</MudStack>
 						</MudListItem>
@@ -182,7 +182,7 @@
 	private bool _drawerOpen = true;
 	private bool isMenuExpanded = false;
 	private bool isDarkMode = true;
-	private bool isFixedNavbar = true;
+	private bool isDenseNavbar = false;
 
 	private MudTheme defaultTheme = new()
 		{
@@ -227,8 +227,8 @@
 		isDarkMode = !isDarkMode;
 	}
 
-	void ToggleNavbar()
+	void ToggleDenseNavbar()
 	{
-		isFixedNavbar = !isFixedNavbar;
+		isDenseNavbar = !isDenseNavbar;
 	}
 }

@@ -1,31 +1,25 @@
 @code {
-	[Parameter]
-	public EventCallback<UpdateLabRole> OnLabRoleUpdated { get; set; }
-
-	[Parameter]
-	public EventCallback<Guid> OnRoleDeleted { get; set; }
+	[CascadingParameter]
+	private MudDialogInstance MudDialog { get; set; } = default!;
 
 	[Parameter]
 	public required GetLabRolesResponse Role { get; set; }
 
-	[Inject]
-	public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+	[Inject] public required UpdateLabRoleValidator UpdateLabRoleValidator { get; set; }
 
-
-	private EditContext? editContext;
-	private UpdateLabRole editRoleRequest = new();
 	private Result editRoleResult;
+	private UpdateLabRole editRoleRequest = new();
+	private MudForm form = default!;
 
 	protected override void OnInitialized()
 	{
 		editRoleRequest = new UpdateLabRole
-		{
-			Id = Role.Id,
-			Name = Role.Name,
-			Description = Role.Description,
-		};
-
-		editContext = new(editRoleRequest);
+			{
+				Id = Role.Id,
+				Name = Role.Name,
+				Description = Role.Description,
+			};
 	}
 
 	private async Task editRoleHandler()
@@ -34,87 +28,67 @@
 		{
 			return x.Send(editRoleRequest);
 		});
-
-		if (editRoleResult.IsSuccess)
-		{
-			await OnLabRoleUpdated.InvokeAsync(editRoleRequest);
-		}
 	}
 
 	private async Task deleteRoleHandler()
 	{
-	  var deleteRoleResult = await ServiceExecutor.ExecuteAsync(nameof(DeleteLabRole), x =>
+		var deleteRoleResult = await ServiceExecutor.ExecuteAsync(nameof(DeleteLabRole), x =>
 		{
 			return x.Send(new DeleteLabRole(Role.Id));
 		});
-
-		if(deleteRoleResult.IsSuccess)
-		{
-			await OnRoleDeleted.InvokeAsync(Role.Id);
-		}
 	}
 }
 
-<Papper>
-	<LoadingTitle Title="@($"Edit role")"
-								IsLoading="@(ServiceExecutor.IsRequestLoading(nameof(UpdateLabRole)))" />
+<MudDialog TitleClass="pa-0">
+	<TitleContent>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Class="gap-2 pa-2 mud-elevation-2"
+								Style="top: 0; background: var(--mud-palette-background)">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">
+				Edit @Role.Name
+			</MudText>
+		</MudToolBar>
+	</TitleContent>
+	<DialogContent>
+		<MudStack>
+			<ResultError Error="editRoleResult.Error" OnClear="@(() => { editRoleResult = default; })" />
+			<MudForm Model="@editRoleRequest" @ref="@form"
+							 Validation="@(UpdateLabRoleValidator.ValidateValue)"
+							 ValidationDelay="0">
+				<MudStack>
+					<MudTextField @bind-Value="editRoleRequest.Name"
+												For="@(() => editRoleRequest.Name)"
+												Variant="Variant.Outlined"
+												Immediate="true"
+												Label="Title" />
 
-	@if (editRoleResult.IsFailed)
-	{
-		<ResultError Error="@editRoleResult.Error" />
-	}
+					<MudTextField @bind-Value="editRoleRequest.Description"
+												For="@(() => editRoleRequest.Description)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Description" />
 
-	<EditForm EditContext="editContext"
-						class="flex flex-col gap-2">
-		<FluentValidationValidator ValidatorType=typeof(UpdateLabRoleValidator) />
+					<MudCheckBox Label="AutoAssign"
+											 @bind-Value="editRoleRequest.AutoAssign"
+											 Disabled="true"
+											 Color="Color.Primary"></MudCheckBox>
 
-		<label class="form-control w-full">
-			<div class="label">
-				<span class="label-text">Name</span>
-			</div>
+					<MudStack Row="true">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+											 OnClick="editRoleHandler">
+							Save
+						</MudButton>
+						<MudButton OnClick="() => MudDialog.Cancel()">Cancel</MudButton>
+						<MudButton Variant="Variant.Filled" Class="ms-auto" Color="Color.Error" OnClick="deleteRoleHandler">
+							Delete
+						</MudButton>
+					</MudStack>
+				</MudStack>
+			</MudForm>
+		</MudStack>
 
-			<InputTextOnInput @bind-Value="editRoleRequest.Name"
-												placeholder="Type here"
-												class="input input-bordered" />
+	</DialogContent>
+</MudDialog>
 
-			<ValidationMessage For="() => editRoleRequest.Name" class="text-red-500 text-sm italic" />
-		</label>
-
-		<label class="form-control w-full">
-			<div class="label">
-				<span class="label-text">Description</span>
-			</div>
-			<InputTextOnInput @bind-Value="editRoleRequest.Description"
-												placeholder="Type here"
-												class="input input-bordered" />
-
-			<ValidationMessage For="() => editRoleRequest.Description" class="text-red-500 text-sm italic" />
-		</label>
-
-		<label class="form-control w-full cursor-pointer">
-			<span class="label justify-start gap-4">
-				<span class="label-text">Auto Assign</span>
-				<InputCheckbox @bind-Value="editRoleRequest.AutoAssign" class="checkbox" disabled />
-			</span>
-			<ValidationMessage For="() => editRoleRequest.AutoAssign" class="text-red-500 text-sm italic" />
-		</label>
-
-		<div class="flex gap-2 items-center justify-between">
-			<SubmitButton OnValidSubmit="editRoleHandler"
-										class="btn btn-primary"
-										disabled="@(ServiceExecutor.IsRequestLoading(nameof(UpdateLabRole)))">
-				Save
-				@if (ServiceExecutor.IsRequestLoading(nameof(UpdateLabRole)))
-				{
-					<span class="ml-2 loading loading-spinner loading-md"></span>
-				}
-			</SubmitButton>
-
-			<button type="button" @onclick="deleteRoleHandler"
-							class="btn btn-error"
-							disabled="@(ServiceExecutor.IsRequestLoading(nameof(DeleteLabRole)))">
-				Delete
-			</button>
-		</div>
-	</EditForm>
-</Papper>

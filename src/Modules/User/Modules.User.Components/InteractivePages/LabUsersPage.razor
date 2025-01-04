@@ -15,10 +15,10 @@
 	private async Task<GridData<GetLabUsersResponse>> ServerReload(GridState<GetLabUsersResponse> state)
 	{
 		getUsersRequest = new()
-		{
-			PageNumber = state.Page + 1,
-			PageSize = state.PageSize
-		};
+			{
+				PageNumber = state.Page + 1,
+				PageSize = state.PageSize
+			};
 
 		getLabUsersResult = await ServiceExecutor.ExecuteAsync(nameof(GetLabUsers), x =>
 		{
@@ -44,29 +44,33 @@
 		}
 	}
 }
+<MudPaper Class="pa-2">
+	<MudToolBar WrapContent="true"
+							Gutters="false"
+							Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-4"
+							Style="top: 0; background: var(--mud-palette-background)">
+		<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Lab Users</MudText>
+		<div class="d-flex justify-center gap-4 flex-grow-1">
+			<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
+										AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
+		</div>
+	</MudToolBar>
 
-<MudToolBar WrapContent="true" Gutters="false" Class="gap-2 pl-2 border-l-8 border-solid mud-border-primary">
-	<MudText Typo="Typo.h5" Class="flex-grow-1">Lab Users</MudText>
-	<div class="d-flex justify-center gap-4 flex-grow-1">
-		<MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
-									AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="justify-center"></MudTextField>
-	</div>
-</MudToolBar>
-
-<MudDataGrid @ref="dataGrid" T="GetLabUsersResponse" ServerData="ServerReload" Filterable="false" SortMode="SortMode.None">
-	<Columns>
-		<TemplateColumn Title="User Info">
-			<CellTemplate>
-				<UserAvatarDetailsView AvatarImage="@context.Item.ProfilePictureUrl"
-																																				Email="@context.Item.Email"
-																																				UserName="@context.Item.DisplayName" />
-			</CellTemplate>
-		</TemplateColumn>
-		<PropertyColumn Property="x => x.EmailVerified" />
-		<PropertyColumn Property="x => x.LabUserId" Title="Lab Id" />
-		<PropertyColumn Property="x => x.Auth0UserId" Title="External Id" />
-	</Columns>
-	<PagerContent>
-		<MudDataGridPager T="GetLabUsersResponse"  />
-	</PagerContent>
-</MudDataGrid>
+	<MudDataGrid @ref="dataGrid" T="GetLabUsersResponse" ServerData="ServerReload" Filterable="false" SortMode="SortMode.None">
+		<Columns>
+			<TemplateColumn Title="User Info">
+				<CellTemplate>
+					<UserAvatarDetailsView AvatarImage="@context.Item.ProfilePictureUrl"
+																 Email="@context.Item.Email"
+																 UserName="@context.Item.DisplayName" />
+				</CellTemplate>
+			</TemplateColumn>
+			<PropertyColumn Property="x => x.EmailVerified" />
+			<PropertyColumn Property="x => x.LabUserId" Title="Lab Id" />
+			<PropertyColumn Property="x => x.Auth0UserId" Title="External Id" />
+		</Columns>
+		<PagerContent>
+			<MudDataGridPager T="GetLabUsersResponse" />
+		</PagerContent>
+	</MudDataGrid>
+</MudPaper>
