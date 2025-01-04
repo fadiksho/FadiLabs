@@ -1,5 +1,4 @@
 ﻿using Modules.Auth0.Features;
-using Modules.Auth0.Features.Server;
 using Modules.Blog.Features;
 using Modules.Home.Features;
 using Modules.User.Features;
@@ -48,7 +47,6 @@ app.MapStaticAssets();
 app.MapBlazorApp()
 	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
-	 .MapOAuthModuleServerPages()
 	 .MapUserModulePages()
 	 .MapBlogModulePages();
 

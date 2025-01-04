@@ -30,4 +30,13 @@ public class PermissionRequestValidator : AbstractValidator<PermissionRequest>
 		RuleFor(x => x.Description)
 			.NotEmpty();
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<PermissionRequest>.CreateWithOptions((PermissionRequest)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }

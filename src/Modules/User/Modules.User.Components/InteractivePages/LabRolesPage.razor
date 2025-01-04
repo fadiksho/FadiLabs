@@ -37,7 +37,6 @@
 
 	private MudDataGrid<GetLabRolesResponse> dataGrid = null!;
 	private GetLabRoles getRolesRequest = new();
-	private string? searchString = null;
 	private async Task<GridData<GetLabRolesResponse>> ServerReload(GridState<GetLabRolesResponse> state)
 	{
 		getRolesRequest = new()
@@ -64,8 +63,9 @@
 			{
 				MaxWidth = MaxWidth.Medium,
 				FullWidth = true,
-				CloseButton = true,
-				CloseOnEscapeKey = true
+				BackdropClick = false,
+				CloseButton = false,
+				CloseOnEscapeKey = true,
 			};
 
 		await DialogService.ShowAsync<LabRoleUpdateForm>(null, parameters, dialogOptions);
@@ -76,7 +76,8 @@
 			{
 				MaxWidth = MaxWidth.Medium,
 				FullWidth = true,
-				CloseButton = true,
+				BackdropClick = false,
+				CloseButton = false,
 				CloseOnEscapeKey = true
 			};
 

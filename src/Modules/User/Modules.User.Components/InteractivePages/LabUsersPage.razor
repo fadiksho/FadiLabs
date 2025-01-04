@@ -10,7 +10,6 @@
 	private Dictionary<Guid, bool> showLabUserDetails = [];
 	private GetLabUsers getUsersRequest = new();
 	private MudDataGrid<GetLabUsersResponse>? dataGrid;
-	private string? searchString = null;
 
 	private async Task<GridData<GetLabUsersResponse>> ServerReload(GridState<GetLabUsersResponse> state)
 	{

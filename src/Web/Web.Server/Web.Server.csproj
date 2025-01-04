@@ -20,7 +20,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Modules\Auth0\Modules.Auth0.Features\Modules.Auth0.Features.csproj" />
-		<ProjectReference Include="..\..\Modules\Auth0\Modules.Auth0.Features.Server\Modules.Auth0.Features.Server.csproj" />
 	  <ProjectReference Include="..\..\Modules\Blog\Modules.Blog.Features\Modules.Blog.Features.csproj" />
 	  <ProjectReference Include="..\..\Modules\Home\Modules.Home.Features\Modules.Home.Features.csproj" />
 	  <ProjectReference Include="..\..\Modules\User\Modules.User.Features\Modules.User.Features.csproj" />

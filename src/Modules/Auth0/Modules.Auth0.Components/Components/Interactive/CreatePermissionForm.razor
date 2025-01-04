@@ -1,0 +1,64 @@
+@code {
+	[CascadingParameter] private MudDialogInstance MudDialog { get; set; } = default!;
+
+	[Inject] public required PermissionRequestValidator PermissionRequestValidator { get; set; }
+
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
+	private PermissionRequest permissionRequest = new();
+	private Result setPermissionsResult;
+	private MudForm form = default!;
+
+	private Task SavePermissionsHandler()
+	{
+		return Task.CompletedTask;
+	}
+}
+
+<MudDialog TitleClass="pa-0">
+	<TitleContent>
+		<MudToolBar WrapContent="true"
+								Gutters="false"
+								Dense="false"
+								Class="gap-2 pa-2 mud-elevation-2 mud-background">
+			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">
+				Create new
+			</MudText>
+		</MudToolBar>
+	</TitleContent>
+
+	<DialogContent>
+		<MudStack>
+			<MudAlert Severity="Severity.Error">
+				Not implemented!
+			</MudAlert>
+			<ResultError Error="setPermissionsResult.Error" OnClear="@(() => { setPermissionsResult = default; })" />
+			<MudForm Model="@permissionRequest" @ref="@form"
+							 Validation="@(PermissionRequestValidator.ValidateValue)"
+							 ValidationDelay="0">
+				<MudStack>
+					<MudTextField @bind-Value="permissionRequest.Value"
+												For="@(() => permissionRequest.Value)"
+												Variant="Variant.Outlined"
+												Immediate="true"
+												Label="Value" />
+
+					<MudTextField @bind-Value="permissionRequest.Description"
+												For="@(() => permissionRequest.Description)"
+												Variant="Variant.Outlined"
+												AutoGrow
+												Immediate="true"
+												Label="Description" />
+
+					<MudStack Row="true">
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+											 OnClick="SavePermissionsHandler">
+							Save
+						</MudButton>
+						<MudButton OnClick="() => MudDialog.Cancel()">Cancel</MudButton>
+					</MudStack>
+				</MudStack>
+			</MudForm>
+		</MudStack>
+	</DialogContent>
+</MudDialog>
