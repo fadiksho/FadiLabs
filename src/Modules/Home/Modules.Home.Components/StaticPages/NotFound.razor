@@ -1,0 +1,16 @@
+@page "/404"
+
+@code {
+	[SupplyParameterFromQuery]
+	public string? Path { get; set; }
+}
+
+<AlertMessage Type="AlertMessageType.Error">
+	<Body>
+		404
+		@if (!string.IsNullOrEmpty(Path))
+		{
+			<p>@Path</p>
+		}
+	</Body>
+</AlertMessage>

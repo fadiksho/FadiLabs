@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Shared.Components.Components.Forms;
+namespace Shared.Components.Components.Interactive.Forms;
 public class FluentValidationValidator : ComponentBase
 {
 	private IValidator? _validator;

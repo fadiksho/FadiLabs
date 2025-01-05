@@ -1,18 +1,11 @@
 ﻿@page "/StatusCode/{code:int}"
 @using Microsoft.AspNetCore.Diagnostics
-@attribute [StreamRendering, ExcludeFromInteractiveRouting]
+@using Shared.Components.Components.Shared
+@using Shared.Components.Components.Static
 
-<Papper>
-  <div role="alert" class="alert p-2">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="shrink-0 h-6 w-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-    <div class="flex flex-col">
-      <div>
-        <h3>StatusCode @Code</h3>
-      </div>
-      <p>Path: @OriginalPathAndQuery</p>
-    </div>
-  </div>
-</Papper>
+@attribute [ExcludeFromInteractiveRouting]
+
+<StatusCodeRedirect Code="@Code" Path="@OriginalPathAndQuery" />
 
 @code {
   [Parameter]
@@ -27,12 +20,12 @@
   {
     var statusCodeReExecuteFeature =
             Context.Features.Get<IStatusCodeReExecuteFeature>();
-    
+
     if (statusCodeReExecuteFeature is not null)
     {
       OriginalPathAndQuery = $"{statusCodeReExecuteFeature.OriginalPathBase}"
-                              + $"{statusCodeReExecuteFeature.OriginalPath}"
-                              + $"{statusCodeReExecuteFeature.OriginalQueryString}";
+                           + $"{statusCodeReExecuteFeature.OriginalPath}"
+                           + $"{statusCodeReExecuteFeature.OriginalQueryString}";
     }
   }
 }

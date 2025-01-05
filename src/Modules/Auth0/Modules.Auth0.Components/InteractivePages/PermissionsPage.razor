@@ -3,7 +3,7 @@
 @code
 {
 	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
-	
+
 	[Inject] public required IDialogService DialogService { get; set; }
 
 	private Result<GetPermissionsResponse> getPermissionsResult;
@@ -16,7 +16,7 @@
 		{
 			return x.Send(getPermissionRequest);
 		}, false);
-
+		StateHasChanged();
 		return new GridData<PermissionResponse>
 			{
 				TotalItems = getPermissionsResult.Entity.Permission.Count,

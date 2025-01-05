@@ -10,14 +10,14 @@
     </AuthorizeRouteView>
     <FocusOnNavigate RouteData="routeData" Selector="h1" />
   </Found>
-  @* <NotFound>
-    <LayoutView>
-      <h1>not found component</h1>
-    </LayoutView>
-  </NotFound> *@
+  <NotFound>
+   <Shared.Components.Components.Shared.StatusCodeRedirect Code="404" />
+  </NotFound>
 </Router>
 
 @code {
+	[Inject] public required NavigationManager Navigation { get; set; }
+
   System.Reflection.Assembly[] assemblies =
   [
     typeof(Modules.Home.Components.Program).Assembly,
