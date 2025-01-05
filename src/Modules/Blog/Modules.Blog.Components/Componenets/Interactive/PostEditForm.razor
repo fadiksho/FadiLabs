@@ -50,10 +50,13 @@
 								Gutters="false"
 								Class="gap-2 pa-2 sticky z-10 mud-elevation-2 mb-2"
 								Style="top: 0; background: var(--mud-palette-background)">
-			<MudText Typo="Typo.h5" Class="flex-grow-1 pl-2 border-l-4 border-solid mud-border-primary">Edit @getPostResult.Entity?.Title</MudText>
-			<MudFab OnClick="GoBack" Color="Color.Primary"
-							Size="Size.Medium" StartIcon="@Icons.Material.Filled.ArrowBack"
-							Class="flex-shrink-0" />
+			<MudStack Class="flex-grow-1" Row="true" StretchItems="StretchItems.Start" AlignItems="AlignItems.Center">
+				<MudText Typo="Typo.h5" Class="pl-2 border-l-4 border-solid mud-border-primary">Edit @getPostResult.Entity?.Title</MudText>
+				<MudFab OnClick="GoBack" Color="Color.Primary"
+								Size="Size.Medium" StartIcon="@Icons.Material.Filled.ArrowBack"
+								Class="flex-shrink-0" />
+			</MudStack>
+
 		</MudToolBar>
 
 		<ResultError Error="updatePostResult.Error" OnClear="ClearUpdatePostResultError" />
@@ -82,12 +85,21 @@
 												Immediate="true"
 												Label="Description" />
 
-					<MudTextField @bind-Value="getPostResult.Entity.Body"
-												For="@(() => getPostResult.Entity.Body)"
-												Variant="Variant.Outlined"
-												AutoGrow
-												Immediate="true"
-												Label="Body" />
+					<MudTabs Outlined="true" PanelClass="tw-max-h-96 tw-overflow-y-auto">
+						<MudTabPanel Text="Api" Icon="@Icons.Material.Filled.Edit">
+							<MudTextField @bind-Value="getPostResult.Entity.Body"
+														For="@(() => getPostResult.Entity.Body)"
+														Variant="Variant.Outlined"
+														AutoGrow
+														Immediate="true"
+														Label="Body" />
+						</MudTabPanel>
+						<MudTabPanel Icon="@Icons.Material.Filled.Code">
+							<MudPaper Outlined="true">
+								<MarkdownViewer Markdown="@getPostResult.Entity.Body" class="tw-prose lg:tw-prose-lg tw-mx-auto tw-max-w-screen-xl tw-prose-slate" />
+							</MudPaper>
+						</MudTabPanel>
+					</MudTabs>
 
 					<PostTagsInput OnTagsChanged="TagsChangedHandler" Tags="getPostResult.Entity.Tags" />
 
