@@ -1,6 +1,6 @@
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="assemblies">
+﻿<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="assemblies">
   <Found Context="routeData">
-    <AuthorizeRouteView RouteData="routeData" Resource="routeData" >
+    <AuthorizeRouteView RouteData="routeData" Resource="routeData">
       <Authorizing>
         <p>Authorizing...</p>
       </Authorizing>
@@ -11,7 +11,7 @@
     <FocusOnNavigate RouteData="routeData" Selector="h1" />
   </Found>
   <NotFound>
-   <Shared.Components.Components.Shared.StatusCodeRedirect Code="404" />
+    <Shared.Components.Components.Shared.StatusCodeRedirect Code="404" />
   </NotFound>
 </Router>
 

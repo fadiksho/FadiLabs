@@ -26,7 +26,10 @@ public static class ServiceCollectionExtensions
 
 		services.AddHttpClient();
 		services.AddHttpContextAccessor();
-		services.AddRazorComponents()
+		services.AddRazorComponents(options =>
+		{
+			options.DetailedErrors = env.IsDevelopment();
+		})
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
 

@@ -1,9 +1,8 @@
-@code {
-	[Parameter]
-	public int Code { get; set; }
+@using global::Shared.Components.Extensions
 
-	[Parameter]
-	public string? Path { get; set; }
+@code {
+	[Parameter] public int Code { get; set; }
+	[Parameter] public string? Path { get; set; }
 
 	[Inject] public required NavigationManager Navigation { get; set; }
 
@@ -15,6 +14,7 @@
 		{
 			Path = Navigation.ToBaseRelativePath(Navigation.Uri);
 		}
+		
 
 		targetUrl = $"{targetUrl}?path={Uri.EscapeDataString(Path)}";
 

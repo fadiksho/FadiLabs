@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
 @layout InteractiveBaseLayout
-@inject IAuthService AuthService
 
 <MudThemeProvider @bind-IsDarkMode="@isDarkMode" Theme="defaultTheme" />
 <MudPopoverProvider />
@@ -8,42 +7,42 @@
 <MudSnackbarProvider />
 <MudLayout>
 	<MudAppBar Fixed="true"
-	Elevation="2"
-	Dense="@isDenseNavbar"
-	Gutters="false">
+						 Elevation="2"
+						 Dense="@isDenseNavbar"
+						 Gutters="false">
 		<MudIconButton Icon="@Icons.Material.Filled.Menu"
-		Color="Color.Inherit"
-		Class="rounded-0 align-self-stretch"
-		OnClick="@((e) => DrawerToggle())" />
+									 Color="Color.Inherit"
+									 Class="rounded-0 align-self-stretch"
+									 OnClick="@((e) => DrawerToggle())" />
 		<MudText Typo="Typo.h5" Class="ml-3">Fadi Labs</MudText>
 		<MudSpacer />
 		<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" />
 
 		<MudProgressLinear Color="Color.Secondary"
-		Style="position:absolute; bottom: 0;"
-		Size="Size.Small"
-		Indeterminate="false" />
+											 Style="position:absolute; bottom: 0;background-color: transparent"
+											 Size="Size.Small"
+											 Indeterminate="@ServiceExecutor.IsLoading" />
 	</MudAppBar>
 
 	<MudDrawer @bind-Open="_drawerOpen"
-	ClipMode="DrawerClipMode.Always" Overlay="true"
-	Elevation="2"
-	Variant="DrawerVariant.Responsive"
-	Breakpoint="Breakpoint.Md">
+						 ClipMode="DrawerClipMode.Always" Overlay="true"
+						 Elevation="2"
+						 Variant="DrawerVariant.Responsive"
+						 Breakpoint="Breakpoint.Md">
 		<div class="flex flex-col h-full gap-4 pb-6">
 			<MudPaper Elevation="0" Class="pa-1" Square="true">
 				<AuthorizeView>
 					<Authorized>
 						<div class="d-flex align-center mud-ripple cursor-pointer px-4 py-2"
-						@onclick="ToggleMenu">
+								 @onclick="ToggleMenu">
 							<UserAvatarDetailsView AvatarImage="@context.User.GetProfilePicture()"
-							UserName="@context.User.GetUserName()"
-							Email="@context.User.GetEmail()"
-							class="flex-1" />
+																		 UserName="@context.User.GetUserName()"
+																		 Email="@context.User.GetEmail()"
+																		 class="flex-1" />
 
 							<MudIcon Icon="@(isMenuExpanded ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ExpandLess)"
-							Color="Color.Primary"
-							aria-label="account setting" />
+											 Color="Color.Primary"
+											 aria-label="account setting" />
 						</div>
 						<MudCollapse Expanded="@isMenuExpanded">
 
@@ -60,7 +59,7 @@
 								<MudDivider DividerType="DividerType.Middle" Class="my-1" />
 
 								<form action="account/logout"
-								method="post">
+											method="post">
 									<AntiforgeryToken />
 									<button type="submit" class="mud-nav-link mud-ripple">
 										<div class="mud-nav-link-text">
@@ -133,10 +132,10 @@
 						<MudListItem OnClick="ToggleTheme" Dense="true">
 							<MudStack Row="true" StretchItems="StretchItems.End" AlignItems="AlignItems.Center">
 								<MudToggleIconButton @bind-Toggled="isDarkMode"
-								Icon="@Icons.Material.Filled.LightMode"
-								ToggledIcon="@Icons.Material.Filled.DarkMode"
-								ToggledColor="@Color.Primary"
-								Class="pa-0" />
+																		 Icon="@Icons.Material.Filled.LightMode"
+																		 ToggledIcon="@Icons.Material.Filled.DarkMode"
+																		 ToggledColor="@Color.Primary"
+																		 Class="pa-0" />
 								<MudText Class="mud-nav-link-text">
 									Toggle theme
 								</MudText>
@@ -145,10 +144,10 @@
 						<MudListItem OnClick="ToggleDenseNavbar" Dense="true">
 							<MudStack Row="true" StretchItems="StretchItems.End" AlignItems="AlignItems.Center">
 								<MudToggleIconButton @bind-Toggled="isDenseNavbar"
-								Class="pa-0"
-								Icon="@Icons.Material.Filled.CheckBoxOutlineBlank"
-								ToggledIcon="@Icons.Material.Filled.CheckBox"
-								ToggledColor="@Color.Primary" />
+																		 Class="pa-0"
+																		 Icon="@Icons.Material.Filled.CheckBoxOutlineBlank"
+																		 ToggledIcon="@Icons.Material.Filled.CheckBox"
+																		 ToggledColor="@Color.Primary" />
 
 								<MudText Class="mud-nav-link-text">
 									Dinsed navbar
@@ -163,7 +162,16 @@
 
 	<MudMainContent Class="d-flex flex-column overflow-hidden" Style="height:100vh;">
 		<div class="flex-1 overflow-auto">
-			@Body
+			<ErrorBoundary @ref="errorBoundary">
+				<ChildContent>
+					@Body
+				</ChildContent>
+				<ErrorContent>
+					<MudAlert Severity="Severity.Error">
+						😈 A rotten gremlin got us. Sorry!
+					</MudAlert>
+				</ErrorContent>
+			</ErrorBoundary>
 		</div>
 		<footer class="d-inline-flex justify-center">
 			<MudText Typo="Typo.caption">
@@ -180,22 +188,27 @@
 </div>
 
 @code {
+	[Inject] public required NavigationManager Navigation { get; set; }
+	[Inject] public required IAuthService AuthService { get; set; }
+	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
 	private bool _drawerOpen = true;
 	private bool isMenuExpanded = false;
 	private bool isDarkMode = true;
 	private bool isDenseNavbar = false;
-
-	[Inject] public required NavigationManager Navigation { get; set; }
+	private ErrorBoundary? errorBoundary;
 
 	private MudTheme defaultTheme = new()
 		{
 			PaletteDark = new PaletteDark
 			{
 				Primary = "8b5cf6",
+				Secondary = "ff66b2",
 			},
 			PaletteLight = new PaletteLight
 			{
 				Primary = "8b5cf6",
+				Secondary = "ff66b2",
 				AppbarBackground = "5b21b6"
 			},
 			LayoutProperties = new LayoutProperties
@@ -204,6 +217,10 @@
 			}
 		};
 
+	protected override void OnParametersSet()
+	{
+		errorBoundary?.Recover();
+	}
 
 	private void DrawerToggle()
 	{
@@ -235,7 +252,8 @@
 		isDenseNavbar = !isDenseNavbar;
 	}
 
-	void ToNotFoundPage(){
+	void ToNotFoundPage()
+	{
 		Navigation.NavigateTo("/nofoundpage");
 	}
 }

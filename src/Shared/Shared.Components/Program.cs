@@ -29,7 +29,7 @@ public static class Program
 		services.AddAuthorizationCore();
 		services.AddCascadingAuthenticationState();
 		services.AddScoped<IUIBus, DefaultUIBus>();
-		services.AddScoped(typeof(IServiceExecutor<>), typeof(ServiceExecutor<>));
+		services.AddScoped(typeof(IServiceExecutor<>), typeof(ServiceExecutor<>)); ;
 		services.AddScoped<IPrerenderState, PrerenderStateWithJsonOptions>();
 
 		services.TryAddSingleton<IResultErrorPolymorphicResolver, DefaultResultErrorPolymorphicResolver>();

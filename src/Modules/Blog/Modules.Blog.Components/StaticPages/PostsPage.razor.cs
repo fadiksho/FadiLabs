@@ -24,6 +24,7 @@ public partial class PostsPage(IServiceExecutor<IUIBus> serviceExecutor, Navigat
 
 	protected override async Task OnParametersSetAsync()
 	{
+		throw new Exception("This is a test exception");
 		if (Page <= 0)
 		{
 			Page = 1;
