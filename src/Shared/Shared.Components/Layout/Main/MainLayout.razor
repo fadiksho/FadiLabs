@@ -19,7 +19,8 @@
 		<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" />
 
 		<MudProgressLinear Color="Color.Secondary"
-											 Style="position:absolute; bottom: 0;background-color: transparent"
+											 Style="position:absolute; bottom: 0;"
+											 Class="tw-bg-gradient-to-r tw-from-pink-500 tw-via-purple-500 tw-to-pink-500"
 											 Size="Size.Small"
 											 Indeterminate="@ServiceExecutor.IsLoading" />
 	</MudAppBar>
@@ -94,8 +95,6 @@
 					<MudNavLink Href="/about">About</MudNavLink>
 					<MudNavLink Href="/blog" Match="NavLinkMatch.All">Blog</MudNavLink>
 					<MudNavLink Href="/labs" Match="NavLinkMatch.All">Labs</MudNavLink>
-					<MudNavLink Href="/notfound123">404 Link</MudNavLink>
-					<MudNavLink OnClick="ToNotFoundPage">404 Navigation</MudNavLink>
 				</MudNavGroup>
 
 				<LabAuthorizeView LabPermissions="LabsPermissions.ConfigureSite">
@@ -250,10 +249,5 @@
 	void ToggleDenseNavbar()
 	{
 		isDenseNavbar = !isDenseNavbar;
-	}
-
-	void ToNotFoundPage()
-	{
-		Navigation.NavigateTo("/nofoundpage");
 	}
 }

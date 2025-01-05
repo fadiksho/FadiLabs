@@ -39,13 +39,13 @@
 		selectedSortProperty = state.SortDefinitions.First().SortBy;
 
 		getPostsRequest = new()
-		{
-			PageNumber = state.Page + 1,
-			PageSize = state.PageSize,
-			Search = searchString,
-			SortBy = state.SortDefinitions.First().SortBy,
-			Descending = state.SortDefinitions.First().Descending
-		};
+			{
+				PageNumber = state.Page + 1,
+				PageSize = state.PageSize,
+				Search = searchString,
+				SortBy = state.SortDefinitions.First().SortBy,
+				Descending = state.SortDefinitions.First().Descending
+			};
 
 		getPostsResult = await ServiceExecutor.ExecuteAsync(nameof(GetPosts), x =>
 		{
@@ -53,10 +53,10 @@
 		}, false);
 
 		return new GridData<GetPostsResponse>
-		{
-			TotalItems = getPostsResult.Entity.TotalCount,
-			Items = getPostsResult.Entity.Items
-		};
+			{
+				TotalItems = getPostsResult.Entity.TotalCount,
+				Items = getPostsResult.Entity.Items
+			};
 	}
 
 	private Task OnSearch(string value)
@@ -115,7 +115,8 @@
 	</MudToolBar>
 	<MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
 		<MudToolBar WrapContent="true">
-			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap" Class="flex-grow-1 mb-2">
+			<MudStack Row="true"
+								Spacing="1" Wrap="Wrap.Wrap" Class="flex-grow-1 mb-2">
 				<MudSelect T="string" Label="Sort by" Value="selectedSortProperty" ValueChanged="SortByValueChangedHandler">
 					<MudSelectItem Value="@("Title")">Name</MudSelectItem>
 					<MudSelectItem Value="@("Description")">Description</MudSelectItem>
@@ -134,6 +135,7 @@
 	<MudDataGrid @ref="dataGrid"
 							 T="GetPostsResponse"
 							 ServerData="ServerReload"
+							 LoadingProgressColor="Color.Primary"
 							 SortMode="SortMode.Single">
 		<Columns>
 			<PropertyColumn CellClass="align-start" Property="x => x.Title" Title="Name" Sortable="true" />
