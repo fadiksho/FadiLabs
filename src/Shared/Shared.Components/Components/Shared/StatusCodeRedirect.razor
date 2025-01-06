@@ -8,13 +8,23 @@
 
 	protected override void OnInitialized()
 	{
-		var targetUrl = RendererInfo.IsInteractive ? $"/labs/{Code}" : $"/{Code}";
-
-		if (string.IsNullOrEmpty(Path))
+		if(string.IsNullOrWhiteSpace(Path))
 		{
 			Path = Navigation.ToBaseRelativePath(Navigation.Uri);
 		}
-		
+		else if (!Uri.IsWellFormedUriString(Path, UriKind.Relative))
+		{
+			Path = new Uri(Path, UriKind.Absolute).PathAndQuery;
+		}
+
+		if (Path[0] != '/')
+		{
+			Path = $"/{Path}";
+		}
+
+		var targetUrl = Path.StartsWith("/labs") == true || RendererInfo.IsInteractive
+			? $"/labs/{Code}" 
+			: $"/{Code}";
 
 		targetUrl = $"{targetUrl}?path={Uri.EscapeDataString(Path)}";
 

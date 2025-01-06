@@ -2921,6 +2921,10 @@ html {
   --tw-gradient-to: #ec4899 var(--tw-gradient-to-position);
 }
 
+.tw-to-transparent {
+  --tw-gradient-to: transparent var(--tw-gradient-to-position);
+}
+
 .tw-bg-clip-text {
   -webkit-background-clip: text;
           background-clip: text;

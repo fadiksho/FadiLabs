@@ -1,16 +1,17 @@
 @page "/labs/404"
 
 @code {
+	[Parameter]
 	[SupplyParameterFromQuery]
 	public string? Path { get; set; }
+
+	[Inject]
+	public required NavigationManager Navigation { get; set; }
 }
 
 <MudPaper Class="pa-2">
 	<MudBlazor.MudAlert Severity="MudBlazor.Severity.Error">
 		404
-		@if (!string.IsNullOrEmpty(Path))
-		{
-			<p>@Path</p>
-		}
+		<p>@Path</p>
 	</MudBlazor.MudAlert>
 </MudPaper>

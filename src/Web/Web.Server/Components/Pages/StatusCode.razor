@@ -15,12 +15,12 @@
   public string? OriginalPathAndQuery { get; set; }
 
   [CascadingParameter]
-  public HttpContext Context { get; set; } = default!;
+  public HttpContext HttpContext { get; set; } = default!;
 
   protected override void OnInitialized()
   {
     var statusCodeReExecuteFeature =
-            Context.Features.Get<IStatusCodeReExecuteFeature>();
+            HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
 
     if (statusCodeReExecuteFeature is not null)
     {
