@@ -36,7 +36,6 @@ public static class ServiceCollectionExtensions
 		services.AddMediator(config);
 		services.AddConfigurationSettings(config);
 
-
 		services.AddCircuitServicesAccessor();
 		services.AddScoped<ICurrentUser, ServerCurrentUser>();
 

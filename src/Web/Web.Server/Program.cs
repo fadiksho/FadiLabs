@@ -3,7 +3,6 @@ using Modules.Blog.Features;
 using Modules.Home.Features;
 using Modules.User.Features;
 using Shared.Features;
-using Web.Server.Endpoints;
 using Web.Server.Extensions;
 
 
@@ -51,7 +50,7 @@ app.MapBlazorApp()
 	 .MapBlogModulePages();
 
 app
-	.MapMediatorEndPoints();
+	.MapSharedEndPoints();
 app
 	.MapAuth0ModleEndPoints();
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Components;
+using Shared.Features.Endpoints;
 
 namespace Shared.Features;
 public static class Program
 {
-
 	public static IServiceCollection AddSharedModuleServices(this IServiceCollection services, IConfiguration config, IWebHostEnvironment env)
 	{
 		services.AddSharedComponentsServices(config);
@@ -17,5 +18,10 @@ public static class Program
 		});
 
 		return services;
+	}
+
+	public static void MapSharedEndPoints(this IEndpointRouteBuilder endpoints)
+	{
+		endpoints.MapMediatorEndPoints();
 	}
 }

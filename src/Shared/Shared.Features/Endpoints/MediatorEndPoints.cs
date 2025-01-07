@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Shared.Integration.Models;
 using Shared.Integration.Services;
 
-namespace Web.Server.Endpoints;
+namespace Shared.Features.Endpoints;
 
 internal static class MediatorEndPoints
 {
