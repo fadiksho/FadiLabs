@@ -1,10 +1,8 @@
 ﻿using Azure.Identity;
-using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shared.Components.Services;
-using Shared.Features.Behaviours;
 using Shared.Features.Configuration;
 using Shared.Features.Persistence.Interceptors;
 using Shared.Features.Services;
@@ -24,8 +22,6 @@ public static class ServiceCollectionExtensions
 					new DefaultAzureCredential());
 		}
 
-		services.AddHttpClient();
-		services.AddHttpContextAccessor();
 		services.AddRazorComponents(options =>
 		{
 			options.DetailedErrors = env.IsDevelopment();
@@ -33,7 +29,6 @@ public static class ServiceCollectionExtensions
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
 
-		services.AddMediator(config);
 		services.AddConfigurationSettings(config);
 
 		services.AddCircuitServicesAccessor();
@@ -54,20 +49,6 @@ public static class ServiceCollectionExtensions
 		return services;
 	}
 
-	private static IServiceCollection AddMediator(this IServiceCollection services, IConfiguration config)
-	{
-		services.AddMediatR(cfg =>
-		{
-			cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
-			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
-		});
-
-		return services;
-	}
-
 	private static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration config)
 	{
 		services.Configure<PersistenceConfiguration>(config.GetSection(PersistenceConfiguration.SectionName));
@@ -78,7 +59,6 @@ public static class ServiceCollectionExtensions
 	private static IServiceCollection AddCircuitServicesAccessor(
 				this IServiceCollection services)
 	{
-
 		services.AddScoped<CircuitServicesAccessor>();
 		services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
 

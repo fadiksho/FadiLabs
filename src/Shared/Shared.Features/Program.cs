@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using MediatR;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Components;
+using Shared.Features.Behaviours;
 using Shared.Features.Endpoints;
 
 namespace Shared.Features;
@@ -12,9 +14,16 @@ public static class Program
 	{
 		services.AddSharedComponentsServices(config);
 
+		services.AddHttpClient();
+		services.AddHttpContextAccessor();
+
 		services.AddMediatR(cfg =>
 		{
 			cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviour<,>));
+			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+			cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
 		});
 
 		return services;
