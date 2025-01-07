@@ -1,0 +1,20 @@
+@page "/blog/{slug}"
+
+<PageTitle>@_result.Entity?.Title</PageTitle>
+
+<NavBarLoading Show="!_result.IsDefined" />
+
+@if (!_result.IsDefined)
+{
+	<div class="tw-flex tw-flex-col tw-items-end">
+		<div class="tw-skeleton tw-h-8 tw-w-36"></div>
+	</div>
+}
+else if(_result.IsFailed)
+{
+	<StaticResultError Error="_result.Error"/>
+}
+else
+{
+	<PostView Post="_result.Entity" />
+}

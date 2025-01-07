@@ -1,13 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    '../**/*.{razor,html}',
-    '../Layout/**/*.{razor,html,js}',
+    '../Components/**/*.{razor,html,js}',
     '../../../Web/Web.Server/Components/**/*.{razor,html,js}',
     '../../../Modules/Blog/Modules.Blog.Components/**/*.{razor,html,js}',
     '../../../Modules/Home/Modules.Home.Components/**/*.{razor,html,js}',
     '../../../Modules/Auth0/Modules.Auth0.Components/**/*.{razor,html,js}',
-    '../../../Modules/Auth0/Modules.Auth0.Features.Server/**/*.{razor,html,js}'
+    '../../../Web/Web.Static/Modules/**/*.{razor,html,js}',
+    '../../../Web/Web.Static/Shared/**/*.{razor,html,js}',
   ],
   prefix: 'tw-',
   theme: {

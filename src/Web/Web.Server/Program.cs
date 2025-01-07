@@ -4,6 +4,7 @@ using Modules.Home.Features;
 using Modules.User.Features;
 using Shared.Features;
 using Web.Server.Extensions;
+using Web.Static;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,7 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 
 app.MapBlazorApp()
+	 .MapStaticPages()
 	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
 	 .MapUserModulePages()

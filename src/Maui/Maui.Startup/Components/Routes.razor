@@ -1,6 +1,6 @@
 ﻿<Router AppAssembly="@typeof(MauiProgram).Assembly" AdditionalAssemblies="assemblies">
 	<Found Context="routeData">
-		<AuthorizeRouteView RouteData="routeData" Resource="routeData" DefaultLayout="typeof(Shared.Components.Layout.StaticBaseLayout)">
+		<AuthorizeRouteView RouteData="routeData" Resource="routeData">
 			<Authorizing>
 				<p>Authorizing...</p>
 			</Authorizing>
@@ -11,9 +11,7 @@
 		<FocusOnNavigate RouteData="routeData" Selector="h1" />
 	</Found>
 	<NotFound>
-		<LayoutView Layout="typeof(Shared.Components.Layout.StaticBaseLayout)">
-			<h1>not found component</h1>
-		</LayoutView>
+		<Shared.Components.Components.Shared.StatusCodeRedirect Code="404" Path="@("/labs/404")" />
 	</NotFound>
 </Router>
 

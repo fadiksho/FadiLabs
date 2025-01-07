@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\Modules\User\Modules.User.Components\Modules.User.Components.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
 </Project>
