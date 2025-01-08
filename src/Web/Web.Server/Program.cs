@@ -1,4 +1,5 @@
-﻿using Modules.Auth0.Features;
+using FadiLabs.ServiceDefaults;
+using Modules.Auth0.Features;
 using Modules.Blog.Features;
 using Modules.Home.Features;
 using Modules.User.Features;
@@ -8,6 +9,8 @@ using Web.Static;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
@@ -20,6 +23,8 @@ builder.Services
 	.AddBlogModuleServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

@@ -90,6 +90,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.Startup", "src\Maui\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Static", "src\Web\Web.Static\Web.Static.csproj", "{8A201814-5B25-4E43-8823-A89414901FD1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FadiLabs.AppHost", "src\FadiLabs.AppHost\FadiLabs.AppHost.csproj", "{0DCF42FC-476C-4D63-BF33-419B96DF8277}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FadiLabs.ServiceDefaults", "src\FadiLabs.ServiceDefaults\FadiLabs.ServiceDefaults.csproj", "{90617BF5-9063-4674-AB36-9D98EC88B24F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +198,14 @@ Global
 		{8A201814-5B25-4E43-8823-A89414901FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A201814-5B25-4E43-8823-A89414901FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A201814-5B25-4E43-8823-A89414901FD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DCF42FC-476C-4D63-BF33-419B96DF8277}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DCF42FC-476C-4D63-BF33-419B96DF8277}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DCF42FC-476C-4D63-BF33-419B96DF8277}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DCF42FC-476C-4D63-BF33-419B96DF8277}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90617BF5-9063-4674-AB36-9D98EC88B24F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90617BF5-9063-4674-AB36-9D98EC88B24F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90617BF5-9063-4674-AB36-9D98EC88B24F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90617BF5-9063-4674-AB36-9D98EC88B24F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -234,6 +246,8 @@ Global
 		{8BFC0718-1F6A-4981-88D5-4890A447B410} = {B4942C5C-51AA-413A-9499-95F572D55A93}
 		{2CC4E314-A4A8-4FB8-BBD5-5C7ACE563174} = {8BFC0718-1F6A-4981-88D5-4890A447B410}
 		{8A201814-5B25-4E43-8823-A89414901FD1} = {5573A150-378E-486F-82CF-FE0ACA538FFE}
+		{0DCF42FC-476C-4D63-BF33-419B96DF8277} = {B4942C5C-51AA-413A-9499-95F572D55A93}
+		{90617BF5-9063-4674-AB36-9D98EC88B24F} = {B4942C5C-51AA-413A-9499-95F572D55A93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3494FA6-8791-4182-A2E5-B3454D9A8ECA}
