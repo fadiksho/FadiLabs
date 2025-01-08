@@ -1,0 +1,14 @@
+@page "/labs/401"
+
+@code {
+	[Parameter]
+	[SupplyParameterFromQuery]
+	public string? Path { get; set; }
+}
+
+<MudPaper Class="pa-2">
+	<MudBlazor.MudAlert Severity="MudBlazor.Severity.Error">
+		401
+		<p>@Path</p>
+	</MudBlazor.MudAlert>
+</MudPaper>

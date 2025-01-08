@@ -1,11 +1,12 @@
-﻿<Router AppAssembly="@typeof(Shared.Components.Program).Assembly" AdditionalAssemblies="assemblies">
+﻿<Router AppAssembly="@typeof(Shared.Components.Program).Assembly"
+AdditionalAssemblies="assemblies">
   <Found Context="routeData">
     <AuthorizeRouteView RouteData="routeData" Resource="routeData">
       <Authorizing>
         <p>Authorizing...</p>
       </Authorizing>
       <NotAuthorized>
-        <p>Not Authorized Component!</p>
+        <Shared.Components.Components.Shared.StatusCodeRedirect Code="401" />
       </NotAuthorized>
     </AuthorizeRouteView>
     <FocusOnNavigate RouteData="routeData" Selector="h1" />
@@ -16,13 +17,12 @@
 </Router>
 
 @code {
-	[Inject] public required NavigationManager Navigation { get; set; }
-
   System.Reflection.Assembly[] assemblies =
   [
+    typeof(Shared.Components.Program).Assembly,
     typeof(Modules.Home.Components.Program).Assembly,
     typeof(Modules.Blog.Components.Program).Assembly,
     typeof(Modules.Auth0.Components.Program).Assembly,
     typeof(Modules.User.Components.Program).Assembly,
-  ];
+  ];  
 }

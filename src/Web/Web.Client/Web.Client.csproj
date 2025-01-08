@@ -20,7 +20,4 @@
     <ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 </Project>

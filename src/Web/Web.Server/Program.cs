@@ -46,6 +46,7 @@ app.MapStaticAssets();
 
 app.MapBlazorApp()
 	 .MapStaticPages()
+	 .MapSharedModulePages()
 	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
 	 .MapUserModulePages()

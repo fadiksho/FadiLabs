@@ -23,7 +23,7 @@
 		}
 
 		var targetUrl = Path.StartsWith("/labs") == true || RendererInfo.IsInteractive
-			? $"/labs/{Code}" 
+			? $"/labs/{Code}"
 			: $"/{Code}";
 
 		targetUrl = $"{targetUrl}?path={Uri.EscapeDataString(Path)}";

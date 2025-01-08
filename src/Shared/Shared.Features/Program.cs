@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,11 @@ public static class Program
 		});
 
 		return services;
+	}
+
+	public static RazorComponentsEndpointConventionBuilder MapSharedModulePages(this RazorComponentsEndpointConventionBuilder builder)
+	{
+		return builder.AddAdditionalAssemblies(typeof(Components.Program).Assembly);
 	}
 
 	public static void MapSharedEndPoints(this IEndpointRouteBuilder endpoints)

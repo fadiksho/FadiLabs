@@ -4,16 +4,17 @@ namespace Maui.Startup;
 
 public partial class MainPage : ContentPage
 {
-  private readonly MauiUserService _userService;
+	private readonly MauiUserService _userService;
 
-  public MainPage(MauiUserService userService)
-  {
-    InitializeComponent();
-    _userService = userService;
-  }
+	public MainPage(MauiUserService userService)
+	{
+		InitializeComponent();
+		_userService = userService;
+		blazorWebView.StartPath = "/labs";
+	}
 
-  private async void BlazorWebView_BlazorWebViewInitialized(object sender, Microsoft.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs e)
-  {
-    await _userService.LoadUserAuthenticationAsync();
-  }
+	private async void BlazorWebView_BlazorWebViewInitialized(object sender, Microsoft.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs e)
+	{
+		await _userService.LoadUserAuthenticationAsync();
+	}
 }
