@@ -1,6 +1,7 @@
 ﻿using Azure.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Components.WebAssembly.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shared.Components.Services;
 using Shared.Features.Configuration;
@@ -28,6 +29,8 @@ public static class ServiceCollectionExtensions
 		})
 		 .AddInteractiveServerComponents()
 		 .AddInteractiveWebAssemblyComponents();
+
+		services.AddScoped<LazyAssemblyLoader>();
 
 		services.AddConfigurationSettings(config);
 

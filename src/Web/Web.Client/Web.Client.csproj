@@ -20,4 +20,16 @@
     <ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<!--Blog Module-->
+		<BlazorWebAssemblyLazyLoad Include="Modules.Blog.Components.wasm" />
+		<BlazorWebAssemblyLazyLoad Include="Markdig.wasm" />
+		
+		<!--Auth0 Module-->
+		<BlazorWebAssemblyLazyLoad Include="Modules.Auth0.Components.wasm" />
+
+		<!--User Module-->
+		<BlazorWebAssemblyLazyLoad Include="Modules.User.Components.wasm" />
+	</ItemGroup>
+	
 </Project>

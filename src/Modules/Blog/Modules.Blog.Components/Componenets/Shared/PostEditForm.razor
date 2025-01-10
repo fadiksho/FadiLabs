@@ -3,11 +3,11 @@
 	public Guid PostId { get; set; }
 
 	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
-	[Inject] public required UpdatePostValidator UpdatePostValidator { get; set; }
 	[Inject] public required IJSRuntime JSRuntime { get; set; }
 
 	private Result<UpdatePost> getPostResult;
 	private Result<UpdatePostResponse> updatePostResult;
+	private UpdatePostValidator UpdatePostValidator = new();
 
 	private MudForm form = default!;
 

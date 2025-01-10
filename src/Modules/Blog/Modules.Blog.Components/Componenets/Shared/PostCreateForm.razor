@@ -1,11 +1,11 @@
 @code {
 	[Inject] public IServiceExecutor<IUIBus> ServiceExecutor { get; set; } = default!;
-	[Inject] public required CreatePostValidator CreatePostValidator { get; set; }
 	[Inject] public required ISnackbar Snackbar { get; set; }
 	[Inject] public required NavigationManager Navigation { get; set; }
 
 	private Result<CreatePostResponse> createPostResult;
 	private CreatePost createPostRequest = new();
+	private CreatePostValidator CreatePostValidator = new();
 
 	private MudForm form = default!;
 

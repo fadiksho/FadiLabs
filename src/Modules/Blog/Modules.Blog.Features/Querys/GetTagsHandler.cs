@@ -1,6 +1,4 @@
-﻿using Fadi.Result;
-using MediatR;
-using Modules.Blog.Features.Entities;
+﻿using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Models;

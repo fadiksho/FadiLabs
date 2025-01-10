@@ -30,4 +30,10 @@
 	  <ProjectReference Include="..\Web.Static\Web.Static.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<BlazorWebAssemblyLazyLoad Include="Modules.Blog.Components.wasm" />
+		<BlazorWebAssemblyLazyLoad Include="Modules.Auth0.Components.wasm" />
+		<BlazorWebAssemblyLazyLoad Include="Modules.User.Components.wasm" />
+	</ItemGroup>
+	
 </Project>

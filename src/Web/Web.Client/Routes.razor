@@ -1,28 +1,76 @@
-﻿<Router AppAssembly="@typeof(Shared.Components.Program).Assembly"
-AdditionalAssemblies="assemblies">
-  <Found Context="routeData">
-    <AuthorizeRouteView RouteData="routeData" Resource="routeData">
-      <Authorizing>
-        <p>Authorizing...</p>
-      </Authorizing>
-      <NotAuthorized>
-        <Shared.Components.Components.Shared.StatusCodeRedirect Code="401" />
-      </NotAuthorized>
-    </AuthorizeRouteView>
-    <FocusOnNavigate RouteData="routeData" Selector="h1" />
-  </Found>
-  <NotFound>
-    <Shared.Components.Components.Shared.StatusCodeRedirect Code="404" />
-  </NotFound>
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Services
+@using System.Reflection
+@inject LazyAssemblyLoader AssemblyLoader
+@inject ILogger<Routes> Logger
+
+<Router AppAssembly="@typeof(Shared.Components.Program).Assembly"
+				AdditionalAssemblies="lazyLoadedAssemblies"
+				OnNavigateAsync="OnNavigateAsync">
+	<Found Context="routeData">
+		<AuthorizeRouteView RouteData="routeData" Resource="routeData">
+			<Authorizing>
+				<p>Authorizing...</p>
+			</Authorizing>
+			<NotAuthorized>
+				<Shared.Components.Components.Shared.StatusCodeRedirect Code="401" />
+			</NotAuthorized>
+		</AuthorizeRouteView>
+		<FocusOnNavigate RouteData="routeData" Selector="h1" />
+	</Found>
+	<NotFound>
+		<Shared.Components.Components.Shared.StatusCodeRedirect Code="404" />
+	</NotFound>
 </Router>
 
 @code {
-  System.Reflection.Assembly[] assemblies =
-  [
-    typeof(Shared.Components.Program).Assembly,
-    typeof(Modules.Home.Components.Program).Assembly,
-    typeof(Modules.Blog.Components.Program).Assembly,
-    typeof(Modules.Auth0.Components.Program).Assembly,
-    typeof(Modules.User.Components.Program).Assembly,
-  ];  
+	// System.Reflection.Assembly[] assemblies =
+	// [
+	//   typeof(Modules.Home.Components.Program).Assembly,
+	//   typeof(Modules.Blog.Components.Program).Assembly,
+	//   typeof(Modules.Auth0.Components.Program).Assembly,
+	//   typeof(Modules.User.Components.Program).Assembly,
+	// ];
+
+	List<System.Reflection.Assembly> lazyLoadedAssemblies =
+	[
+		typeof(Modules.Home.Components.Program).Assembly,
+	];
+
+	List<LazyLoadedModulesInfo> lazyLoadedModulesInfos =
+	[
+		new("labs/blog-lab", ["Modules.Blog.Components.wasm", "Markdig.wasm"]),
+		new("labs/user-lab", ["Modules.User.Components.wasm"]),
+		new("labs/Auth0-lab", ["Modules.Auth0.Components.wasm"])
+	];
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
+
+	private async Task OnNavigateAsync(NavigationContext args)
+	{
+		try
+		{
+			Logger.LogInformation(args.Path);
+			var lazyLoadedModuleInfo = lazyLoadedModulesInfos.FirstOrDefault(x => args.Path.StartsWith(x.routePath));
+			if (lazyLoadedModuleInfo != null && lazyLoadedModuleInfo.IsLoaded == false)
+			{
+				Logger.LogInformation(lazyLoadedModuleInfo.ToString());
+				var assemblies =
+					await AssemblyLoader.LoadAssembliesAsync(lazyLoadedModuleInfo.Assemblies);
+				lazyLoadedAssemblies.AddRange(assemblies);
+				lazyLoadedModuleInfo.IsLoaded = true;
+			}
+		}
+		catch (Exception ex)
+		{
+			Logger.LogError("Error: {Message}", ex.Message);
+		}
+	}
+
+	record LazyLoadedModulesInfo(string routePath, string[] Assemblies, bool IsLoaded = false)
+	{
+		public bool IsLoaded { get; set; } = IsLoaded;
+	}
 }
