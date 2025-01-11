@@ -1,6 +1,6 @@
 @code {
 	[CascadingParameter]
-	private MudDialogInstance MudDialog { get; set; } = default!;
+	private IMudDialogInstance MudDialog { get; set; } = default!;
 
 	[Inject] public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
 	[Inject] public required CreateLabRoleValidator CreateLabRoleValidator { get; set; }

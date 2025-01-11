@@ -31,7 +31,7 @@
 				{
 					config.Action = "Edit";
 					config.ActionColor = Color.Primary;
-					config.Onclick = snackbar =>
+					config.OnClick = snackbar =>
 					{
 						Navigation.NavigateTo($"/labs/blog-lab/edit/{createPostResult.Entity.PostId}");
 						return Task.CompletedTask;

@@ -5,6 +5,7 @@
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <MudLayout>
 	<MudAppBar Fixed="true"
 						 Elevation="2"
@@ -21,9 +22,9 @@
 		<MudProgressLinear Color="Color.Secondary"
 											 Style="position:absolute; bottom: 0;"
 											 Size="Size.Small"
-											 Indeterminate="@ServiceExecutor.IsLoading" />
+											 Indeterminate="@(ServiceExecutor.IsLoading || !RendererInfo.IsInteractive)" />
 	</MudAppBar>
-
+	
 	<MudDrawer @bind-Open="_drawerOpen"
 						 ClipMode="DrawerClipMode.Always" Overlay="true"
 						 Elevation="2"
