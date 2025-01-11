@@ -5,7 +5,6 @@
       "lib\\Fadi.Result\\Fadi.Result.Tests\\Fadi.Result.Tests.csproj",
       "lib\\Fadi.Result\\Fadi.Result\\Fadi.Result.csproj",
       "src\\Modules\\Auth0\\Modules.Auth0.Components\\Modules.Auth0.Components.csproj",
-      "src\\Modules\\Auth0\\Modules.Auth0.Features.Server\\Modules.Auth0.Features.Server.csproj",
       "src\\Modules\\Auth0\\Modules.Auth0.Features\\Modules.Auth0.Features.csproj",
       "src\\Modules\\Auth0\\Modules.Auth0.Integration\\Modules.Auth0.Integration.csproj",
       "src\\Modules\\Blog\\Modules.Blog.Components\\Modules.Blog.Components.csproj",
