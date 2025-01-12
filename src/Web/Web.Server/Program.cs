@@ -16,7 +16,6 @@ builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
 	.AddServerServices(builder.Configuration, builder.Environment)
-	.AddSharedModuleServices(builder.Configuration, builder.Environment)
 	.AddHomeModuleServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
 	.AddUserModuleServices(builder.Configuration, builder.Environment)

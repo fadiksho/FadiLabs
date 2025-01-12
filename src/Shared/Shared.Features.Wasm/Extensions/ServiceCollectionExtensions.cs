@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Components.Services;
-using Web.Client.Services;
+using Shared.Features.Wasm.Services;
 
-namespace Web.Client.Extensions;
+namespace Shared.Features.Wasm.Extensions;
+
 internal static class ServiceCollectionExtensions
 {
-	public static IServiceCollection AddWasmServices(this IServiceCollection services, WebAssemblyHostBuilder builder)
+	public static IServiceCollection AddWasmServices(this IServiceCollection services, IConfiguration config, IWebAssemblyHostEnvironment env)
 	{
 		services.AddHttpClient<IMessageSender, WasmMessageSender>((sp, client) =>
 		{
-			client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+			client.BaseAddress = new Uri(env.BaseAddress);
 		});
 		//.RemoveAllLoggers();
 

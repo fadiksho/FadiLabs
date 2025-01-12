@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Services;
 
-namespace Web.Server.Services;
+namespace Shared.Features.Services.Implementaions;
 
 public class ServerAuthService : IAuthService
 {

@@ -1,6 +1,6 @@
 ﻿using Shared.Components.Services;
 
-namespace Web.Client.Services;
+namespace Shared.Features.Wasm.Services;
 
 public class WasmAuthService : IAuthService
 {

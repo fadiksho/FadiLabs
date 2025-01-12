@@ -1,5 +1,7 @@
 ﻿@page "/StatusCode/{code:int}"
 
+@using global::Shared.Components.Components.Shared
+
 @attribute [ExcludeFromInteractiveRouting]
 
 <StatusCodeRedirect Code="@Code" Path="@OriginalPathAndQuery" />

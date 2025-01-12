@@ -14,7 +14,6 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 {
 	public async Task<Result<PagedList<GetPostsResponse>>> Handle(GetPosts request, CancellationToken cancellationToken)
 	{
-		await Task.Delay(500);
 		var query = context.Posts
 			.Include(x => x.Tags)
 			.Include(x => x.Comments)

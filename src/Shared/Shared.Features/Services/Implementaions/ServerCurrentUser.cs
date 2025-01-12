@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
-using Shared.Features.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace Web.Server.Services;
+namespace Shared.Features.Services.Implementaions;
 
 public class ServerCurrentUser : ICurrentUser
 {

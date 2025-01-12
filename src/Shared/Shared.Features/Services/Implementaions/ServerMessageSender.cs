@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Shared.Components.Services;
 
-namespace Web.Server.Services;
+namespace Shared.Features.Services.Implementaions;
 
 internal class ServerMessageSender(IMediator mediator) : IMessageSender
 {

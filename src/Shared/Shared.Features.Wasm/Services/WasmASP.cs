@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Shared.Integration.Models;
 using System.Security.Claims;
 
-namespace Web.Client.Services;
+namespace Shared.Features.Wasm.Services;
 
 public class WasmASP : AuthenticationStateProvider
 {

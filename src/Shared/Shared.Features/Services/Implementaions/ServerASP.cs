@@ -6,7 +6,7 @@ using Shared.Integration.Models;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace Web.Server.Services;
+namespace Shared.Features.Services.Implementaions;
 
 public sealed class ServerASP : AuthenticationStateProvider, IHostEnvironmentAuthenticationStateProvider, IDisposable
 {
