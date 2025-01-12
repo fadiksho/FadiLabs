@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Modules.Blog.Features.Entities;
-using Shared.Features.Configuration;
-using Shared.Features.Persistence;
+using Shared.Features.Server.Configuration;
+using Shared.Features.Server.Persistence;
 
 namespace Modules.Blog.Features.Persistence;
 

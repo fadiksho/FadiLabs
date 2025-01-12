@@ -1,6 +1,6 @@
-﻿namespace Shared.Features.Persistence;
+﻿namespace Shared.Features.Server.Persistence;
 
 public interface IDbContext
 {
-  Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

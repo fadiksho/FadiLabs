@@ -1,7 +1,7 @@
 ﻿using Modules.Shared.Integration.Models;
 using Modules.User.Features.Entities;
 using Modules.User.Features.Persistence;
-using Shared.Features.Extensions;
+using Shared.Features.Server.Extensions;
 
 namespace Modules.User.Features.User.Querys;
 internal class GetLabRolesHandler

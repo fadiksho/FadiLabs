@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Modules.Blog.Features.Entities;
-using Shared.Features.Persistence;
+using Shared.Features.Server.Persistence;
 using System.Security.Cryptography;
 
 namespace Modules.Blog.Features.Persistence;

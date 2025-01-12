@@ -24,7 +24,7 @@ using Modules.Auth0.Features.Services;
 using Modules.Auth0.Features.Utils;
 using Modules.Auth0.Integration.Configuration;
 using Modules.Shared.Integration.Authorization;
-using Shared.Features.Configuration;
+using Shared.Features.Server.Configuration;
 using Shared.Integration;
 
 namespace Modules.Auth0.Features;

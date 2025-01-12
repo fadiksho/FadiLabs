@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Modules.Blog.Integration.Post;
 using Moq;
 using Shared.Features.Behaviours;
-using Shared.Features.Services;
+using Shared.Features.Server.Services;
 using System.Security.Claims;
 
 namespace Shared.Features.Test.Behaviours;

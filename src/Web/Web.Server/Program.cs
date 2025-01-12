@@ -3,7 +3,7 @@ using Modules.Auth0.Features;
 using Modules.Blog.Features;
 using Modules.Home.Features;
 using Modules.User.Features;
-using Shared.Features;
+using Shared.Features.Server;
 using Web.Server.Extensions;
 using Web.Static;
 
@@ -15,6 +15,7 @@ builder.AddServiceDefaults();
 builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
+	.AddSharedModuleServices(builder.Configuration, builder.Environment)
 	.AddServerServices(builder.Configuration, builder.Environment)
 	.AddHomeModuleServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)

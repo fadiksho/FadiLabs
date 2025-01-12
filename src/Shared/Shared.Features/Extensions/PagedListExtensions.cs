@@ -2,7 +2,7 @@
 using Modules.Shared.Integration.Models;
 using Shared.Integration.Utilities;
 
-namespace Shared.Features.Extensions;
+namespace Shared.Features.Server.Extensions;
 public static class PagedListExtensions
 {
 	public static async Task<PagedList<T>> CreateAsync<T>(IQueryable<T> source, int pageNumber, int pageSize)

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.User.Components;
 using Modules.User.Features.Persistence;
-using Shared.Features.Configuration;
+using Shared.Features.Server.Configuration;
 
 namespace Modules.User.Features;
 public static class Program

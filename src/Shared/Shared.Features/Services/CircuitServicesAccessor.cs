@@ -1,4 +1,4 @@
-﻿namespace Shared.Features.Services;
+﻿namespace Shared.Features.Server.Services;
 
 public class CircuitServicesAccessor
 {

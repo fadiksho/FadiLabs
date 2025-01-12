@@ -2,9 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Modules.Shared.Integration.Extensions;
-using Shared.Features.Exceptions;
+using Shared.Features.Server.Exceptions;
 
-namespace Shared.Features.Behaviours;
+namespace Shared.Features.Server.Behaviours;
 
 public class ExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 	where TRequest : notnull, IRequest<TResponse>

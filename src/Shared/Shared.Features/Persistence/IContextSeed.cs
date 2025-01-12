@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Shared.Features.Persistence;
+namespace Shared.Features.Server.Persistence;
 
 public interface IContextSeed
 {

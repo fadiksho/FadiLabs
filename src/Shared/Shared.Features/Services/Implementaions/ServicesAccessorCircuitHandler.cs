@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Server.Circuits;
 
-namespace Shared.Features.Services.Implementaions;
+namespace Shared.Features.Server.Services.Implementaions;
 
 public class ServicesAccessorCircuitHandler(
 		IServiceProvider services, CircuitServicesAccessor servicesAccessor)

@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Components", "src\Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Integration", "src\Shared\Shared.Integration\Shared.Integration.csproj", "{99C245FB-CA85-44DB-8E55-476F28F26E33}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Features", "src\Shared\Shared.Features\Shared.Features.csproj", "{C35615ED-DA05-46EE-8158-92FC6178304B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Features.Server", "src\Shared\Shared.Features\Shared.Features.Server.csproj", "{C35615ED-DA05-46EE-8158-92FC6178304B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Blog.Features", "src\Modules\Blog\Modules.Blog.Features\Modules.Blog.Features.csproj", "{59D5E3FF-0E19-4E66-BFA8-6DB7CF084508}"
 EndProject

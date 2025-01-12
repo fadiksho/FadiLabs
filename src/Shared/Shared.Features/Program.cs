@@ -10,14 +10,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Components;
 using Shared.Components.Services;
-using Shared.Features.Behaviours;
-using Shared.Features.Configuration;
-using Shared.Features.Endpoints;
-using Shared.Features.Persistence.Interceptors;
-using Shared.Features.Services;
-using Shared.Features.Services.Implementaions;
+using Shared.Features.Server.Behaviours;
+using Shared.Features.Server.Configuration;
+using Shared.Features.Server.Endpoints;
+using Shared.Features.Server.Persistence.Interceptors;
+using Shared.Features.Server.Services;
+using Shared.Features.Server.Services.Implementaions;
 
-namespace Shared.Features;
+namespace Shared.Features.Server;
 
 public static class Program
 {

@@ -10,7 +10,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.Server.csproj" />
 	  <ProjectReference Include="..\Modules.Blog.Components\Modules.Blog.Components.csproj" />
 	</ItemGroup>
 	

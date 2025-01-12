@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace Shared.Features.Services.Implementaions;
+namespace Shared.Features.Server.Services.Implementaions;
 
 public class ServerCurrentUser : ICurrentUser
 {

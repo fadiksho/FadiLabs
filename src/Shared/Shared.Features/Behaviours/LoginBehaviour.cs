@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Shared.Features.Behaviours;
+namespace Shared.Features.Server.Behaviours;
 public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 	where TRequest : notnull, IRequest<TResponse>
 	where TResponse : IResult

@@ -25,7 +25,7 @@
 	  <ProjectReference Include="..\..\Modules\Home\Modules.Home.Features\Modules.Home.Features.csproj" />
 	  <ProjectReference Include="..\..\Modules\User\Modules.User.Features\Modules.User.Features.csproj" />
 		
-	  <ProjectReference Include="..\..\Shared\Shared.Features\Shared.Features.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared.Features\Shared.Features.Server.csproj" />
 	  <ProjectReference Include="..\Web.Client\Web.Client.csproj" />
 	  <ProjectReference Include="..\Web.Static\Web.Static.csproj" />
 	</ItemGroup>	

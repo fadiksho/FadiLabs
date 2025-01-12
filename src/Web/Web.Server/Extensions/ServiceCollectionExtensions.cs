@@ -1,5 +1,4 @@
 ﻿using Azure.Identity;
-using Shared.Features;
 
 
 namespace Web.Server.Extensions;
@@ -8,8 +7,6 @@ public static class ServiceCollectionExtensions
 {
 	public static IServiceCollection AddServerServices(this IServiceCollection services, IConfigurationManager config, IWebHostEnvironment env)
 	{
-		services.AddSharedModuleServices(config, env);
-
 		if (env.IsProduction())
 		{
 			config.AddAzureKeyVault(

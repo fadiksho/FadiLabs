@@ -4,8 +4,8 @@ using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Models;
-using Shared.Features.Extensions;
-using Shared.Features.Services;
+using Shared.Features.Server.Extensions;
+using Shared.Features.Server.Services;
 using Shared.Integration.Extensions;
 using System.Linq.Expressions;
 

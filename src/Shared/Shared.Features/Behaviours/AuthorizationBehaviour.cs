@@ -3,11 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Extensions;
-using Shared.Features.Services;
+using Shared.Features.Server.Services;
 using Shared.Integration.Extensions;
 using System.Reflection;
 
-namespace Shared.Features.Behaviours;
+namespace Shared.Features.Server.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse>(
 	ICurrentUser currentUser,

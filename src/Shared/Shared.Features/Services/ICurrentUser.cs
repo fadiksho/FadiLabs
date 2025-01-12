@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Shared.Features.Services;
+namespace Shared.Features.Server.Services;
 
 public interface ICurrentUser
 {
