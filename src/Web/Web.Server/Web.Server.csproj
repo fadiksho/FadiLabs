@@ -27,6 +27,5 @@
 		
 	  <ProjectReference Include="..\..\Shared\Shared.Features\Shared.Features.Server.csproj" />
 	  <ProjectReference Include="..\Web.Client\Web.Client.csproj" />
-	  <ProjectReference Include="..\Web.Static\Web.Static.csproj" />
 	</ItemGroup>	
 </Project>

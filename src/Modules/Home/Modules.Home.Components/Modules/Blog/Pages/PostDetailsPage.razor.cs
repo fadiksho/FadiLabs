@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Modules.Blog.Integration.Post;
 using Shared.Components.Services;
 
-namespace Web.Static.Modules.Blog.Pages;
+namespace Modules.Home.Components.Modules.Blog.Pages;
 public partial class PostDetailsPage(IUIBus bus)
 {
 	[Parameter]

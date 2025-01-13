@@ -5,9 +5,7 @@ module.exports = {
     '../../../Web/Web.Server/Components/**/*.{razor,html,js}',
     '../../../Modules/Blog/Modules.Blog.Components/**/*.{razor,html,js}',
     '../../../Modules/Home/Modules.Home.Components/**/*.{razor,html,js}',
-    '../../../Modules/Auth0/Modules.Auth0.Components/**/*.{razor,html,js}',
-    '../../../Web/Web.Static/Modules/**/*.{razor,html,js}',
-    '../../../Web/Web.Static/Shared/**/*.{razor,html,js}',
+    '../../../Modules/Auth0/Modules.Auth0.Components/**/*.{razor,html,js}'
   ],
   prefix: 'tw-',
   theme: {

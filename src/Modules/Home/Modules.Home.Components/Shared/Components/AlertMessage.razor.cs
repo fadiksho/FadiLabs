@@ -1,4 +1,4 @@
-﻿namespace Web.Static.Shared.Components;
+﻿namespace Modules.Home.Components.Shared.Components;
 
 public partial class AlertMessage
 {

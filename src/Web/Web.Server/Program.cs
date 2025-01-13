@@ -5,7 +5,6 @@ using Modules.Home.Features;
 using Modules.User.Features;
 using Shared.Features.Server;
 using Web.Server.Extensions;
-using Web.Static;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +49,6 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 
 app.MapBlazorApp()
-	 .MapStaticPages()
 	 .MapSharedModulePages()
 	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()
