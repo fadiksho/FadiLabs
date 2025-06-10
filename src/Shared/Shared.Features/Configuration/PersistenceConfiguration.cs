@@ -1,4 +1,4 @@
-﻿namespace Shared.Features.Server.Configuration;
+﻿namespace Shared.Features.Configuration;
 
 public class PersistenceConfiguration
 {

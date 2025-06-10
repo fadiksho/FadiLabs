@@ -1,6 +1,6 @@
-﻿namespace Shared.Features.Server.Exceptions;
+﻿namespace Shared.Features.Exceptions;
 
 public class UnauthentectedException : Exception
 {
-	public UnauthentectedException() : base() { }
+  public UnauthentectedException() : base() { }
 }

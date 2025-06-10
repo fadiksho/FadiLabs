@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Blog.Components;
 using Modules.Blog.Features.Persistence;
-using Shared.Features.Server.Configuration;
+using Shared.Features.Configuration;
 
 namespace Modules.Blog.Features;
 

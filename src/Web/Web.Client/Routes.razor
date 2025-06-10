@@ -1,8 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Services
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Authorization
 @using System.Reflection
-
 @inject LazyAssemblyLoader AssemblyLoader
 @inject ILogger<Routes> Logger
 
@@ -33,8 +30,15 @@ OnNavigateAsync="OnNavigateAsync"  >
 </Router>
 
 @code {
+	// System.Reflection.Assembly[] assemblies =
+	// [
+	//   typeof(Modules.Home.Components.Program).Assembly,
+	//   typeof(Modules.Blog.Components.Program).Assembly,
+	//   typeof(Modules.Auth0.Components.Program).Assembly,
+	//   typeof(Modules.User.Components.Program).Assembly,
+	// ];
 
-	List<Assembly> lazyLoadedAssemblies =
+	List<System.Reflection.Assembly> lazyLoadedAssemblies =
 	[
 		typeof(Modules.Home.Components.Program).Assembly,
 	];
@@ -42,8 +46,8 @@ OnNavigateAsync="OnNavigateAsync"  >
 	List<LazyLoadedModulesInfo> lazyLoadedModulesInfos =
 	[
 		new("labs/blog-lab", ["Modules.Blog.Components.wasm", "Markdig.wasm"]),
-		new("labs/user-lab", ["Modules.User.Components.wasm"]),
-		new("labs/auth0-lab", ["Modules.Auth0.Components.wasm"])
+	new("labs/user-lab", ["Modules.User.Components.wasm"]),
+	new("labs/Auth0-lab", ["Modules.Auth0.Components.wasm"])
 	];
 
 	protected override void OnInitialized()
@@ -55,13 +59,14 @@ OnNavigateAsync="OnNavigateAsync"  >
 	{
 		try
 		{
-			var lazyLoadedModuleInfo = lazyLoadedModulesInfos.FirstOrDefault(x => args.Path.StartsWith(x.routePath, StringComparison.OrdinalIgnoreCase));
+			var lazyLoadedModuleInfo = lazyLoadedModulesInfos.FirstOrDefault(x => args.Path.StartsWith(x.routePath));
 			if (RendererInfo.IsInteractive && lazyLoadedModuleInfo != null && lazyLoadedModuleInfo.IsLoaded == false)
 			{
 				Logger.LogInformation($"{RendererInfo.Name}: {RendererInfo.IsInteractive}");
 				Logger.LogInformation(lazyLoadedModuleInfo.ToString());
 				var assemblies =
 					await AssemblyLoader.LoadAssembliesAsync(lazyLoadedModuleInfo.Assemblies);
+				await Task.Delay(5000);
 				lazyLoadedAssemblies.AddRange(assemblies);
 				lazyLoadedModuleInfo.IsLoaded = true;
 			}

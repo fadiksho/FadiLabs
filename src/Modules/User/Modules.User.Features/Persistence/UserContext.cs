@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Modules.User.Features.Entities;
-using Shared.Features.Server.Configuration;
-using Shared.Features.Server.Persistence;
+using Shared.Features.Configuration;
+using Shared.Features.Persistence;
 
 namespace Modules.User.Features.Persistence;
 

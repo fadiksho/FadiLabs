@@ -1,4 +1,4 @@
-﻿using Shared.Features.Server.Services;
+﻿using Shared.Features.Services;
 using Shared.Integration.Extensions;
 
 namespace Modules.User.Features.User.Querys;

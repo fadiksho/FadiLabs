@@ -3,8 +3,9 @@ using Modules.Auth0.Features;
 using Modules.Blog.Features;
 using Modules.Home.Features;
 using Modules.User.Features;
-using Shared.Features.Server;
+using Shared.Features;
 using Web.Server.Extensions;
+using Web.Static;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,8 +15,8 @@ builder.AddServiceDefaults();
 builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
 
 builder.Services
-	.AddSharedModuleServices(builder.Configuration, builder.Environment)
 	.AddServerServices(builder.Configuration, builder.Environment)
+	.AddSharedModuleServices(builder.Configuration, builder.Environment)
 	.AddHomeModuleServices(builder.Configuration, builder.Environment)
 	.AddAuth0ModuleServices(builder.Configuration, builder.Environment)
 	.AddUserModuleServices(builder.Configuration, builder.Environment)
@@ -49,6 +50,7 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 
 app.MapBlazorApp()
+	 .MapStaticPages()
 	 .MapSharedModulePages()
 	 .MapHomeModulePages()
 	 .MapAuth0ModulePages()

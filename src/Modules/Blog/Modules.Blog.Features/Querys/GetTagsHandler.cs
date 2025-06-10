@@ -2,7 +2,7 @@
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Models;
-using Shared.Features.Server.Extensions;
+using Shared.Features.Extensions;
 
 namespace Modules.Blog.Features.Querys;
 public class GetTagsHandler : IRequestHandler<GetTags, Result<PagedList<TagResponse>>>

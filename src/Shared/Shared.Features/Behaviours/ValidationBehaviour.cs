@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using Modules.Shared.Integration.Extensions;
 
-namespace Shared.Features.Server.Behaviours;
+namespace Shared.Features.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
 		where TRequest : notnull, IRequest<TResponse>

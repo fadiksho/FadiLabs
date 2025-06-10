@@ -1,4 +1,4 @@
-﻿namespace Shared.Features.Server.Persistence;
+﻿namespace Shared.Features.Persistence;
 public interface IModuleDbContext : IDbContext
 {
 }

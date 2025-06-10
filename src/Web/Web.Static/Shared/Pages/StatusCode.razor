@@ -1,0 +1,28 @@
+﻿@page "/StatusCode/{code:int}"
+
+@attribute [ExcludeFromInteractiveRouting]
+
+<StatusCodeRedirect Code="@Code" Path="@OriginalPathAndQuery" />
+
+@code {
+	[Parameter]
+	public int Code { get; set; }
+
+	public string? OriginalPathAndQuery { get; set; }
+
+	[CascadingParameter]
+	public HttpContext HttpContext { get; set; } = default!;
+
+	protected override void OnInitialized()
+	{
+		var statusCodeReExecuteFeature =
+						HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>();
+
+		if (statusCodeReExecuteFeature is not null)
+		{
+			OriginalPathAndQuery = $"{statusCodeReExecuteFeature.OriginalPathBase}"
+														+ $"{statusCodeReExecuteFeature.OriginalPath}"
+														+ $"{statusCodeReExecuteFeature.OriginalQueryString}";
+		}
+	}
+}

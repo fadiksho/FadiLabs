@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Modules.Shared.Integration.Domain;
-using Shared.Features.Server.Configuration;
+using Shared.Features.Configuration;
 
-namespace Shared.Features.Server.Persistence;
+namespace Shared.Features.Persistence;
 
 public abstract class ModuleDbContext(
 	DbContextOptions options,

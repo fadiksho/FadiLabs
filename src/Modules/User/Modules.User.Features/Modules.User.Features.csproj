@@ -11,7 +11,7 @@
 	</ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.Server.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Features\Shared.Features.csproj" />
     <ProjectReference Include="..\Modules.User.Components\Modules.User.Components.csproj" />
   </ItemGroup>
 

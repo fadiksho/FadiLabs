@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Shared.Integration.Models;
 using Shared.Integration.Services;
 
-namespace Shared.Features.Server.Endpoints;
+namespace Shared.Features.Endpoints;
 
 internal static class MediatorEndPoints
 {

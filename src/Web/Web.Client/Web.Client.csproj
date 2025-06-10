@@ -17,7 +17,7 @@
     <ProjectReference Include="..\..\Modules\Blog\Modules.Blog.Components\Modules.Blog.Components.csproj" />
     <ProjectReference Include="..\..\Modules\Home\Modules.Home.Components\Modules.Home.Components.csproj" />
     <ProjectReference Include="..\..\Modules\User\Modules.User.Components\Modules.User.Components.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.Features.Wasm\Shared.Features.Wasm.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Components\Shared.Components.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

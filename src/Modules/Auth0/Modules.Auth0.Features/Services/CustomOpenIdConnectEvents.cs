@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Modules.Auth0.Integration.Configuration;
-using Shared.Features.Server.Configuration;
+using Shared.Features.Configuration;
 
 namespace Modules.Auth0.Features.Services;
 

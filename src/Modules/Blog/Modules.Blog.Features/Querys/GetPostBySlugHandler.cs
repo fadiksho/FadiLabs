@@ -4,7 +4,7 @@ using Modules.Blog.Features.Entities;
 using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
-using Shared.Features.Server.Services;
+using Shared.Features.Services;
 using Shared.Integration.Extensions;
 
 namespace Modules.Blog.Features.Querys;

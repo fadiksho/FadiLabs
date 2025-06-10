@@ -1,0 +1,142 @@
+@page "/labs/current-user"
+
+@attribute [LabAuthorize]
+
+@code {
+	[Inject]
+	public required IServiceExecutor<IUIBus> ServiceExecutor { get; set; }
+
+	private Result<PagedList<GetLabRolesResponse>> getLabRolesResult;
+
+	protected override async Task OnInitializedAsync()
+	{
+		getLabRolesResult = await ServiceExecutor
+				.ExecuteAsync(nameof(GetLabRoles), x => x.Send(new GetLabRoles()));
+	}
+}
+
+<MudPaper Class="pa-4">
+	<AuthorizeView>
+		<Authorized>
+			<!-- User Identities -->
+			<MudExpansionPanels MultiExpansion="true">
+				@{
+					int index = 0;
+					foreach (var identity in context.User.Identities)
+					{
+						index++;
+						if (identity != null)
+						{
+							<MudExpansionPanel Text="@($"{identity.AuthenticationType}: {index}")" Expanded="true">
+								<MudSimpleTable>
+									<!-- head -->
+									<tbody>
+										<!-- rows -->
+										<tr>
+											<td>@nameof(identity.IsAuthenticated)</td>
+											<td>
+												<span class="text-success">@identity?.IsAuthenticated</span>
+											</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.AuthenticationType)</td>
+											<td>@identity?.AuthenticationType</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.NameClaimType)</td>
+											<td>@(identity?.Name ?? "Name claim not found!")</td>
+										</tr>
+										<tr>
+											<td>@nameof(identity.RoleClaimType)</td>
+											<td>@(identity?.Claims.FirstOrDefault(x => x.Type == identity.RoleClaimType)?.Value ?? "Role claim not found!")</td>
+										</tr>
+									</tbody>
+								</MudSimpleTable>
+							</MudExpansionPanel>
+
+							<MudExpansionPanel Text="@($"{identity?.AuthenticationType}: {index}, Claims")" Expanded="true">
+								<MudSimpleTable>
+									<thead>
+										<tr>
+											<th>Claim Type</th>
+											<th>Claim Value</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var claim in identity?.Claims ?? [])
+										{
+											<tr>
+												<td>@claim.Type</td>
+
+												@if (claim.Type == "iat" || claim.Type == "exp")
+												{
+													<td>
+														@{
+															var _dateTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(claim.Value));
+														}
+														<span class="mr-2">@_dateTime.ToLocalTime()</span>
+														@if (_dateTime - DateTimeOffset.Now > TimeSpan.Zero)
+														{
+															<span class="text-success">Valid (@((_dateTime - DateTimeOffset.Now).ToString(@"hh\:mm\:ss")))</span>
+														}
+														else
+														{
+															<span class="text-error">Expired</span>
+														}
+													</td>
+												}
+												else
+												{
+													<td>@claim.Value</td>
+												}
+											</tr>
+										}
+									</tbody>
+								</MudSimpleTable>
+							</MudExpansionPanel>
+						}
+					}
+				}
+			</MudExpansionPanels>
+		</Authorized>
+		<NotAuthorized>
+			<!-- Authentication Status -->
+			<div class="d-flex gap-2">
+				<div>
+					Authentication Status:
+					<span class="mud-text-error">Not Authenticated</span>
+				</div>
+			</div>
+		</NotAuthorized>
+	</AuthorizeView>
+</MudPaper>
+
+<MudPaper Class="pa-4">
+	<LabAuthorizeView>
+		<Authorized>
+			<text>Permissions: </text>
+			<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+				<MudChip T="string">@context.User.GetPermissions()</MudChip>
+			</MudStack>
+		</Authorized>
+	</LabAuthorizeView>
+
+	@if (getLabRolesResult.IsSuccess)
+	{
+		<text>Roles: </text>
+		<MudStack Row="true" Spacing="1" Wrap="Wrap.Wrap">
+			@foreach (var labRole in getLabRolesResult.Entity.Items)
+			{
+				<AuthorizeView Roles="@labRole.Name">
+					<Authorized>
+						<MudChip T="string" Color="Color.Success">@labRole.Name</MudChip>
+					</Authorized>
+
+					<NotAuthorized>
+						<MudChip T="string" Color="Color.Error">@labRole.Name</MudChip>
+					</NotAuthorized>
+				</AuthorizeView>
+			}
+		</MudStack>
+	}
+</MudPaper>

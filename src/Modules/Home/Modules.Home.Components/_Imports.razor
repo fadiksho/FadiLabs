@@ -1,26 +1,26 @@
-﻿@using Microsoft.JSInterop
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Routing
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Sections
-@using System.Diagnostics
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.JSInterop
 
 @using Fadi.Result
 @using Fadi.Result.Errors
 
-@using global::Modules.Blog.Integration.Post
-@using global::Shared.Components.Extensions
-@using global::Shared.Components.Components.Shared
+@using global::Shared.Components.Services
+@using global::Shared.Components.Components
 @using global::Shared.Components.Components.Shared.Authorization
-
+@using global::Shared.Components.Components.Shared
+@using global::Shared.Components.Extensions
 @using global::Shared.Integration.Extensions
-@using global::Modules.Shared.Integration.Models
 
-@using global::Modules.Home.Components.Shared.Components
-@using global::Modules.Home.Components.Shared.Layout.Home
-@using global::Modules.Home.Components.Modules.Blog.Components
+@using global::Modules.Shared.Integration.Models
+@using global::Modules.Shared.Integration.Authorization
+@using global::Modules.Blog.Integration.Post
+@using global::Modules.User.Integration.User.Queries
+
 @using static global::Shared.Components.Services.InteractiveRenderSettings
 
 @using MudBlazor

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<ProjectReference Include="..\..\Modules\Auth0\Modules.Auth0.Components\Modules.Auth0.Components.csproj" />
+		<ProjectReference Include="..\..\Modules\Blog\Modules.Blog.Components\Modules.Blog.Components.csproj" />
+		<ProjectReference Include="..\..\Modules\Home\Modules.Home.Components\Modules.Home.Components.csproj" />
+		<ProjectReference Include="..\..\Modules\User\Modules.User.Components\Modules.User.Components.csproj" />
+		<ProjectReference Include="..\..\Shared\Shared.Features\Shared.Features.csproj" />
+		<!--<ProjectReference Include="..\..\Shared\Shared.Features\Shared.Features.csproj" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+</Project>

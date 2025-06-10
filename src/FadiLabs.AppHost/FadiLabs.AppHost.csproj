@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modules\Blog\Modules.Blog.Server\Modules.Blog.Server.csproj" />
     <ProjectReference Include="..\Web\Web.Server\Web.Server.csproj" />
   </ItemGroup>
 

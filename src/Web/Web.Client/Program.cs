@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Modules.Home.Components;
-using Shared.Features.Wasm;
+using Shared.Components;
+using Web.Client.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services
-	.AddSharedServices(builder.Configuration, builder.HostEnvironment)
+builder.Services.AddSharedComponentsServices(builder.Configuration)
 	.AddHomeModuleComponentsServices(builder.Configuration);
+//.AddAuth0ModuleComponentsServices(builder.Configuration)
+//.AddUserModuleComponentsServices(builder.Configuration)
+//.AddBlogModuleComponentsServices(builder.Configuration);
+
+builder.Services.AddWasmServices(builder);
 
 await builder.Build().RunAsync();
 

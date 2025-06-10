@@ -4,8 +4,8 @@ using Modules.Blog.Features.Persistence;
 using Modules.Blog.Integration.Post;
 using Modules.Shared.Integration.Authorization;
 using Modules.Shared.Integration.Models;
-using Shared.Features.Server.Extensions;
-using Shared.Features.Server.Services;
+using Shared.Features.Extensions;
+using Shared.Features.Services;
 using Shared.Integration.Extensions;
 using System.Linq.Expressions;
 
@@ -14,6 +14,7 @@ internal class GetPostsHandler(IBlogContext context, ICurrentUser currentUser) :
 {
 	public async Task<Result<PagedList<GetPostsResponse>>> Handle(GetPosts request, CancellationToken cancellationToken)
 	{
+		await Task.Delay(500);
 		var query = context.Posts
 			.Include(x => x.Tags)
 			.Include(x => x.Comments)

@@ -23,7 +23,8 @@
       "src\\Shared\\Shared.Integration\\Shared.Integration.csproj",
       "src\\Shared\\test\\Shared.Features.Test\\Shared.Features.Test.csproj",
       "src\\Web\\Web.Client\\Web.Client.csproj",
-      "src\\Web\\Web.Server\\Web.Server.csproj"
+      "src\\Web\\Web.Server\\Web.Server.csproj",
+      "src\\Web\\Web.Static\\Web.Static.csproj"
     ]
   }
 }
